@@ -258,6 +258,34 @@ img{display:block;max-width:100%}
   display:grid;place-items:center;border:2px solid #fff}
 
 /* ---------- Toast / install ---------- */
+
+/* ---------- Payment ---------- */
+.paytop{text-align:center;padding:22px 0 16px}
+.payno{font-family:var(--head);font-size:13px;letter-spacing:.1em;color:var(--muted);margin:0;text-transform:uppercase}
+.paylab{font-family:var(--head);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:12px 0 2px}
+.payamt{font-family:var(--head);font-size:40px;font-weight:600;color:var(--teal);margin:0;line-height:1}
+.qrcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 16px 16px;text-align:center;margin-bottom:14px}
+.qrhead{font-family:var(--head);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 14px}
+.qrbox{display:inline-block;padding:10px;background:#fff;border:1px solid var(--line);border-radius:12px;line-height:0}
+.qrbox canvas{width:236px;height:236px;image-rendering:pixelated;display:block}
+.qrvpa{font-family:var(--head);font-size:17px;color:var(--ink);margin:14px 0 1px;font-weight:500;letter-spacing:.02em}
+.qrmerch{font-size:13px;color:var(--muted);margin:0}
+.qrapps{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-top:12px}
+.qrapps span{font-family:var(--head);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--body);background:var(--band);border:1px solid var(--line);padding:4px 8px;border-radius:20px}
+.paylinks{display:flex;align-items:center;justify-content:center;gap:10px;margin:12px 0 4px;color:var(--muted);font-size:13px}
+.paylinks button{font-size:14px;color:var(--teal);text-decoration:underline}
+.paysep{text-align:center;font-family:var(--head);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted);margin:22px 0 12px;position:relative}
+.paysep:before,.paysep:after{content:"";position:absolute;top:50%;width:24%;height:1px;background:var(--line)}
+.paysep:before{left:0}.paysep:after{right:0}
+.payfoot{font-size:13px;color:var(--muted);text-align:center;line-height:1.5;margin:16px auto 0;max-width:330px}
+.paychip{font-family:var(--head);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:5px 9px;border-radius:20px;font-weight:500}
+.paychip.paid{background:#E8F5E9;color:#2E7D32}
+.paychip.cod{background:var(--band);color:var(--body)}
+.paychip.unpaid{background:#FFF4E2;color:var(--orange-dark)}
+.ord .payrow{display:flex;align-items:center;gap:8px;margin-top:9px;flex-wrap:wrap}
+
 /* ---------- iOS install steps ---------- */
 .steps{margin:4px 0 0;padding:0;list-style:none;counter-reset:st}
 .steps li{position:relative;padding:0 0 16px 44px;counter-increment:st;font-size:15.5px;line-height:1.5;color:var(--ink)}
@@ -429,6 +457,51 @@ body.sheet-open .install{display:none}
   </div>
 </section>
 
+
+<!-- ══════════ PAYMENT ══════════ -->
+<section class="screen" id="s-pay">
+  <div class="wrap">
+    <div class="paytop">
+      <p class="payno" id="payNo"></p>
+      <p class="paylab">Amount to pay</p>
+      <p class="payamt" id="payAmt"></p>
+    </div>
+
+    <div class="qrcard">
+      <p class="qrhead">Scan &amp; pay with any UPI app</p>
+      <div class="qrbox"><canvas id="payQr" width="300" height="300" aria-label="UPI payment QR code"></canvas></div>
+      <p class="qrvpa" id="payVpa"></p>
+      <p class="qrmerch">SHRI JAGDAMBA INDUSTRY</p>
+      <div class="qrapps">
+        <span>GPay</span><span>PhonePe</span><span>Paytm</span><span>BHIM</span><span>Any bank app</span>
+      </div>
+    </div>
+
+    <button class="btn btn--teal" id="payNowBtn" onclick="openUpiApp()">
+      <svg viewBox="0 0 24 24"><path d="M3 10h18M6 3h12a3 3 0 013 3v12a3 3 0 01-3 3H6a3 3 0 01-3-3V6a3 3 0 013-3z"/></svg>
+      <span id="payNowLabel">Pay in my UPI app</span>
+    </button>
+
+    <div class="paylinks">
+      <button onclick="copyVpa()" id="copyBtn">Copy UPI ID</button>
+      <span>·</span>
+      <button onclick="showBankQr()">Trouble scanning?</button>
+    </div>
+
+    <div class="note" id="freightNote"></div>
+
+    <p class="paysep">Once you have paid</p>
+    <button class="btn btn--wa" onclick="markPaid()">
+      <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> I have paid
+    </button>
+    <div style="height:10px"></div>
+    <button class="btn btn--line" onclick="payLater()">I will pay on delivery</button>
+
+    <p class="payfoot">We check every payment against our bank before dispatch. If anything does not match we will call you — nothing is dispatched or charged twice.</p>
+    <div class="pad"></div>
+  </div>
+</section>
+
 <!-- ══════════ ORDERS ══════════ -->
 <section class="screen" id="s-orders">
   <div class="wrap">
@@ -572,8 +645,9 @@ const SHOP = {
   whatsapp : '919763728630',          // orders land here
   name     : 'Nuova',
   company  : 'Shri Jagdamba Industry',
-  upi      : '7350071696m@pnb',       // used in Step 4
-  upiName  : 'SHRI JAGDAMBA INDUSTRY'
+  upi      : '7350071696m@pnb',          // from your PNB BHIM QR
+  upiName  : 'SHRI JAGDAMBA INDUSTRY',
+  upiMc    : '5099'                      // merchant category, same as the printed QR
 };
 /* ───────────── ▲▲▲  END OF EDITABLE BLOCK  ▲▲▲ ───────────── */
 
@@ -600,7 +674,7 @@ function go(screen){
   if (el) el.classList.add('on');
 
   document.querySelectorAll('.nav button').forEach(b => b.classList.remove('on'));
-  const navMap = { shop:'shop', cart:'cart', checkout:'cart', done:'orders', orders:'orders', help:'help' };
+  const navMap = { shop:'shop', cart:'cart', checkout:'cart', pay:'cart', done:'orders', orders:'orders', help:'help' };
   const nb = document.getElementById('n-' + (navMap[screen] || 'shop'));
   if (nb) nb.classList.add('on');
 
@@ -823,6 +897,8 @@ function placeOrder(){
     synced  : false          // Step 2 will flip this once saved to Firebase
   };
 
+  order.payment = { method:null, status:'Awaiting payment', utr:'', at:null };
+
   orders.unshift(order);
   store.set('orders', orders);
 
@@ -831,20 +907,8 @@ function placeOrder(){
   cart = [];
   saveCart();
 
-  document.getElementById('doneNo').textContent  = order.no;
-  document.getElementById('doneMsg').textContent =
-    `Thank you ${d.name.split(' ')[0]}. We will call or WhatsApp you on ${d.phone} to confirm the rate and the delivery. Monday to Saturday, 9 to 7.` +
-    ((iOS && standalone) ? ' Tap below to send it across on WhatsApp straight away.' : '');
-  go('done');
+  openPayment(order);        // straight to Scan & Pay
 
-  /* Try to hand it to WhatsApp as well. If the browser blocks the automatic
-     open — or we are inside an installed iPhone app, where it would navigate
-     away from the confirmation — we leave the green button for them to tap
-     and make it unmissable. */
-  setTimeout(() => {
-    const sent = waSend(order, true);
-    if (!sent) nudgeWhatsApp();
-  }, 700);
 }
 
 /* Make the WhatsApp button impossible to miss when the automatic send
@@ -879,6 +943,8 @@ ${lines}
 *Name:* ${o.customer.name}
 *Mobile:* ${o.customer.phone}
 *Address:* ${o.customer.addr}, ${o.customer.city} - ${o.customer.pin}${o.customer.note ? `\n*Note:* ${o.customer.note}` : ''}
+━━━━━━━━━━━━━━━━━━
+*Payment:* ${(o.payment && o.payment.status) || 'Awaiting payment'}${o.payment && o.payment.utr ? `\n*UPI ref:* ${o.payment.utr}` : ''}
 
 _Placed from the Nuova app_`;
 }
@@ -920,12 +986,28 @@ function renderOrders(){
         <span class="chip ${cls}">${esc(o.status || 'Placed')}</span>
       </div>
       <div class="items">${o.items.map(i => `${esc(i.name.replace(' Oil',''))} ${i.sz} × ${i.qty}`).join('<br>')}</div>
+      <div class="payrow">${payChip(o)}${payNeeded(o) ? `<button class="rep" onclick="payAgain(${idx})">Pay now</button>` : ''}</div>
       <div class="foot">
         <span class="amt">${rs(o.total)}</span>
         <button class="rep" onclick="repeatOrder(${idx})">Order again</button>
       </div>
     </div>`;
   }).join('');
+}
+
+function payNeeded(o){
+  return !o.payment || !o.payment.method;
+}
+
+function payChip(o){
+  const st = (o.payment && o.payment.status) || 'Awaiting payment';
+  const cls = /claimed|paid/i.test(st) ? 'paid' : /delivery/i.test(st) ? 'cod' : 'unpaid';
+  return `<span class="paychip ${cls}">${esc(st)}</span>`;
+}
+
+function payAgain(idx){
+  const o = orders[idx];
+  if (o) openPayment(o);
 }
 
 function repeatOrder(idx){
@@ -944,6 +1026,418 @@ function repeatOrder(idx){
   saveCart();
   toast('Added to your basket at today’s rates');
   go('cart');
+}
+
+
+/* ══════════════════════════════════════════
+   UPI PAYMENT
+   The QR is generated on the phone from your bank's own QR parameters
+   (pa / pn / mc, decoded from the PNB card) with the amount and the order
+   number filled in. Nothing is fetched from the internet, so it works
+   offline and there is no third-party image service in the payment path.
+   ══════════════════════════════════════════ */
+
+/* Minimal QR Code encoder — byte mode, ECC level L/M, versions 1-10.
+   Written for the Nuova app so UPI payment QRs work with no internet
+   and no third-party image service. */
+function qrMatrix(text, ecLevel){
+  ecLevel = ecLevel || 'M';
+
+  /* ---- GF(256) ---- */
+  const EXP = new Uint8Array(512), LOG = new Uint8Array(256);
+  (function(){ let x = 1;
+    for (let i = 0; i < 255; i++){ EXP[i] = x; LOG[x] = i; x <<= 1; if (x & 0x100) x ^= 0x11D; }
+    for (let i = 255; i < 512; i++) EXP[i] = EXP[i - 255];
+  })();
+  const gmul = (a,b) => (a === 0 || b === 0) ? 0 : EXP[LOG[a] + LOG[b]];
+
+  function genPoly(n){
+    let p = new Uint8Array([1]);
+    for (let i = 0; i < n; i++){
+      const q = new Uint8Array(p.length + 1);
+      for (let j = 0; j < p.length; j++){ q[j] ^= p[j]; q[j+1] ^= gmul(p[j], EXP[i]); }
+      p = q;
+    }
+    return p;
+  }
+  function rsEcc(data, ecLen){
+    const g = genPoly(ecLen);
+    const r = new Uint8Array(data.length + ecLen);
+    r.set(data);
+    for (let i = 0; i < data.length; i++){
+      const c = r[i];
+      if (!c) continue;
+      for (let j = 0; j < g.length; j++) r[i+j] ^= gmul(g[j], c);
+    }
+    return r.slice(data.length);
+  }
+
+  /* ---- tables (versions 1-10) ---- */
+  const RS = {
+    L: [[1,26,19],[1,44,34],[1,70,55],[1,100,80],[1,134,108],[2,86,68],[2,98,78],[2,121,97],[2,146,116],[2,86,68,2,87,69]],
+    M: [[1,26,16],[1,44,28],[1,70,44],[2,50,32],[2,67,43],[4,43,27],[4,49,31],[2,60,38,2,61,39],[3,58,36,2,59,37],[4,69,43,1,70,44]]
+  };
+  const ALIGN = [[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50]];
+  const VERINFO = { 7:0x07C94, 8:0x085BC, 9:0x09A99, 10:0x0A4D3 };
+  const ECBITS  = { L:1, M:0, Q:3, H:2 };
+
+  /* ---- payload as UTF-8 bytes ---- */
+  const bytes = [];
+  for (const ch of unescape(encodeURIComponent(text))) bytes.push(ch.charCodeAt(0));
+
+  /* ---- pick the smallest version that fits ---- */
+  const blocksFor = v => {
+    const t = RS[ecLevel][v-1], out = [];
+    for (let i = 0; i < t.length; i += 3)
+      for (let k = 0; k < t[i]; k++) out.push({ total:t[i+1], data:t[i+2] });
+    return out;
+  };
+  let version = 0, blocks = null, dataCap = 0;
+  for (let v = 1; v <= 10; v++){
+    const b = blocksFor(v);
+    const cap = b.reduce((a,x) => a + x.data, 0);
+    const lenBits = v < 10 ? 8 : 16;
+    if (cap * 8 >= 4 + lenBits + bytes.length * 8){ version = v; blocks = b; dataCap = cap; break; }
+  }
+  if (!version) throw new Error('QR payload too long: ' + bytes.length + ' bytes');
+
+  /* ---- bit stream ---- */
+  const bits = [];
+  const push = (val, len) => { for (let i = len - 1; i >= 0; i--) bits.push((val >> i) & 1); };
+  push(4, 4);                                   // byte mode
+  push(bytes.length, version < 10 ? 8 : 16);    // character count
+  bytes.forEach(b => push(b, 8));
+  for (let i = 0; i < 4 && bits.length < dataCap * 8; i++) bits.push(0);   // terminator
+  while (bits.length % 8) bits.push(0);
+  const dataBytes = [];
+  for (let i = 0; i < bits.length; i += 8){
+    let b = 0; for (let j = 0; j < 8; j++) b = (b << 1) | bits[i+j];
+    dataBytes.push(b);
+  }
+  const PAD = [0xEC, 0x11];
+  for (let i = 0; dataBytes.length < dataCap; i++) dataBytes.push(PAD[i % 2]);
+
+  /* ---- split into blocks, compute ECC ---- */
+  let pos = 0;
+  const dBlocks = [], eBlocks = [];
+  blocks.forEach(b => {
+    const d = Uint8Array.from(dataBytes.slice(pos, pos + b.data));
+    pos += b.data;
+    dBlocks.push(d);
+    eBlocks.push(rsEcc(d, b.total - b.data));
+  });
+
+  /* ---- interleave ---- */
+  const finalBytes = [];
+  const maxD = Math.max(...dBlocks.map(b => b.length));
+  for (let i = 0; i < maxD; i++) dBlocks.forEach(b => { if (i < b.length) finalBytes.push(b[i]); });
+  const maxE = Math.max(...eBlocks.map(b => b.length));
+  for (let i = 0; i < maxE; i++) eBlocks.forEach(b => { if (i < b.length) finalBytes.push(b[i]); });
+
+  /* ---- module grid ---- */
+  const size = version * 4 + 17;
+  const mod = Array.from({length:size}, () => new Array(size).fill(null));   // null = free
+  const reserved = Array.from({length:size}, () => new Array(size).fill(false));
+
+  const setF = (r,c,v) => { mod[r][c] = v; reserved[r][c] = true; };
+
+  function finder(r0,c0){
+    for (let r = -1; r <= 7; r++) for (let c = -1; c <= 7; c++){
+      const r1 = r0 + r, c1 = c0 + c;
+      if (r1 < 0 || c1 < 0 || r1 >= size || c1 >= size) continue;
+      const on = (r >= 0 && r <= 6 && (c === 0 || c === 6)) ||
+                 (c >= 0 && c <= 6 && (r === 0 || r === 6)) ||
+                 (r >= 2 && r <= 4 && c >= 2 && c <= 4);
+      setF(r1, c1, on ? 1 : 0);
+    }
+  }
+  finder(0,0); finder(0,size-7); finder(size-7,0);
+
+  /* Alignment patterns go down BEFORE the timing pattern: on versions 7+
+     two of them sit on the timing row/column, and the alignment pattern
+     wins there. Only the three that would land on a finder are skipped. */
+  const ap = ALIGN[version-1];
+  const onFinder = (r,c) =>
+    (r < 8 && c < 8) || (r < 8 && c >= size-8) || (r >= size-8 && c < 8);
+  for (const r0 of ap) for (const c0 of ap){
+    if (onFinder(r0, c0)) continue;
+    for (let r = -2; r <= 2; r++) for (let c = -2; c <= 2; c++){
+      const on = Math.max(Math.abs(r), Math.abs(c)) !== 1;
+      setF(r0+r, c0+c, on ? 1 : 0);
+    }
+  }
+
+  // timing — fills only what the alignment patterns left free
+  for (let i = 8; i < size - 8; i++){
+    if (!reserved[6][i]) setF(6, i, i % 2 === 0 ? 1 : 0);
+    if (!reserved[i][6]) setF(i, 6, i % 2 === 0 ? 1 : 0);
+  }
+
+  // dark module + format areas reserved
+  setF(size-8, 8, 1);
+  for (let i = 0; i <= 8; i++){
+    if (!reserved[8][i] || i === 6) { if (i !== 6) reserved[8][i] = true; }
+    if (i !== 6) { reserved[8][i] = true; reserved[i][8] = true; }
+  }
+  reserved[8][8] = true;
+  for (let i = 0; i < 8; i++){ reserved[8][size-1-i] = true; reserved[size-1-i][8] = true; }
+
+  // version info area (v7+)
+  if (version >= 7){
+    for (let i = 0; i < 6; i++) for (let j = 0; j < 3; j++){
+      reserved[i][size-11+j] = true;
+      reserved[size-11+j][i] = true;
+    }
+  }
+
+  /* ---- place data in zigzag ---- */
+  let bi = 0;
+  const dataBits = [];
+  finalBytes.forEach(b => { for (let i = 7; i >= 0; i--) dataBits.push((b >> i) & 1); });
+
+  let up = true;
+  for (let col = size - 1; col > 0; col -= 2){
+    if (col === 6) col--;                       // skip vertical timing column
+    for (let n = 0; n < size; n++){
+      const row = up ? size - 1 - n : n;
+      for (let k = 0; k < 2; k++){
+        const c = col - k;
+        if (reserved[row][c]) continue;
+        mod[row][c] = bi < dataBits.length ? dataBits[bi++] : 0;
+      }
+    }
+    up = !up;
+  }
+
+  /* ---- masking ---- */
+  const MASKS = [
+    (r,c) => (r + c) % 2 === 0,
+    (r,c) => r % 2 === 0,
+    (r,c) => c % 3 === 0,
+    (r,c) => (r + c) % 3 === 0,
+    (r,c) => (Math.floor(r/2) + Math.floor(c/3)) % 2 === 0,
+    (r,c) => (r*c) % 2 + (r*c) % 3 === 0,
+    (r,c) => ((r*c) % 2 + (r*c) % 3) % 2 === 0,
+    (r,c) => ((r+c) % 2 + (r*c) % 3) % 2 === 0
+  ];
+
+  function formatBits(mask){
+    let v = (ECBITS[ecLevel] << 3) | mask;
+    let d = v << 10;
+    for (let i = 4; i >= 0; i--) if (d & (1 << (i + 10))) d ^= 0x537 << i;
+    return ((v << 10) | d) ^ 0x5412;
+  }
+
+  function applyFormat(grid, mask){
+    const f = formatBits(mask);
+    for (let i = 0; i < 15; i++){
+      const bit = (f >> i) & 1;
+      // vertical strip, top-left
+      if (i < 6)       grid[i][8] = bit;
+      else if (i < 8)  grid[i+1][8] = bit;
+      else if (i === 8) grid[8][7] = bit;
+      else             grid[8][14-i] = bit;
+      // horizontal strip
+      if (i < 8)       grid[8][size-1-i] = bit;
+      else             grid[size-15+i][8] = bit;
+    }
+    grid[size-8][8] = 1;                      // dark module
+    if (version >= 7){
+      const vi = VERINFO[version];
+      for (let i = 0; i < 18; i++){
+        const bit = (vi >> i) & 1;
+        const r = Math.floor(i / 3), c = i % 3;
+        grid[r][size-11+c] = bit;
+        grid[size-11+c][r] = bit;
+      }
+    }
+  }
+
+  function penalty(g){
+    let p = 0;
+    // rule 1 — runs of 5+
+    for (let i = 0; i < size; i++){
+      for (const line of [g[i], g.map(row => row[i])]){
+        let run = 1;
+        for (let j = 1; j < size; j++){
+          if (line[j] === line[j-1]) run++;
+          else { if (run >= 5) p += run - 2; run = 1; }
+        }
+        if (run >= 5) p += run - 2;
+      }
+    }
+    // rule 2 — 2x2 blocks
+    for (let r = 0; r < size-1; r++) for (let c = 0; c < size-1; c++)
+      if (g[r][c] === g[r][c+1] && g[r][c] === g[r+1][c] && g[r][c] === g[r+1][c+1]) p += 3;
+    // rule 3 — finder-like patterns
+    const PAT = [1,0,1,1,1,0,1,0,0,0,0];
+    const PATR = PAT.slice().reverse();
+    const scan = line => {
+      for (let i = 0; i + 11 <= size; i++){
+        let a = true, b = true;
+        for (let k = 0; k < 11; k++){ if (line[i+k] !== PAT[k]) a = false; if (line[i+k] !== PATR[k]) b = false; }
+        if (a || b) p += 40;
+      }
+    };
+    for (let i = 0; i < size; i++){ scan(g[i]); scan(g.map(row => row[i])); }
+    // rule 4 — dark/light balance
+    let dark = 0;
+    for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) if (g[r][c]) dark++;
+    p += Math.floor(Math.abs(dark * 100 / (size*size) - 50) / 5) * 10;
+    return p;
+  }
+
+  let best = null, bestScore = Infinity;
+  for (let m = 0; m < 8; m++){
+    const g = mod.map(row => row.slice());
+    for (let r = 0; r < size; r++) for (let c = 0; c < size; c++)
+      if (!reserved[r][c] && MASKS[m](r,c)) g[r][c] ^= 1;
+    applyFormat(g, m);
+    const s = penalty(g);
+    if (s < bestScore){ bestScore = s; best = g; }
+  }
+  return best;
+}
+
+/* Draw a matrix onto the canvas */
+function paintQr(canvas, text){
+  const m = qrMatrix(text, 'M');
+  const n = m.length, quiet = 4, total = n + quiet * 2;
+  const px = Math.max(3, Math.floor(300 / total));
+  canvas.width = canvas.height = total * px;
+  const g = canvas.getContext('2d');
+  g.fillStyle = '#FFFFFF'; g.fillRect(0, 0, canvas.width, canvas.height);
+  g.fillStyle = '#111111';
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++)
+    if (m[r][c]) g.fillRect((c + quiet) * px, (r + quiet) * px, px, px);
+}
+
+/* Build the UPI URI for one order */
+function upiUri(order){
+  /* Built by hand rather than with URLSearchParams: that would write the @ in
+     the VPA as %40 and spaces as +, and some UPI apps show the merchant name
+     literally as "SHRI+JAGDAMBA+INDUSTRY". This mirrors the PNB QR exactly. */
+  const q = [
+    'pa=' + SHOP.upi,                                  // @ stays literal
+    'pn=' + encodeURIComponent(SHOP.upiName),          // spaces become %20
+    'mc=' + SHOP.upiMc,
+    'am=' + Number(order.total).toFixed(2),
+    'cu=INR',
+    'tn=' + encodeURIComponent('Nuova ' + order.no),
+    'mode=02'
+  ];
+  return 'upi://pay?' + q.join('&');
+}
+
+let payingOrder = null;
+
+function openPayment(order){
+  payingOrder = order;
+  document.getElementById('payNo').textContent  = 'Order ' + order.no;
+  document.getElementById('payAmt').textContent = rs(order.total);
+  document.getElementById('payVpa').textContent = SHOP.upi;
+  document.getElementById('payNowLabel').textContent = 'Pay ' + rs(order.total) + ' in my UPI app';
+  document.getElementById('freightNote').innerHTML =
+    'This is the value of the oils. If your order needs couriering, we will quote the freight on WhatsApp and collect it separately — never without telling you first.';
+
+  try {
+    paintQr(document.getElementById('payQr'), upiUri(order));
+  } catch (e) {
+    console.warn('QR build failed:', e);
+    document.querySelector('.qrbox').innerHTML =
+      '<p style="font-size:13.5px;color:var(--muted);padding:20px;line-height:1.5;max-width:210px">' +
+      'Could not draw the QR here. Tap <b>Trouble scanning?</b> below for our standard QR, ' +
+      'or pay to <b>' + SHOP.upi + '</b> and enter ' + rs(order.total) + ' yourself.</p>';
+  }
+  go('pay');
+}
+
+function openUpiApp(){
+  if (!payingOrder) return;
+  const uri = upiUri(payingOrder);
+  if (iOS){
+    /* iPhone has no single UPI chooser the way Android does, so if nothing
+       picks the link up the customer still has the QR in front of them. */
+    const t = setTimeout(() => toast('No UPI app opened — scan the QR above instead'), 2200);
+    window.addEventListener('pagehide', () => clearTimeout(t), { once:true });
+  }
+  window.location.href = uri;
+}
+
+function copyVpa(){
+  const done = () => { const b = document.getElementById('copyBtn'); if (b) b.textContent = 'UPI ID copied'; toast('UPI ID copied'); };
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(SHOP.upi).then(done).catch(fallbackCopy);
+  } else fallbackCopy();
+
+  function fallbackCopy(){
+    const ta = document.createElement('textarea');
+    ta.value = SHOP.upi; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); } catch(e){ toast(SHOP.upi); }
+    document.body.removeChild(ta);
+  }
+}
+
+/* The printed bank QR, as a safety net */
+function showBankQr(){
+  document.getElementById('sheetBody').innerHTML = `
+    <h2 style="font-size:20px;text-transform:uppercase;margin-bottom:4px">Our standard QR</h2>
+    <p class="pk-note" style="margin-bottom:14px">This is the QR from our bank. It does not carry the amount, so type
+      <b>${rs(payingOrder ? payingOrder.total : 0)}</b> into your UPI app yourself${payingOrder ? `, and put <b>${payingOrder.no}</b> in the note` : ''}.</p>
+    <img src="img/bankqr.jpg" alt="Shri Jagdamba Industry BHIM UPI QR code"
+         style="width:100%;max-width:300px;margin:0 auto;border-radius:12px;border:1px solid var(--line)">
+    <div style="height:16px"></div>
+    <button class="btn btn--teal" onclick="closeSheet()">Done</button>`;
+  openSheetUI();
+}
+
+/* The customer says they have paid. We cannot verify it here — the app has no
+   gateway — so it is recorded as claimed and checked against the bank. */
+function markPaid(){
+  if (!payingOrder) { go('orders'); return; }
+  document.getElementById('sheetBody').innerHTML = `
+    <h2 style="font-size:20px;text-transform:uppercase;margin-bottom:4px">Thank you</h2>
+    <p class="pk-note" style="margin-bottom:16px">If your UPI app showed a reference or UTR number, adding it here helps us match your payment straight away. You can also leave it blank.</p>
+    <div class="field" style="margin-bottom:16px">
+      <label>UPI reference / UTR (optional)</label>
+      <input id="i-utr" type="text" inputmode="numeric" placeholder="e.g. 431209876543" maxlength="24">
+    </div>
+    <button class="btn btn--teal" onclick="confirmPaid()">Confirm</button>`;
+  openSheetUI();
+}
+
+function confirmPaid(){
+  const utrEl = document.getElementById('i-utr');
+  const utr = utrEl ? utrEl.value.trim() : '';
+  setPayment(payingOrder, { method:'UPI', status:'Payment claimed', utr:utr, at:new Date().toISOString() });
+  closeSheet();
+  finishPayment('Thank you. We will confirm as soon as the payment shows in our account.');
+}
+
+function payLater(){
+  setPayment(payingOrder, { method:'Cash on delivery', status:'Pay on delivery', utr:'', at:new Date().toISOString() });
+  finishPayment('Noted — please keep the amount ready at delivery.');
+}
+
+function setPayment(order, pay){
+  if (!order) return;
+  order.payment = pay;
+  const i = orders.findIndex(o => o.no === order.no);
+  if (i > -1) orders[i] = order;
+  store.set('orders', orders);
+}
+
+function finishPayment(extra){
+  const o = payingOrder;
+  document.getElementById('doneNo').textContent = o ? o.no : '';
+  document.getElementById('doneMsg').textContent =
+    (o ? `Thank you ${o.customer.name.split(' ')[0]}. ` : '') + extra +
+    ' We will call or WhatsApp you to confirm the delivery. Monday to Saturday, 9 to 7.';
+  go('done');
+  setTimeout(() => {
+    if (o && !waSend(o, true)) nudgeWhatsApp();
+  }, 700);
 }
 
 /* ══════════════════════════════════════════

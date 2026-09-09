@@ -1,45 +1,56 @@
-NUOVA CUSTOMER APP — STEP 1b (iPhone support)
-=============================================
+NUOVA CUSTOMER APP — STEP 1c (UPI payment)
+==========================================
 
-WHAT CHANGED SINCE THE FIRST UPLOAD
-  • iPhone launch screens — no more white flash when the app opens
-  • An "Add to Home Screen" walkthrough for Safari, with the real icons
-  • WhatsApp now opens correctly from inside an installed iPhone app
-  • The order confirmation is never navigated away from
-  • Bottom bar gets out of the way when the iPhone keyboard is up
-  • Warning when opened inside Instagram / Facebook, where installing fails
-  • Install bar no longer covers the products or the sheet
-  • New folder: splash/
+WHAT IS NEW
+After the customer fills in their delivery details and taps Place Order,
+they now land on a PAYMENT screen:
+
+  • A QR code with the EXACT amount and the order number already in it
+  • "Pay ₹___ in my UPI app" — opens GPay / PhonePe / Paytm on the phone
+  • The UPI ID with a Copy button
+  • "Trouble scanning?" shows your printed PNB bank QR as a fallback
+  • "I have paid" — with an optional UTR / reference box
+  • "I will pay on delivery"
+
+The WhatsApp order you receive now carries the payment status and the UTR,
+so you can match it against your bank. Unpaid orders keep a "Pay now"
+button in the customer's Orders tab, so they can come back and pay later.
+
+WHERE THE QR COMES FROM
+Your PNB QR was decoded. It contains:
+   pa=7350071696m@pnb   pn=SHRI JAGDAMBA INDUSTRY   mc=5099
+with the amount field deliberately left blank. The app rebuilds that same
+QR on the phone with the amount and order number filled in. The QR is drawn
+by the app itself — no internet, no third-party QR service in the payment
+path, so it works even on a weak connection.
+
+IMPORTANT — THIS IS NOT A PAYMENT GATEWAY
+The app cannot confirm that money actually arrived. "I have paid" is the
+customer telling you so. ALWAYS check your PNB account or BHIM app before
+dispatching. The UTR the customer enters is what lets you match a payment
+to an order quickly.
 
 HOW TO UPDATE THE LIVE APP
-1. Unzip this package. Rename the unzipped folder to  app
-2. github.com → NUOVASITE repo → at the ROOT (not inside a folder)
-   → Add file → Upload files
-3. Drag the  app  folder in. GitHub will overwrite the changed files
-   and add the new splash/ folder.
-4. Commit. Vercel redeploys in under a minute.
-5. On your phone, close the app fully and reopen it. The service worker
-   version was bumped to nuova-v2, so the new build is picked up.
+1. Unzip. Rename the unzipped folder to  app
+2. github.com → NUOVASITE → repo ROOT → Add file → Upload files
+3. Drag the  app  folder in. Commit.
+4. Close the app fully on your phone and reopen it.
+   (Service worker bumped to nuova-v3, so the new build is picked up.)
 
-TESTING ON AN IPHONE
-  • Open https://www.nuovashop.com/app/ in SAFARI (not Chrome — on iPhone
-    only Safari can install a home-screen app)
-  • A black bar appears: tap HOW for the walkthrough
-  • Share → Add to Home Screen → Add
-  • Open the Nuova icon. You should see the teal launch screen, then the
-    app full screen with no address bar.
+TESTING THE PAYMENT
+Place a small test order — say one 200 ml bottle. On the payment screen,
+scan the QR with your own GPay or PhonePe from a SECOND phone. The amount
+and the note "Nuova NUV-…" should already be filled in. Do not complete
+the payment unless you want to pay yourself.
 
 CHANGING PRICES
-Open index.html, find the block marked
-     ▼▼▼ PRICE LIST — EDIT ONLY THIS BLOCK ▼▼▼
-Change the numbers, save, upload. Then open sw.js and change
-'nuova-v2' to 'nuova-v3' so every phone picks up the new rates.
+index.html →  ▼▼▼ PRICE LIST — EDIT ONLY THIS BLOCK ▼▼▼
+Then bump 'nuova-v3' to 'nuova-v4' in sw.js.
 
 STILL PROVISIONAL
 Only the 1 litre rates are real. The 100 ml, 200 ml, 500 ml and 5 L rates
 are estimates until you send the actual price list.
 
-NEXT STEPS
+NEXT
   Step 2 — orders saving into Firebase
   Step 3 — live order status (Placed / Confirmed / Dispatched / Delivered)
-  Step 4 — UPI payment at checkout

@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5">
+<title>Nuova — Order Cold Pressed Oils</title>
+<meta name="description" content="Order Nuova 100% pure, unrefined cold pressed oils. Groundnut, sunflower, safflower, coconut, mustard, sesame and flaxseed. Pressed in small batches at Uruli Devachi, Pune.">
+<meta name="theme-color" content="#108474">
+
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Nuova">
+<link rel="icon" href="icons/icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600&family=Abel&family=Mukta:wght@400;600&display=swap">
+
+<style>
+:root{
+  --white:#FFFFFF; --band:#F7F6F4; --ink:#1A1A1A; --body:#6E6C6A; --muted:#958E88;
+  --line:#E4E1DD; --teal:#108474; --teal-dark:#0B6154; --teal-soft:#E7F2F0;
+  --orange:#F69623; --orange-dark:#D2780F; --red:#C0392B;
+  --head:"Oswald","Arial Narrow",Arial,sans-serif;
+  --text:"Abel","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --deva:"Mukta",system-ui,sans-serif;
+  --bar:64px;
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--band);color:var(--body);
+  font-family:var(--text);font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:calc(var(--bar) + var(--safe-b));
+  overscroll-behavior-y:none;
+}
+h1,h2,h3,h4{font-family:var(--head);color:var(--ink);margin:0;font-weight:500;letter-spacing:.02em}
+button{font-family:inherit;font-size:inherit;cursor:pointer;border:0;background:none;color:inherit}
+input,textarea,select{font-family:inherit;font-size:16px}
+img{display:block;max-width:100%}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+
+/* ---------- App bar ---------- */
+.appbar{
+  position:sticky;top:0;z-index:40;background:var(--white);
+  border-bottom:1px solid var(--line);
+  padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;
+}
+.appbar-in{max-width:640px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand img{height:26px;width:auto}
+.brand-sub{font-family:var(--head);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);line-height:1;margin-top:3px}
+.spacer{flex:1}
+.iconbtn{position:relative;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--band);color:var(--ink)}
+.iconbtn svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.badge{
+  position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;
+  background:var(--orange);color:#fff;border-radius:10px;font-family:var(--head);
+  font-size:11px;font-weight:600;display:grid;place-items:center;border:2px solid #fff
+}
+
+/* ---------- Screens ---------- */
+.screen{display:none;animation:fade .18s ease}
+.screen.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.hero{background:var(--teal);color:#fff;padding:18px 16px 20px}
+.hero-in{max-width:640px;margin:0 auto}
+.hero h1{color:#fff;font-size:23px;line-height:1.2;text-transform:uppercase;font-weight:400}
+.hero p{margin:6px 0 0;font-family:var(--deva);font-size:15px;color:rgba(255,255,255,.82)}
+.hero .tags{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+.tag{font-family:var(--head);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  background:rgba(255,255,255,.15);padding:5px 9px;border-radius:20px}
+
+.sect-h{font-size:12px;font-family:var(--head);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted);margin:22px 0 10px}
+
+/* ---------- Product grid ---------- */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;
+  display:flex;flex-direction:column;transition:transform .12s,box-shadow .12s}
+.card:active{transform:scale(.985)}
+.card .pic{background:var(--band);aspect-ratio:1/1;display:grid;place-items:center;padding:10px}
+.card .pic img{height:100%;width:auto;object-fit:contain;mix-blend-mode:multiply}
+.card .info{padding:10px 12px 12px;flex:1;display:flex;flex-direction:column}
+.card h3{font-size:15px;line-height:1.2;text-transform:uppercase;font-weight:500}
+.card .mr{font-family:var(--deva);font-size:13px;color:var(--muted);line-height:1.4;margin-top:1px}
+.card .price{margin-top:auto;padding-top:8px;font-family:var(--head);font-size:15px;color:var(--ink);font-weight:500}
+.card .price small{font-family:var(--text);font-size:12px;color:var(--muted);font-weight:400}
+.card .add{margin-top:8px;background:var(--teal-soft);color:var(--teal-dark);
+  font-family:var(--head);font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  padding:9px;border-radius:9px;text-align:center;font-weight:500}
+
+/* ---------- Sheet ---------- */
+.sheet-bg{position:fixed;inset:0;background:rgba(26,26,26,.45);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
+.sheet-bg.on{opacity:1;pointer-events:auto}
+.sheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:61;background:#fff;
+  border-radius:22px 22px 0 0;max-height:88vh;overflow-y:auto;
+  transform:translateY(102%);transition:transform .26s cubic-bezier(.32,.72,0,1);
+  padding-bottom:calc(16px + var(--safe-b));max-width:640px;margin:0 auto
+}
+.sheet.on{transform:none}
+.sheet-grip{width:38px;height:4px;background:var(--line);border-radius:2px;margin:10px auto 4px}
+.sheet-pad{padding:8px 18px 18px}
+
+.pk-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
+.pk-head .pic{width:88px;height:88px;background:var(--band);border-radius:12px;display:grid;place-items:center;padding:6px;flex:none}
+.pk-head .pic img{height:100%;width:auto;object-fit:contain;mix-blend-mode:multiply}
+.pk-head h2{font-size:20px;text-transform:uppercase;line-height:1.15}
+.pk-head .mr{font-family:var(--deva);color:var(--muted);font-size:14px}
+.pk-note{font-size:15px;line-height:1.55;color:var(--body);margin:0 0 14px}
+
+.packs{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:8px}
+.pack{border:1.5px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center;background:#fff;transition:.14s}
+.pack .sz{font-family:var(--head);font-size:14px;color:var(--ink);text-transform:uppercase;font-weight:500}
+.pack .rs{font-family:var(--head);font-size:15px;color:var(--teal);margin-top:2px;font-weight:600}
+.pack.sel{border-color:var(--teal);background:var(--teal-soft)}
+
+.qtyrow{display:flex;align-items:center;justify-content:space-between;margin:18px 0 4px;gap:14px}
+.qtylab{font-family:var(--head);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.stepper{display:flex;align-items:center;border:1.5px solid var(--line);border-radius:12px;overflow:hidden}
+.stepper button{width:44px;height:44px;font-size:22px;color:var(--teal);font-family:var(--head);display:grid;place-items:center}
+.stepper button:disabled{color:var(--line)}
+.stepper span{min-width:44px;text-align:center;font-family:var(--head);font-size:17px;color:var(--ink);font-weight:500}
+
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  padding:15px;border-radius:13px;font-family:var(--head);font-size:14px;
+  letter-spacing:.12em;text-transform:uppercase;font-weight:500;transition:.14s}
+.btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn--teal{background:var(--teal);color:#fff}
+.btn--teal:active{background:var(--teal-dark)}
+.btn--wa{background:#25D366;color:#fff}
+.btn--line{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn--orange{background:var(--orange);color:#fff}
+.btn:disabled{opacity:.45}
+.btn.sm{padding:11px;font-size:12px}
+
+/* ---------- Cart ---------- */
+.line{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;gap:12px;margin-bottom:10px}
+.line .pic{width:62px;height:62px;background:var(--band);border-radius:10px;display:grid;place-items:center;padding:5px;flex:none}
+.line .pic img{height:100%;width:auto;object-fit:contain;mix-blend-mode:multiply}
+.line .mid{flex:1;min-width:0}
+.line h4{font-size:15px;text-transform:uppercase;line-height:1.2}
+.line .sub{font-size:13px;color:var(--muted)}
+.line .amt{font-family:var(--head);font-size:15px;color:var(--ink);font-weight:500;white-space:nowrap}
+.line .ctl{display:flex;align-items:center;gap:10px;margin-top:7px}
+.line .ctl button{width:28px;height:28px;border:1px solid var(--line);border-radius:8px;
+  display:grid;place-items:center;color:var(--teal);font-family:var(--head);font-size:16px;background:#fff}
+.line .ctl span{font-family:var(--head);font-size:14px;color:var(--ink);min-width:18px;text-align:center}
+.line .ctl .rm{margin-left:auto;width:auto;height:auto;border:0;background:none;border-radius:0;
+  font-family:var(--text);font-size:13px;color:var(--muted);text-decoration:underline;letter-spacing:.02em}
+
+.total{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:4px}
+.total .r{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;font-size:15px}
+.total .r.big{border-top:1px solid var(--line);margin-top:6px;padding-top:11px}
+.total .r.big span:first-child{font-family:var(--head);text-transform:uppercase;font-size:13px;letter-spacing:.12em;color:var(--ink)}
+.total .r.big span:last-child{font-family:var(--head);font-size:23px;color:var(--teal);font-weight:600}
+.note{background:var(--teal-soft);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--teal-dark);margin:12px 0;line-height:1.5}
+
+.empty{text-align:center;padding:56px 24px}
+.empty svg{width:52px;height:52px;stroke:var(--line);fill:none;stroke-width:1.4;margin:0 auto 14px}
+.empty h3{font-size:19px;text-transform:uppercase;margin-bottom:6px}
+.empty p{font-size:15px;color:var(--muted);margin:0 0 20px}
+
+/* ---------- Form ---------- */
+.field{margin-bottom:14px}
+.field label{display:block;font-family:var(--head);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.field input,.field textarea{
+  width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;
+  background:#fff;color:var(--ink);line-height:1.4}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--teal)}
+.field textarea{resize:vertical;min-height:76px}
+.field .err{color:var(--red);font-size:13px;margin-top:5px;display:none}
+.field.bad input,.field.bad textarea{border-color:var(--red)}
+.field.bad .err{display:block}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* ---------- Orders ---------- */
+.ord{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
+.ord .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.ord .no{font-family:var(--head);font-size:14px;color:var(--ink);letter-spacing:.06em;font-weight:500}
+.ord .dt{font-size:13px;color:var(--muted)}
+.chip{font-family:var(--head);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  padding:5px 9px;border-radius:20px;white-space:nowrap;font-weight:500}
+.chip.placed{background:#FFF4E2;color:var(--orange-dark)}
+.chip.confirmed{background:#E7F2F0;color:var(--teal-dark)}
+.chip.dispatched{background:#EAF1FB;color:#2C5AA0}
+.chip.delivered{background:#E8F5E9;color:#2E7D32}
+.chip.cancelled{background:#FDECEA;color:var(--red)}
+.ord .items{font-size:14px;color:var(--body);margin:9px 0;line-height:1.5}
+.ord .foot{display:flex;justify-content:space-between;align-items:center;
+  border-top:1px solid var(--line);padding-top:11px;margin-top:11px;gap:10px}
+.ord .amt{font-family:var(--head);font-size:17px;color:var(--ink);font-weight:500}
+.ord .rep{background:var(--teal-soft);color:var(--teal-dark);font-family:var(--head);
+  font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:9px 13px;border-radius:9px;font-weight:500}
+
+/* ---------- Confirmation ---------- */
+.done{text-align:center;padding:34px 20px 20px}
+.done .tick{width:70px;height:70px;border-radius:50%;background:var(--teal-soft);
+  display:grid;place-items:center;margin:0 auto 16px}
+.done .tick svg{width:34px;height:34px;stroke:var(--teal);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.done h2{font-size:24px;text-transform:uppercase;margin-bottom:6px}
+.done .no{font-family:var(--head);font-size:15px;color:var(--teal);letter-spacing:.1em;margin-bottom:10px;font-weight:500}
+.done p{font-size:15px;color:var(--body);margin:0 auto 20px;max-width:340px}
+
+/* ---------- Help ---------- */
+.info{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:10px}
+.info h4{font-family:var(--head);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.info p{margin:0;font-size:15px;color:var(--ink);line-height:1.55}
+.info a{color:var(--teal);text-decoration:none}
+
+/* ---------- Bottom nav ---------- */
+.nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:50;background:#fff;
+  border-top:1px solid var(--line);display:flex;
+  padding-bottom:var(--safe-b);height:calc(var(--bar) + var(--safe-b))
+}
+.nav button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--muted);position:relative}
+.nav button.on{color:var(--teal)}
+.nav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.nav span{font-family:var(--head);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+.nav .nb{position:absolute;top:6px;left:calc(50% + 6px);min-width:17px;height:17px;padding:0 4px;
+  background:var(--orange);color:#fff;border-radius:9px;font-family:var(--head);font-size:10px;
+  display:grid;place-items:center;border:2px solid #fff}
+
+/* ---------- Toast / install ---------- */
+.toast{position:fixed;left:50%;bottom:calc(var(--bar) + var(--safe-b) + 14px);transform:translate(-50%,20px);
+  background:var(--ink);color:#fff;padding:11px 18px;border-radius:24px;font-size:14px;
+  z-index:80;opacity:0;transition:.24s;pointer-events:none;max-width:88vw;text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.install{position:fixed;left:12px;right:12px;bottom:calc(var(--bar) + var(--safe-b) + 12px);z-index:70;
+  background:var(--ink);color:#fff;border-radius:15px;padding:13px 15px;display:none;
+  align-items:center;gap:12px;max-width:616px;margin:0 auto}
+.install.on{display:flex}
+.install img{width:36px;height:36px;border-radius:9px;flex:none}
+.install .t{flex:1;min-width:0}
+.install b{display:block;font-family:var(--head);font-size:14px;letter-spacing:.04em}
+.install small{font-size:12.5px;color:rgba(255,255,255,.7);line-height:1.35;display:block}
+.install .go{background:#fff;color:var(--ink);font-family:var(--head);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;padding:9px 13px;border-radius:9px;flex:none;font-weight:500}
+.install .x{color:rgba(255,255,255,.55);font-size:20px;padding:0 2px;flex:none}
+.pad{height:22px}
+</style>
+</head>
+<body>
+
+<!-- ══════════ APP BAR ══════════ -->
+<header class="appbar">
+  <div class="appbar-in">
+    <div class="brand">
+      <img src="img/logo.jpg" alt="Nuova">
+    </div>
+    <div class="spacer"></div>
+    <button class="iconbtn" onclick="go('help')" aria-label="Help">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 2.5-3 4"/><path d="M12 17h.01"/></svg>
+    </button>
+    <button class="iconbtn" onclick="go('cart')" aria-label="Cart">
+      <svg viewBox="0 0 24 24"><path d="M6 2l1.5 4h11L20 15H8L6 2H3"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg>
+      <i class="badge" id="badge" style="display:none">0</i>
+    </button>
+  </div>
+</header>
+
+<!-- ══════════ SHOP ══════════ -->
+<section class="screen on" id="s-shop">
+  <div class="hero">
+    <div class="hero-in">
+      <h1>100% Pure &amp; Unrefined<br>Cold Pressed Oils</h1>
+      <p>सर्वे भवन्तु निरामय:</p>
+      <div class="tags">
+        <span class="tag">Chemical free</span>
+        <span class="tag">Small batch</span>
+        <span class="tag">FSSAI licensed</span>
+        <span class="tag">Pressed in Pune</span>
+      </div>
+    </div>
+  </div>
+  <div class="wrap">
+    <h2 class="sect-h">Our Oils</h2>
+    <div class="grid" id="grid"></div>
+    <div class="note" style="margin-top:16px">
+      <b>Delivery.</b> Free local delivery around Uruli Devachi and Pune. We courier across India — freight is quoted and confirmed on WhatsApp before you pay anything.
+    </div>
+    <div class="pad"></div>
+  </div>
+</section>
+
+<!-- ══════════ CART ══════════ -->
+<section class="screen" id="s-cart">
+  <div class="wrap">
+    <h2 class="sect-h" style="margin-top:18px">Your Basket</h2>
+    <div id="cartBody"></div>
+    <div class="pad"></div>
+  </div>
+</section>
+
+<!-- ══════════ CHECKOUT ══════════ -->
+<section class="screen" id="s-checkout">
+  <div class="wrap">
+    <h2 class="sect-h" style="margin-top:18px">Delivery Details</h2>
+
+    <div class="field" id="f-name">
+      <label>Your name</label>
+      <input id="i-name" type="text" autocomplete="name" placeholder="Full name">
+      <div class="err">Please tell us your name</div>
+    </div>
+
+    <div class="field" id="f-phone">
+      <label>Mobile number</label>
+      <input id="i-phone" type="tel" inputmode="numeric" autocomplete="tel" maxlength="10" placeholder="10-digit mobile">
+      <div class="err">Please enter a valid 10-digit mobile number</div>
+    </div>
+
+    <div class="field" id="f-addr">
+      <label>Delivery address</label>
+      <textarea id="i-addr" autocomplete="street-address" placeholder="Flat / house, building, road, area"></textarea>
+      <div class="err">Please enter the delivery address</div>
+    </div>
+
+    <div class="two">
+      <div class="field" id="f-city">
+        <label>City</label>
+        <input id="i-city" type="text" autocomplete="address-level2" placeholder="Pune">
+        <div class="err">Required</div>
+      </div>
+      <div class="field" id="f-pin">
+        <label>Pincode</label>
+        <input id="i-pin" type="tel" inputmode="numeric" maxlength="6" autocomplete="postal-code" placeholder="412308">
+        <div class="err">6 digits</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Anything to add? (optional)</label>
+      <textarea id="i-note" placeholder="Landmark, preferred delivery time, or a special request" style="min-height:60px"></textarea>
+    </div>
+
+    <div class="total" id="coTotal"></div>
+
+    <div class="note">
+      Freight is not included above. We will confirm the final amount with you on WhatsApp before dispatch.
+    </div>
+
+    <button class="btn btn--teal" id="placeBtn" onclick="placeOrder()">
+      <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Place the order
+    </button>
+    <div style="height:10px"></div>
+    <button class="btn btn--line" onclick="go('cart')">Back to basket</button>
+    <div class="pad"></div>
+  </div>
+</section>
+
+<!-- ══════════ CONFIRMATION ══════════ -->
+<section class="screen" id="s-done">
+  <div class="wrap">
+    <div class="done">
+      <div class="tick"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <h2>Order Placed</h2>
+      <div class="no" id="doneNo"></div>
+      <p id="doneMsg"></p>
+    </div>
+    <button class="btn btn--wa" onclick="waCurrent()">
+      <svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 01-12.6 7.3L3 20.5l1.8-5.2A8.4 8.4 0 1121 11.5z"/></svg>
+      Send it on WhatsApp too
+    </button>
+    <div style="height:10px"></div>
+    <button class="btn btn--line" onclick="go('orders')">See my orders</button>
+    <div style="height:10px"></div>
+    <button class="btn btn--line" onclick="go('shop')">Order something else</button>
+    <div class="pad"></div>
+  </div>
+</section>
+
+<!-- ══════════ ORDERS ══════════ -->
+<section class="screen" id="s-orders">
+  <div class="wrap">
+    <h2 class="sect-h" style="margin-top:18px">My Orders</h2>
+    <div id="ordersBody"></div>
+    <div class="pad"></div>
+  </div>
+</section>
+
+<!-- ══════════ HELP ══════════ -->
+<section class="screen" id="s-help">
+  <div class="wrap">
+    <h2 class="sect-h" style="margin-top:18px">Nuova</h2>
+
+    <div class="info">
+      <h4>Talk to us</h4>
+      <p>Monday to Saturday, 9 am to 7 pm<br>
+      <a href="tel:+919763728630">+91 97637 28630</a> &nbsp;·&nbsp; <a href="tel:+917350071696">+91 73500 71696</a></p>
+    </div>
+
+    <button class="btn btn--wa" onclick="waPlain()">
+      <svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 01-12.6 7.3L3 20.5l1.8-5.2A8.4 8.4 0 1121 11.5z"/></svg>
+      Message us on WhatsApp
+    </button>
+    <div style="height:14px"></div>
+
+    <div class="info">
+      <h4>The unit</h4>
+      <p>Shri Jagdamba Industry<br>Sr. No. 23, More Park, Uruli Devachi<br>Pune, Maharashtra 412308</p>
+    </div>
+
+    <div class="info">
+      <h4>Licence</h4>
+      <p>FSSAI Lic. No. 11524083000635</p>
+    </div>
+
+    <div class="info">
+      <h4>Delivery &amp; freight</h4>
+      <p>Free local delivery around Uruli Devachi and Pune. Courier across India — freight depends on weight and destination and is quoted before you pay.</p>
+    </div>
+
+    <div class="info">
+      <h4>Wholesale</h4>
+      <p>We supply monthly to housing societies, kirana shops, caterers, gyms and Ayurvedic practitioners at wholesale rates. Message us with your monthly volume for a rate list.</p>
+    </div>
+
+    <div class="info">
+      <h4>Website</h4>
+      <p><a href="https://www.nuovashop.com" target="_blank" rel="noopener">www.nuovashop.com</a></p>
+    </div>
+
+    <div style="text-align:center;color:var(--muted);font-size:13px;padding:14px 0 4px">
+      Nuova® · Manufactured and marketed by Shri Jagdamba Industry
+    </div>
+    <div class="pad"></div>
+  </div>
+</section>
+
+<!-- ══════════ BOTTOM NAV ══════════ -->
+<nav class="nav">
+  <button id="n-shop" class="on" onclick="go('shop')">
+    <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1h-5v-7H9v7H4a1 1 0 01-1-1z"/></svg><span>Shop</span>
+  </button>
+  <button id="n-cart" onclick="go('cart')">
+    <svg viewBox="0 0 24 24"><path d="M6 2l1.5 4h11L20 15H8L6 2H3"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg><span>Basket</span>
+    <i class="nb" id="navBadge" style="display:none">0</i>
+  </button>
+  <button id="n-orders" onclick="go('orders')">
+    <svg viewBox="0 0 24 24"><path d="M5 3h14a1 1 0 011 1v17l-4-2.5L12 21l-4-2.5L4 21V4a1 1 0 011-1z"/><path d="M9 8h6M9 12h6"/></svg><span>Orders</span>
+  </button>
+  <button id="n-help" onclick="go('help')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 2.5-3 4"/><path d="M12 17h.01"/></svg><span>Help</span>
+  </button>
+</nav>
+
+<!-- ══════════ PACK SHEET ══════════ -->
+<div class="sheet-bg" id="sheetBg" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-grip"></div>
+  <div class="sheet-pad" id="sheetBody"></div>
+</div>
+
+<!-- ══════════ INSTALL PROMPT ══════════ -->
+<div class="install" id="installBar">
+  <img src="icons/icon-192.png" alt="">
+  <div class="t">
+    <b>Add Nuova to your phone</b>
+    <small id="installTip">Order in one tap, next time</small>
+  </div>
+  <button class="go" id="installGo" onclick="doInstall()">Install</button>
+  <button class="x" onclick="hideInstall(true)" aria-label="Dismiss">×</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   NUOVA CUSTOMER APP
+   Step 1 — catalogue, basket, checkout, WhatsApp order
+   ══════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────
+   ▼▼▼  PRICE LIST — EDIT ONLY THIS BLOCK WHEN RATES CHANGE  ▼▼▼
+   Prices are per pack, in rupees, inclusive.
+   The 1 L rates are the real ones from nuovashop.com.
+   The other pack rates are PROVISIONAL — replace with your list.
+   ───────────────────────────────────────────────────────────── */
+const CATALOG = [
+  { id:'groundnut', name:'Groundnut Oil', mr:'शेंगदाणा तेल', img:'img/groundnut.jpg',
+    note:'High smoke point, strong familiar aroma. The one for bhaji, tadka and deep frying.',
+    packs:[ {sz:'200 ml',rs:60}, {sz:'500 ml',rs:140}, {sz:'1 L',rs:270}, {sz:'5 L',rs:1270} ] },
+
+  { id:'sunflower', name:'Sunflower Oil', mr:'सूर्यफूल तेल', img:'img/sunflower.jpg',
+    note:'The mildest of the range. Use it when the dish should not taste of the oil.',
+    packs:[ {sz:'200 ml',rs:68}, {sz:'500 ml',rs:165}, {sz:'1 L',rs:310}, {sz:'5 L',rs:1460} ] },
+
+  { id:'safflower', name:'Safflower Oil', mr:'करडई तेल', img:'img/safflower.jpg',
+    note:'Karadi oil. Light and clean, and the highest polyunsaturated fat we press — 77 g per 100 g.',
+    packs:[ {sz:'200 ml',rs:76}, {sz:'500 ml',rs:185}, {sz:'1 L',rs:350}, {sz:'5 L',rs:1650} ] },
+
+  { id:'coconut', name:'Coconut Oil', mr:'खोबरेल तेल', img:'img/coconut.jpg',
+    note:'For cooking, hair and skin. It sets solid below about 24 °C — that is purity, not a fault.',
+    packs:[ {sz:'100 ml',rs:50}, {sz:'200 ml',rs:95}, {sz:'500 ml',rs:230}, {sz:'1 L',rs:435} ] },
+
+  { id:'mustard', name:'Mustard Oil', mr:'मोहरी तेल', img:'img/mustard.jpg',
+    note:'Sharp and pungent. For pickles, fish, sarson and winter cooking.',
+    packs:[ {sz:'200 ml',rs:62}, {sz:'500 ml',rs:150}, {sz:'1 L',rs:285}, {sz:'5 L',rs:1340} ] },
+
+  { id:'sesame', name:'Sesame Oil', mr:'तिळ तेल', img:'img/sesame.jpg',
+    note:'Nutty and aromatic. Everyday cooking, oil pulling and abhyanga massage.',
+    packs:[ {sz:'100 ml',rs:42}, {sz:'200 ml',rs:85}, {sz:'500 ml',rs:200}, {sz:'1 L',rs:385} ] },
+
+  { id:'flaxseed', name:'Flaxseed Oil', mr:'जवस तेल', img:'img/flaxseed.jpg',
+    note:'Use it raw over salad, rice or roti. Do not fry in it. Keep it cool and dark.',
+    packs:[ {sz:'100 ml',rs:35}, {sz:'200 ml',rs:65}, {sz:'500 ml',rs:160}, {sz:'1 L',rs:300} ] }
+];
+
+const SHOP = {
+  whatsapp : '919763728630',          // orders land here
+  name     : 'Nuova',
+  company  : 'Shri Jagdamba Industry',
+  upi      : '7350071696m@pnb',       // used in Step 4
+  upiName  : 'SHRI JAGDAMBA INDUSTRY'
+};
+/* ───────────── ▲▲▲  END OF EDITABLE BLOCK  ▲▲▲ ───────────── */
+
+
+/* ---------- tiny storage helpers ---------- */
+const store = {
+  get(k, d){ try { const v = localStorage.getItem('nuova_'+k); return v ? JSON.parse(v) : d; } catch(e){ return d; } },
+  set(k, v){ try { localStorage.setItem('nuova_'+k, JSON.stringify(v)); } catch(e){} }
+};
+
+let cart     = store.get('cart', []);
+let orders   = store.get('orders', []);
+let customer = store.get('customer', {});
+let sheetOil = null, sheetPack = 0, sheetQty = 1;
+
+const rs   = n => '₹' + Number(n).toLocaleString('en-IN');
+const esc  = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const byId = id => CATALOG.find(o => o.id === id);
+
+/* ---------- navigation ---------- */
+function go(screen){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  const el = document.getElementById('s-' + screen);
+  if (el) el.classList.add('on');
+
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('on'));
+  const navMap = { shop:'shop', cart:'cart', checkout:'cart', done:'orders', orders:'orders', help:'help' };
+  const nb = document.getElementById('n-' + (navMap[screen] || 'shop'));
+  if (nb) nb.classList.add('on');
+
+  if (screen === 'cart')     renderCart();
+  if (screen === 'orders')   renderOrders();
+  if (screen === 'checkout') renderCheckoutTotal();
+
+  window.scrollTo({ top:0, behavior:'instant' in window ? 'instant' : 'auto' });
+  closeSheet();
+}
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('on'), 2200);
+}
+
+/* ---------- catalogue ---------- */
+function renderGrid(){
+  document.getElementById('grid').innerHTML = CATALOG.map(o => {
+    const from = Math.min(...o.packs.map(p => p.rs));
+    return `<div class="card" onclick="openSheet('${o.id}')">
+      <div class="pic"><img src="${o.img}" alt="${esc(o.name)}" loading="lazy"></div>
+      <div class="info">
+        <h3>${esc(o.name.replace(' Oil',''))}</h3>
+        <div class="mr">${esc(o.mr)}</div>
+        <div class="price">${rs(from)} <small>onwards</small></div>
+        <div class="add">Choose pack</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ---------- pack sheet ---------- */
+function openSheet(id){
+  sheetOil = byId(id);
+  if (!sheetOil) return;
+  sheetPack = sheetOil.packs.findIndex(p => p.sz === '1 L');
+  if (sheetPack < 0) sheetPack = sheetOil.packs.length - 1;
+  sheetQty = 1;
+  drawSheet();
+  document.getElementById('sheetBg').classList.add('on');
+  document.getElementById('sheet').classList.add('on');
+}
+
+function closeSheet(){
+  document.getElementById('sheetBg').classList.remove('on');
+  document.getElementById('sheet').classList.remove('on');
+}
+
+function drawSheet(){
+  const o = sheetOil, p = o.packs[sheetPack], amt = p.rs * sheetQty;
+  document.getElementById('sheetBody').innerHTML = `
+    <div class="pk-head">
+      <div class="pic"><img src="${o.img}" alt=""></div>
+      <div>
+        <h2>${esc(o.name)}</h2>
+        <div class="mr">${esc(o.mr)}</div>
+      </div>
+    </div>
+    <p class="pk-note">${esc(o.note)}</p>
+
+    <div class="qtylab" style="margin-bottom:8px">Pack size</div>
+    <div class="packs">
+      ${o.packs.map((pk, i) => `
+        <button class="pack ${i === sheetPack ? 'sel' : ''}" onclick="pickPack(${i})">
+          <div class="sz">${pk.sz}</div>
+          <div class="rs">${rs(pk.rs)}</div>
+        </button>`).join('')}
+    </div>
+
+    <div class="qtyrow">
+      <div class="qtylab">Quantity</div>
+      <div class="stepper">
+        <button onclick="bumpQty(-1)" ${sheetQty <= 1 ? 'disabled' : ''}>−</button>
+        <span>${sheetQty}</span>
+        <button onclick="bumpQty(1)">+</button>
+      </div>
+    </div>
+
+    <div style="height:14px"></div>
+    <button class="btn btn--teal" onclick="addToCart()">
+      <svg viewBox="0 0 24 24"><path d="M6 2l1.5 4h11L20 15H8L6 2H3"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg>
+      Add · ${rs(amt)}
+    </button>`;
+}
+
+function pickPack(i){ sheetPack = i; drawSheet(); }
+function bumpQty(d){ sheetQty = Math.max(1, Math.min(99, sheetQty + d)); drawSheet(); }
+
+/* ---------- basket ---------- */
+function addToCart(){
+  const o = sheetOil, p = o.packs[sheetPack];
+  const key = o.id + '|' + p.sz;
+  const found = cart.find(l => l.key === key);
+  if (found) found.qty = Math.min(99, found.qty + sheetQty);
+  else cart.push({ key, id:o.id, name:o.name, mr:o.mr, img:o.img, sz:p.sz, rs:p.rs, qty:sheetQty });
+  saveCart();
+  closeSheet();
+  toast(`${o.name.replace(' Oil','')} ${p.sz} × ${sheetQty} added`);
+}
+
+function saveCart(){
+  store.set('cart', cart);
+  const n = cart.reduce((a, l) => a + l.qty, 0);
+  ['badge','navBadge'].forEach(id => {
+    const el = document.getElementById(id);
+    el.textContent = n;
+    el.style.display = n ? 'grid' : 'none';
+  });
+}
+
+const cartTotal = () => cart.reduce((a, l) => a + l.rs * l.qty, 0);
+
+function changeQty(key, d){
+  const l = cart.find(x => x.key === key);
+  if (!l) return;
+  l.qty += d;
+  if (l.qty < 1) cart = cart.filter(x => x.key !== key);
+  saveCart();
+  renderCart();
+}
+
+function removeLine(key){
+  cart = cart.filter(x => x.key !== key);
+  saveCart();
+  renderCart();
+  toast('Removed');
+}
+
+function renderCart(){
+  const box = document.getElementById('cartBody');
+  if (!cart.length){
+    box.innerHTML = `<div class="empty">
+      <svg viewBox="0 0 24 24"><path d="M6 2l1.5 4h11L20 15H8L6 2H3"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg>
+      <h3>Your basket is empty</h3>
+      <p>Pick an oil and choose the pack size that suits your kitchen.</p>
+      <button class="btn btn--teal" onclick="go('shop')">See the oils</button>
+    </div>`;
+    return;
+  }
+
+  box.innerHTML =
+    cart.map(l => `
+      <div class="line">
+        <div class="pic"><img src="${l.img}" alt=""></div>
+        <div class="mid">
+          <h4>${esc(l.name.replace(' Oil',''))}</h4>
+          <div class="sub">${l.sz} · ${rs(l.rs)} each</div>
+          <div class="ctl">
+            <button onclick="changeQty('${l.key}',-1)">−</button>
+            <span>${l.qty}</span>
+            <button onclick="changeQty('${l.key}',1)">+</button>
+            <button class="rm" onclick="removeLine('${l.key}')">Remove</button>
+          </div>
+        </div>
+        <div class="amt">${rs(l.rs * l.qty)}</div>
+      </div>`).join('') +
+    `<div class="total">
+      <div class="r"><span>Items (${cart.reduce((a,l)=>a+l.qty,0)})</span><span>${rs(cartTotal())}</span></div>
+      <div class="r"><span>Delivery</span><span style="color:var(--teal)">Confirmed on WhatsApp</span></div>
+      <div class="r big"><span>To pay</span><span>${rs(cartTotal())}</span></div>
+    </div>
+    <div class="note">Free local delivery around Pune. For outstation orders we quote the courier freight before dispatch.</div>
+    <button class="btn btn--teal" onclick="go('checkout')">Continue to delivery details</button>
+    <div style="height:10px"></div>
+    <button class="btn btn--line" onclick="go('shop')">Add more oils</button>`;
+}
+
+/* ---------- checkout ---------- */
+function renderCheckoutTotal(){
+  document.getElementById('coTotal').innerHTML = `
+    ${cart.map(l => `<div class="r"><span>${esc(l.name.replace(' Oil',''))} ${l.sz} × ${l.qty}</span><span>${rs(l.rs * l.qty)}</span></div>`).join('')}
+    <div class="r big"><span>Order value</span><span>${rs(cartTotal())}</span></div>`;
+
+  ['name','phone','addr','city','pin'].forEach(k => {
+    const el = document.getElementById('i-' + k);
+    if (el && customer[k]) el.value = customer[k];
+  });
+  if (!document.getElementById('i-city').value) document.getElementById('i-city').value = 'Pune';
+}
+
+function bad(id, on){ document.getElementById('f-' + id).classList.toggle('bad', on); }
+
+function placeOrder(){
+  const v = k => (document.getElementById('i-' + k).value || '').trim();
+  const d = { name:v('name'), phone:v('phone').replace(/\D/g,''), addr:v('addr'), city:v('city'), pin:v('pin').replace(/\D/g,''), note:v('note') };
+
+  let ok = true;
+  const checks = { name: d.name.length >= 2, phone: /^[6-9]\d{9}$/.test(d.phone), addr: d.addr.length >= 6, city: d.city.length >= 2, pin: /^\d{6}$/.test(d.pin) };
+  Object.keys(checks).forEach(k => { bad(k, !checks[k]); if (!checks[k]) ok = false; });
+
+  if (!ok){
+    document.querySelector('.field.bad')?.scrollIntoView({ behavior:'smooth', block:'center' });
+    toast('Please check the highlighted fields');
+    return;
+  }
+  if (!cart.length){ go('shop'); return; }
+
+  customer = d;
+  store.set('customer', customer);
+
+  const now = new Date();
+  const order = {
+    no      : orderNumber(now),
+    at      : now.toISOString(),
+    items   : cart.map(l => ({ id:l.id, name:l.name, sz:l.sz, rs:l.rs, qty:l.qty })),
+    total   : cartTotal(),
+    customer: d,
+    status  : 'Placed',
+    synced  : false          // Step 2 will flip this once saved to Firebase
+  };
+
+  orders.unshift(order);
+  store.set('orders', orders);
+
+  saveOrderToCloud(order);   // Step 2 — no-op for now
+
+  cart = [];
+  saveCart();
+
+  document.getElementById('doneNo').textContent  = order.no;
+  document.getElementById('doneMsg').textContent =
+    `Thank you ${d.name.split(' ')[0]}. We will call or WhatsApp you on ${d.phone} to confirm the rate and the delivery. Monday to Saturday, 9 to 7.`;
+  go('done');
+
+  setTimeout(() => waSend(order), 600);   // hand it to WhatsApp as well
+}
+
+function orderNumber(dt){
+  const p = n => String(n).padStart(2, '0');
+  const stamp = String(dt.getFullYear()).slice(2) + p(dt.getMonth() + 1) + p(dt.getDate());
+  const seq   = String(Math.floor(Math.random() * 9000) + 1000);
+  return 'NUV-' + stamp + '-' + seq;
+}
+
+/* Step 2 will replace the body of this function with a Firestore write. */
+function saveOrderToCloud(order){ /* Firebase goes here in Step 2 */ }
+
+/* ---------- WhatsApp ---------- */
+function orderText(o){
+  const lines = o.items.map(i => `• ${i.name} ${i.sz} × ${i.qty} — ₹${(i.rs * i.qty).toLocaleString('en-IN')}`).join('\n');
+  return `*NEW ORDER — ${o.no}*
+_Nuova Cold Pressed Oils_
+━━━━━━━━━━━━━━━━━━
+${lines}
+
+*Order value: ₹${o.total.toLocaleString('en-IN')}*
+━━━━━━━━━━━━━━━━━━
+*Name:* ${o.customer.name}
+*Mobile:* ${o.customer.phone}
+*Address:* ${o.customer.addr}, ${o.customer.city} - ${o.customer.pin}${o.customer.note ? `\n*Note:* ${o.customer.note}` : ''}
+
+_Placed from the Nuova app_`;
+}
+
+function waSend(o){
+  window.open('https://wa.me/' + SHOP.whatsapp + '?text=' + encodeURIComponent(orderText(o)), '_blank');
+}
+
+function waCurrent(){ if (orders[0]) waSend(orders[0]); }
+
+function waPlain(){
+  window.open('https://wa.me/' + SHOP.whatsapp + '?text=' +
+    encodeURIComponent('Hello Nuova, I have a question about your cold pressed oils.'), '_blank');
+}
+
+/* ---------- orders ---------- */
+function renderOrders(){
+  const box = document.getElementById('ordersBody');
+  if (!orders.length){
+    box.innerHTML = `<div class="empty">
+      <svg viewBox="0 0 24 24"><path d="M5 3h14a1 1 0 011 1v17l-4-2.5L12 21l-4-2.5L4 21V4a1 1 0 011-1z"/><path d="M9 8h6M9 12h6"/></svg>
+      <h3>No orders yet</h3>
+      <p>Once you place an order it will show up here, and you can repeat it in one tap.</p>
+      <button class="btn btn--teal" onclick="go('shop')">Start an order</button>
+    </div>`;
+    return;
+  }
+
+  box.innerHTML = orders.map((o, idx) => {
+    const d = new Date(o.at);
+    const when = d.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+    const cls  = (o.status || 'Placed').toLowerCase();
+    return `<div class="ord">
+      <div class="top">
+        <div>
+          <div class="no">${o.no}</div>
+          <div class="dt">${when}</div>
+        </div>
+        <span class="chip ${cls}">${esc(o.status || 'Placed')}</span>
+      </div>
+      <div class="items">${o.items.map(i => `${esc(i.name.replace(' Oil',''))} ${i.sz} × ${i.qty}`).join('<br>')}</div>
+      <div class="foot">
+        <span class="amt">${rs(o.total)}</span>
+        <button class="rep" onclick="repeatOrder(${idx})">Order again</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function repeatOrder(idx){
+  const o = orders[idx];
+  if (!o) return;
+  o.items.forEach(i => {
+    const oil = byId(i.id);
+    if (!oil) return;
+    const pack = oil.packs.find(p => p.sz === i.sz);
+    if (!pack) return;                       // pack discontinued
+    const key = i.id + '|' + i.sz;
+    const found = cart.find(l => l.key === key);
+    if (found) found.qty = Math.min(99, found.qty + i.qty);
+    else cart.push({ key, id:oil.id, name:oil.name, mr:oil.mr, img:oil.img, sz:pack.sz, rs:pack.rs, qty:i.qty });
+  });
+  saveCart();
+  toast('Added to your basket at today’s rates');
+  go('cart');
+}
+
+/* ---------- install prompt (PWA) ---------- */
+let deferredPrompt = null;
+const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstall();
+});
+
+function showInstall(iosMode){
+  if (standalone || store.get('installDismissed', false)) return;
+  const bar = document.getElementById('installBar');
+  if (iosMode){
+    document.getElementById('installTip').textContent = 'Tap Share, then “Add to Home Screen”';
+    document.getElementById('installGo').style.display = 'none';
+  }
+  setTimeout(() => bar.classList.add('on'), 2500);
+}
+
+function doInstall(){
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.finally(() => { deferredPrompt = null; hideInstall(false); });
+}
+
+function hideInstall(remember){
+  document.getElementById('installBar').classList.remove('on');
+  if (remember) store.set('installDismissed', true);
+}
+
+/* iPhone / iPad — no beforeinstallprompt, so show the manual hint */
+(function(){
+  const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+              (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (iOS && !standalone) showInstall(true);
+})();
+
+/* ---------- service worker ---------- */
+if ('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(e => console.warn('SW failed', e));
+  });
+}
+
+/* ---------- boot ---------- */
+renderGrid();
+saveCart();
+if (orders.length) renderOrders();
+
+/* home-screen shortcut: index.html?go=orders */
+(function(){
+  const want = new URLSearchParams(location.search).get('go');
+  if (want && document.getElementById('s-' + want)) go(want);
+})();
+</script>
+</body>
+</html>

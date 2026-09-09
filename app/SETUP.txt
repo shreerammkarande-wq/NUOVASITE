@@ -1,0 +1,99 @@
+NUOVA — SETUP, IN THIS ORDER (about 15 minutes)
+===============================================
+Do steps 1 to 4 in the Firebase Console BEFORE uploading anything.
+Firebase Console → https://console.firebase.google.com
+Project: shri-jagdamba-monitor
+
+
+STEP 1 — TURN ON EMAIL SIGN-IN (for you and Smita)
+--------------------------------------------------
+  Build → Authentication → Get started
+  Sign-in method tab → Email/Password → Enable → Save
+
+
+STEP 2 — TURN ON ANONYMOUS SIGN-IN (for customers)
+--------------------------------------------------
+  Same Sign-in method tab → Anonymous → Enable → Save
+
+  This is what lets a customer submit an order without making an account,
+  while still being blocked from reading anything of yours.
+
+
+STEP 3 — CREATE YOUR TWO STAFF LOGINS
+--------------------------------------------------
+  Authentication → Users tab → Add user
+    Email:    your email
+    Password: pick a strong one
+  Add user again for Smita.
+
+  These two accounts are the ONLY way into the Order Management app.
+  Write the passwords down somewhere safe — there is no other way in.
+
+
+STEP 4 — PASTE THE SECURITY RULES  (THE IMPORTANT ONE)
+--------------------------------------------------
+  Build → Firestore Database → Rules tab
+  Delete everything in the box.
+  Open firestore.rules from this package, copy ALL of it, paste it in.
+  Click PUBLISH.
+
+  Read this bit carefully. Until you publish these rules, your database is
+  almost certainly in test mode, which means ANYONE who opens the customer
+  app and looks at its source can read your entire Firestore — every
+  customer's name, phone number and address, every seed purchase, every
+  cost and every sale. Publishing these rules closes that.
+
+  After publishing:
+    • Customers can create their own order and mark it paid. Nothing else.
+    • Customers cannot read your records, your customer directory, or
+      anybody else's order.
+    • You and Smita, once signed in, have full access as before.
+
+
+STEP 5 — UPLOAD THE UPDATED ORDER MANAGEMENT APP
+--------------------------------------------------
+  admin-index.html in this package is YOUR app with the login added.
+  Put it wherever you currently open it from.
+  If it lives in the NUOVASITE repo, upload it under the same filename
+  it already has.
+
+  First time you open it you will see the sign-in screen. Use the account
+  from Step 3. There is a sign-out arrow at the top right.
+
+
+STEP 6 — UPLOAD THE CUSTOMER APP
+--------------------------------------------------
+  Rename the  app  folder from this package to  app
+  github.com → NUOVASITE → repo ROOT → Add file → Upload files
+  Drag the  app  folder in → Commit.
+  On your phone, close the Nuova app fully and reopen it.
+
+
+STEP 7 — TEST IT END TO END
+--------------------------------------------------
+  1. Open the Order Management app on your laptop and sign in.
+     Leave it open on the Records tab.
+  2. On your phone, open the Nuova app and place a small test order —
+     one 200 ml bottle to yourself.
+  3. Within a second or two the order should appear in Records on the
+     laptop, with a teal "App" badge.
+  4. Tap the receipt icon on that row. The tax invoice should open with
+     the right product name, rate and total.
+  5. On the phone, choose "I have paid" and type any reference number.
+     The badge in Records changes to "Payment claimed".
+  6. In Records, mark it Delivered. Then delete the test order.
+
+
+IF SOMETHING GOES WRONG
+--------------------------------------------------
+"Enable Email/Password in Firebase Console"      → Step 1 not done
+"No account with that email"                     → Step 3 not done
+Order says "Not sent yet" on the phone           → Step 2 or Step 4 not done
+Records stays empty after signing in             → rules not published,
+                                                   or published with a typo;
+                                                   re-paste the whole file
+
+The customer app keeps working even if Firebase is unreachable — the order
+is saved on the phone, shows "Not sent yet", and goes out automatically the
+moment the connection is back. The WhatsApp message is still sent either
+way, so an order can never be silently lost.

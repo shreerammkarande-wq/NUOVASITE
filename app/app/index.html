@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5">
+<title>Nuova — Order Cold Pressed Oils</title>
+<meta name="description" content="Order Nuova 100% pure, unrefined cold pressed oils. Groundnut, sunflower, safflower, coconut, mustard, sesame and flaxseed. Pressed in small batches at Uruli Devachi, Pune.">
+<meta name="theme-color" content="#108474">
+
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+
+<!-- ─── iOS / iPadOS home-screen app ─── -->
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Nuova">
+<meta name="format-detection" content="telephone=no">
+
+<!-- iPhone launch screens (stops the white flash on open) -->
+<link rel="apple-touch-startup-image" href="splash/750x1334.png"  media="(device-width:375px) and (device-height:667px) and (-webkit-device-pixel-ratio:2)">
+<link rel="apple-touch-startup-image" href="splash/828x1792.png"  media="(device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:2)">
+<link rel="apple-touch-startup-image" href="splash/1125x2436.png" media="(device-width:375px) and (device-height:812px) and (-webkit-device-pixel-ratio:3)">
+<link rel="apple-touch-startup-image" href="splash/1170x2532.png" media="(device-width:390px) and (device-height:844px) and (-webkit-device-pixel-ratio:3)">
+<link rel="apple-touch-startup-image" href="splash/1179x2556.png" media="(device-width:393px) and (device-height:852px) and (-webkit-device-pixel-ratio:3)">
+<link rel="apple-touch-startup-image" href="splash/1242x2688.png" media="(device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:3)">
+<link rel="apple-touch-startup-image" href="splash/1284x2778.png" media="(device-width:428px) and (device-height:926px) and (-webkit-device-pixel-ratio:3)">
+<link rel="apple-touch-startup-image" href="splash/1290x2796.png" media="(device-width:430px) and (device-height:932px) and (-webkit-device-pixel-ratio:3)">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600&family=Abel&family=Mukta:wght@400;600&display=swap">
+
+<style>
+:root{
+  --white:#FFFFFF; --band:#F7F6F4; --ink:#1A1A1A; --body:#6E6C6A; --muted:#958E88;
+  --line:#E4E1DD; --teal:#108474; --teal-dark:#0B6154; --teal-soft:#E7F2F0;
+  --orange:#F69623; --orange-dark:#D2780F; --red:#C0392B;
+  --head:"Oswald","Arial Narrow",Arial,sans-serif;
+  --text:"Abel","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --deva:"Mukta",system-ui,sans-serif;
+  --bar:64px;
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;overscroll-behavior-y:none}
+html{background:var(--band)}          /* iOS bounce shows this, not white */
+body{
+  background:var(--band);color:var(--body);
+  font-family:var(--text);font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  -webkit-text-size-adjust:100%;
+  padding-bottom:calc(var(--bar) + var(--safe-b));
+}
+/* extra room so the install bar never sits on top of content */
+body.has-install{padding-bottom:calc(var(--bar) + var(--safe-b) + 84px)}
+/* iOS: when the keyboard is up, get the fixed nav out of the way */
+body.kb .nav{display:none}
+body.kb{padding-bottom:24px}
+body.kb .install{display:none}
+h1,h2,h3,h4{font-family:var(--head);color:var(--ink);margin:0;font-weight:500;letter-spacing:.02em}
+button{font-family:inherit;font-size:inherit;cursor:pointer;border:0;background:none;color:inherit}
+input,textarea,select{font-family:inherit;font-size:16px}
+img{display:block;max-width:100%}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+
+/* ---------- App bar ---------- */
+.appbar{
+  position:sticky;top:0;z-index:40;background:var(--white);
+  border-bottom:1px solid var(--line);
+  padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;
+}
+.appbar-in{max-width:640px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand img{height:26px;width:auto}
+.brand-sub{font-family:var(--head);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);line-height:1;margin-top:3px}
+.spacer{flex:1}
+.iconbtn{position:relative;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--band);color:var(--ink)}
+.iconbtn svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.badge{
+  position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;
+  background:var(--orange);color:#fff;border-radius:10px;font-family:var(--head);
+  font-size:11px;font-weight:600;display:grid;place-items:center;border:2px solid #fff
+}
+
+/* ---------- Screens ---------- */
+.screen{display:none;animation:fade .18s ease}
+.screen.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.hero{background:var(--teal);color:#fff;padding:18px 16px 20px}
+.hero-in{max-width:640px;margin:0 auto}
+.hero h1{color:#fff;font-size:23px;line-height:1.2;text-transform:uppercase;font-weight:400}
+.hero p{margin:6px 0 0;font-family:var(--deva);font-size:15px;color:rgba(255,255,255,.82)}
+.hero .tags{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+.tag{font-family:var(--head);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  background:rgba(255,255,255,.15);padding:5px 9px;border-radius:20px}
+
+.sect-h{font-size:12px;font-family:var(--head);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted);margin:22px 0 10px}
+
+/* ---------- Product grid ---------- */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;
+  display:flex;flex-direction:column;transition:transform .12s,box-shadow .12s}
+.card:active{transform:scale(.985)}
+.card .pic{background:var(--band);aspect-ratio:1/1;display:grid;place-items:center;padding:10px}
+.card .pic img{height:100%;width:auto;object-fit:contain;mix-blend-mode:multiply}
+.card .info{padding:10px 12px 12px;flex:1;display:flex;flex-direction:column}
+.card h3{font-size:15px;line-height:1.2;text-transform:uppercase;font-weight:500}
+.card .mr{font-family:var(--deva);font-size:13px;color:var(--muted);line-height:1.4;margin-top:1px}
+.card .price{margin-top:auto;padding-top:8px;font-family:var(--head);font-size:15px;color:var(--ink);font-weight:500}
+.card .price small{font-family:var(--text);font-size:12px;color:var(--muted);font-weight:400}
+.card .add{margin-top:8px;background:var(--teal-soft);color:var(--teal-dark);
+  font-family:var(--head);font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  padding:9px;border-radius:9px;text-align:center;font-weight:500}
+
+/* ---------- Sheet ---------- */
+.sheet-bg{position:fixed;inset:0;background:rgba(26,26,26,.45);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
+.sheet-bg.on{opacity:1;pointer-events:auto}
+.sheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:61;background:#fff;
+  border-radius:22px 22px 0 0;max-height:88vh;overflow-y:auto;
+  transform:translateY(102%);transition:transform .26s cubic-bezier(.32,.72,0,1);
+  padding-bottom:calc(16px + var(--safe-b));max-width:640px;margin:0 auto
+}
+.sheet.on{transform:none}
+.sheet-grip{width:38px;height:4px;background:var(--line);border-radius:2px;margin:10px auto 4px}
+.sheet-pad{padding:8px 18px 18px}
+
+.pk-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
+.pk-head .pic{width:88px;height:88px;background:var(--band);border-radius:12px;display:grid;place-items:center;padding:6px;flex:none}
+.pk-head .pic img{height:100%;width:auto;object-fit:contain;mix-blend-mode:multiply}
+.pk-head h2{font-size:20px;text-transform:uppercase;line-height:1.15}
+.pk-head .mr{font-family:var(--deva);color:var(--muted);font-size:14px}
+.pk-note{font-size:15px;line-height:1.55;color:var(--body);margin:0 0 14px}
+
+.packs{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:8px}
+.pack{border:1.5px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center;background:#fff;transition:.14s}
+.pack .sz{font-family:var(--head);font-size:14px;color:var(--ink);text-transform:uppercase;font-weight:500}
+.pack .rs{font-family:var(--head);font-size:15px;color:var(--teal);margin-top:2px;font-weight:600}
+.pack.sel{border-color:var(--teal);background:var(--teal-soft)}
+
+.qtyrow{display:flex;align-items:center;justify-content:space-between;margin:18px 0 4px;gap:14px}
+.qtylab{font-family:var(--head);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.stepper{display:flex;align-items:center;border:1.5px solid var(--line);border-radius:12px;overflow:hidden}
+.stepper button{width:44px;height:44px;font-size:22px;color:var(--teal);font-family:var(--head);display:grid;place-items:center}
+.stepper button:disabled{color:var(--line)}
+.stepper span{min-width:44px;text-align:center;font-family:var(--head);font-size:17px;color:var(--ink);font-weight:500}
+
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  padding:15px;border-radius:13px;font-family:var(--head);font-size:14px;
+  letter-spacing:.12em;text-transform:uppercase;font-weight:500;transition:.14s}
+.btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn--teal{background:var(--teal);color:#fff}
+.btn--teal:active{background:var(--teal-dark)}
+.btn--wa{background:#25D366;color:#fff}
+.btn--line{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn--orange{background:var(--orange);color:#fff}
+.btn:disabled{opacity:.45}
+.btn.sm{padding:11px;font-size:12px}
+.btn.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,.55)}
+  55%{box-shadow:0 0 0 12px rgba(37,211,102,0)}
+}
+@media (prefers-reduced-motion:reduce){.btn.pulse{animation:none;outline:2px solid var(--orange);outline-offset:2px}}
+
+/* ---------- Cart ---------- */
+.line{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;gap:12px;margin-bottom:10px}
+.line .pic{width:62px;height:62px;background:var(--band);border-radius:10px;display:grid;place-items:center;padding:5px;flex:none}
+.line .pic img{height:100%;width:auto;object-fit:contain;mix-blend-mode:multiply}
+.line .mid{flex:1;min-width:0}
+.line h4{font-size:15px;text-transform:uppercase;line-height:1.2}
+.line .sub{font-size:13px;color:var(--muted)}
+.line .amt{font-family:var(--head);font-size:15px;color:var(--ink);font-weight:500;white-space:nowrap}
+.line .ctl{display:flex;align-items:center;gap:10px;margin-top:7px}
+.line .ctl button{width:28px;height:28px;border:1px solid var(--line);border-radius:8px;
+  display:grid;place-items:center;color:var(--teal);font-family:var(--head);font-size:16px;background:#fff}
+.line .ctl span{font-family:var(--head);font-size:14px;color:var(--ink);min-width:18px;text-align:center}
+.line .ctl .rm{margin-left:auto;width:auto;height:auto;border:0;background:none;border-radius:0;
+  font-family:var(--text);font-size:13px;color:var(--muted);text-decoration:underline;letter-spacing:.02em}
+
+.total{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:4px}
+.total .r{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;font-size:15px}
+.total .r.big{border-top:1px solid var(--line);margin-top:6px;padding-top:11px}
+.total .r.big span:first-child{font-family:var(--head);text-transform:uppercase;font-size:13px;letter-spacing:.12em;color:var(--ink)}
+.total .r.big span:last-child{font-family:var(--head);font-size:23px;color:var(--teal);font-weight:600}
+.note{background:var(--teal-soft);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--teal-dark);margin:12px 0;line-height:1.5}
+
+.empty{text-align:center;padding:56px 24px}
+.empty svg{width:52px;height:52px;stroke:var(--line);fill:none;stroke-width:1.4;margin:0 auto 14px}
+.empty h3{font-size:19px;text-transform:uppercase;margin-bottom:6px}
+.empty p{font-size:15px;color:var(--muted);margin:0 0 20px}
+
+/* ---------- Form ---------- */
+.field{margin-bottom:14px}
+.field label{display:block;font-family:var(--head);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.field input,.field textarea{
+  width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;
+  background:#fff;color:var(--ink);line-height:1.4}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--teal)}
+.field textarea{resize:vertical;min-height:76px}
+.field .err{color:var(--red);font-size:13px;margin-top:5px;display:none}
+.field.bad input,.field.bad textarea{border-color:var(--red)}
+.field.bad .err{display:block}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* ---------- Orders ---------- */
+.ord{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
+.ord .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.ord .no{font-family:var(--head);font-size:14px;color:var(--ink);letter-spacing:.06em;font-weight:500}
+.ord .dt{font-size:13px;color:var(--muted)}
+.chip{font-family:var(--head);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  padding:5px 9px;border-radius:20px;white-space:nowrap;font-weight:500}
+.chip.placed{background:#FFF4E2;color:var(--orange-dark)}
+.chip.confirmed{background:#E7F2F0;color:var(--teal-dark)}
+.chip.dispatched{background:#EAF1FB;color:#2C5AA0}
+.chip.delivered{background:#E8F5E9;color:#2E7D32}
+.chip.cancelled{background:#FDECEA;color:var(--red)}
+.ord .items{font-size:14px;color:var(--body);margin:9px 0;line-height:1.5}
+.ord .foot{display:flex;justify-content:space-between;align-items:center;
+  border-top:1px solid var(--line);padding-top:11px;margin-top:11px;gap:10px}
+.ord .amt{font-family:var(--head);font-size:17px;color:var(--ink);font-weight:500}
+.ord .rep{background:var(--teal-soft);color:var(--teal-dark);font-family:var(--head);
+  font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:9px 13px;border-radius:9px;font-weight:500}
+
+/* ---------- Confirmation ---------- */
+.done{text-align:center;padding:34px 20px 20px}
+.done .tick{width:70px;height:70px;border-radius:50%;background:var(--teal-soft);
+  display:grid;place-items:center;margin:0 auto 16px}
+.done .tick svg{width:34px;height:34px;stroke:var(--teal);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.done h2{font-size:24px;text-transform:uppercase;margin-bottom:6px}
+.done .no{font-family:var(--head);font-size:15px;color:var(--teal);letter-spacing:.1em;margin-bottom:10px;font-weight:500}
+.done p{font-size:15px;color:var(--body);margin:0 auto 20px;max-width:340px}
+
+/* ---------- Help ---------- */
+.info{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:10px}
+.info h4{font-family:var(--head);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.info p{margin:0;font-size:15px;color:var(--ink);line-height:1.55}
+.info a{color:var(--teal);text-decoration:none}
+
+/* ---------- Bottom nav ---------- */
+.nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:50;background:#fff;
+  border-top:1px solid var(--line);display:flex;
+  padding-bottom:var(--safe-b);height:calc(var(--bar) + var(--safe-b))
+}
+.nav button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--muted);position:relative}
+.nav button.on{color:var(--teal)}
+.nav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.nav span{font-family:var(--head);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+.nav .nb{position:absolute;top:6px;left:calc(50% + 6px);min-width:17px;height:17px;padding:0 4px;
+  background:var(--orange);color:#fff;border-radius:9px;font-family:var(--head);font-size:10px;
+  display:grid;place-items:center;border:2px solid #fff}
+
+/* ---------- Toast / install ---------- */
+
+/* ---------- Payment ---------- */
+.paytop{text-align:center;padding:22px 0 16px}
+.payno{font-family:var(--head);font-size:13px;letter-spacing:.1em;color:var(--muted);margin:0;text-transform:uppercase}
+.paylab{font-family:var(--head);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:12px 0 2px}
+.payamt{font-family:var(--head);font-size:40px;font-weight:600;color:var(--teal);margin:0;line-height:1}
+.qrcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 16px 16px;text-align:center;margin-bottom:14px}
+.qrhead{font-family:var(--head);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 14px}
+.qrbox{display:inline-block;padding:10px;background:#fff;border:1px solid var(--line);border-radius:12px;line-height:0}
+.qrbox canvas{width:236px;height:236px;image-rendering:pixelated;display:block}
+.qrvpa{font-family:var(--head);font-size:17px;color:var(--ink);margin:14px 0 1px;font-weight:500;letter-spacing:.02em}
+.qrmerch{font-size:13px;color:var(--muted);margin:0}
+.qrapps{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-top:12px}
+.qrapps span{font-family:var(--head);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--body);background:var(--band);border:1px solid var(--line);padding:4px 8px;border-radius:20px}
+.paylinks{display:flex;align-items:center;justify-content:center;gap:10px;margin:12px 0 4px;color:var(--muted);font-size:13px}
+.paylinks button{font-size:14px;color:var(--teal);text-decoration:underline}
+.paysep{text-align:center;font-family:var(--head);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted);margin:22px 0 12px;position:relative}
+.paysep:before,.paysep:after{content:"";position:absolute;top:50%;width:24%;height:1px;background:var(--line)}
+.paysep:before{left:0}.paysep:after{right:0}
+.payfoot{font-size:13px;color:var(--muted);text-align:center;line-height:1.5;margin:16px auto 0;max-width:330px}
+.paychip{font-family:var(--head);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:5px 9px;border-radius:20px;font-weight:500}
+.paychip.paid{background:#E8F5E9;color:#2E7D32}
+.paychip.cod{background:var(--band);color:var(--body)}
+.paychip.unpaid{background:#FFF4E2;color:var(--orange-dark)}
+.paychip.sent{background:#E7F2F0;color:var(--teal-dark)}
+.paychip.pending{background:#FDECEA;color:var(--red)}
+.ord .payrow{display:flex;align-items:center;gap:8px;margin-top:9px;flex-wrap:wrap}
+
+/* ---------- iOS install steps ---------- */
+.steps{margin:4px 0 0;padding:0;list-style:none;counter-reset:st}
+.steps li{position:relative;padding:0 0 16px 44px;counter-increment:st;font-size:15.5px;line-height:1.5;color:var(--ink)}
+.steps li:before{
+  content:counter(st);position:absolute;left:0;top:-1px;width:30px;height:30px;border-radius:50%;
+  background:var(--teal-soft);color:var(--teal-dark);font-family:var(--head);font-size:14px;
+  font-weight:600;display:grid;place-items:center}
+.steps li small{display:block;color:var(--muted);font-size:13.5px;margin-top:2px}
+.shareicon{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:7px;
+  background:#F0F0F2;vertical-align:-8px;margin:0 2px}
+.shareicon svg{width:15px;height:15px;stroke:#007AFF;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.plusicon{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:7px;
+  background:#F0F0F2;color:var(--ink);vertical-align:-8px;margin:0 2px;font-size:17px;font-family:var(--head)}
+
+/* ---------- in-app browser warning ---------- */
+.warn{background:#FFF4E2;border:1px solid #F5D9AB;border-radius:14px;padding:14px 16px;margin:14px 0}
+.warn b{font-family:var(--head);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--orange-dark);display:block;margin-bottom:5px}
+.warn p{margin:0;font-size:14.5px;line-height:1.5;color:#7A5216}
+
+.toast{position:fixed;left:50%;bottom:calc(var(--bar) + var(--safe-b) + 14px);transform:translate(-50%,20px);
+  background:var(--ink);color:#fff;padding:11px 18px;border-radius:24px;font-size:14px;
+  z-index:80;opacity:0;transition:.24s;pointer-events:none;max-width:88vw;text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.install{position:fixed;left:12px;right:12px;bottom:calc(var(--bar) + var(--safe-b) + 12px);z-index:70;
+  background:var(--ink);color:#fff;border-radius:15px;padding:13px 15px;display:none;
+  align-items:center;gap:12px;max-width:616px;margin:0 auto}
+.install.on{display:flex}
+body.sheet-open .install{display:none}
+.install img{width:36px;height:36px;border-radius:9px;flex:none}
+.install .t{flex:1;min-width:0}
+.install b{display:block;font-family:var(--head);font-size:14px;letter-spacing:.04em}
+.install small{font-size:12.5px;color:rgba(255,255,255,.7);line-height:1.35;display:block}
+.install .go{background:#fff;color:var(--ink);font-family:var(--head);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;padding:9px 13px;border-radius:9px;flex:none;font-weight:500}
+.install .x{color:rgba(255,255,255,.55);font-size:20px;padding:0 2px;flex:none}
+.pad{height:22px}
+</style>
+</head>
+<body>
+
+<!-- ══════════ APP BAR ══════════ -->
+<header class="appbar">
+  <div class="appbar-in">
+    <div class="brand">
+      <img src="img/logo.jpg" alt="Nuova">
+    </div>
+    <div class="spacer"></div>
+    <button class="iconbtn" onclick="go('help')" aria-label="Help">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 2.5-3 4"/><path d="M12 17h.01"/></svg>
+    </button>
+    <button class="iconbtn" onclick="go('cart')" aria-label="Cart">
+      <svg viewBox="0 0 24 24"><path d="M6 2l1.5 4h11L20 15H8L6 2H3"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg>
+      <i class="badge" id="badge" style="display:none">0</i>
+    </button>
+  </div>
+</header>
+
+<!-- ══════════ SHOP ══════════ -->
+<section class="screen on" id="s-shop">
+  <div class="hero">
+    <div class="hero-in">
+      <h1>100% Pure &amp; Unrefined<br>Cold Pressed Oils</h1>
+      <p>सर्वे भवन्तु निरामय:</p>
+      <div class="tags">
+        <span class="tag">Chemical free</span>
+        <span class="tag">Small batch</span>
+        <span class="tag">FSSAI licensed</span>
+        <span class="tag">Pressed in Pune</span>
+      </div>
+    </div>
+  </div>
+  <div class="wrap" id="browserWarn"></div>
+  <div class="wrap">
+    <h2 class="sect-h">Our Oils</h2>
+    <div class="grid" id="grid"></div>
+    <div class="note" style="margin-top:16px">
+      <b>Delivery.</b> Free local delivery around Uruli Devachi and Pune. We courier across India — freight is quoted and confirmed on WhatsApp before you pay anything.
+    </div>
+    <div class="pad"></div>
+  </div>
+</section>
+
+<!-- ══════════ CART ══════════ -->
+<section class="screen" id="s-cart">
+  <div class="wrap">
+    <h2 class="sect-h" style="margin-top:18px">Your Basket</h2>
+    <div id="cartBody"></div>
+    <div class="pad"></div>
+  </div>
+</section>
+
+<!-- ══════════ CHECKOUT ══════════ -->
+<section class="screen" id="s-checkout">
+  <div class="wrap">
+    <h2 class="sect-h" style="margin-top:18px">Delivery Details</h2>
+
+    <div class="field" id="f-name">
+      <label>Your name</label>
+      <input id="i-name" type="text" autocomplete="name" placeholder="Full name">
+      <div class="err">Please tell us your name</div>
+    </div>
+
+    <div class="field" id="f-phone">
+      <label>Mobile number</label>
+      <input id="i-phone" type="tel" inputmode="numeric" autocomplete="tel" maxlength="10" placeholder="10-digit mobile">
+      <div class="err">Please enter a valid 10-digit mobile number</div>
+    </div>
+
+    <div class="field" id="f-addr">
+      <label>Delivery address</label>
+      <textarea id="i-addr" autocomplete="street-address" placeholder="Flat / house, building, road, area"></textarea>
+      <div class="err">Please enter the delivery address</div>
+    </div>
+
+    <div class="two">
+      <div class="field" id="f-city">
+        <label>City</label>
+        <input id="i-city" type="text" autocomplete="address-level2" placeholder="Pune">
+        <div class="err">Required</div>
+      </div>
+      <div class="field" id="f-pin">
+        <label>Pincode</label>
+        <input id="i-pin" type="tel" inputmode="numeric" maxlength="6" autocomplete="postal-code" placeholder="412308">
+        <div class="err">6 digits</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Anything to add? (optional)</label>
+      <textarea id="i-note" placeholder="Landmark, preferred delivery time, or a special request" style="min-height:60px"></textarea>
+    </div>
+
+    <div class="total" id="coTotal"></div>
+
+    <div class="note">
+      Freight is not included above. We will confirm the final amount with you on WhatsApp before dispatch.
+    </div>
+
+    <button class="btn btn--teal" id="placeBtn" onclick="placeOrder()">
+      <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Place the order
+    </button>
+    <div style="height:10px"></div>
+    <button class="btn btn--line" onclick="go('cart')">Back to basket</button>
+    <div class="pad"></div>
+  </div>
+</section>
+
+<!-- ══════════ CONFIRMATION ══════════ -->
+<section class="screen" id="s-done">
+  <div class="wrap">
+    <div class="done">
+      <div class="tick"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <h2>Order Placed</h2>
+      <div class="no" id="doneNo"></div>
+      <p id="doneMsg"></p>
+    </div>
+    <p id="waHint" style="display:none;text-align:center;font-size:14.5px;color:var(--orange-dark);background:#FFF4E2;border-radius:12px;padding:11px 14px;margin:0 0 12px">
+      One last tap — send the order across so we receive it.
+    </p>
+    <button class="btn btn--wa" id="waBtn" onclick="waCurrent()">
+      <svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 01-12.6 7.3L3 20.5l1.8-5.2A8.4 8.4 0 1121 11.5z"/></svg>
+      Send it on WhatsApp
+    </button>
+    <div style="height:10px"></div>
+    <button class="btn btn--line" onclick="go('orders')">See my orders</button>
+    <div style="height:10px"></div>
+    <button class="btn btn--line" onclick="go('shop')">Order something else</button>
+    <div class="pad"></div>
+  </div>
+</section>
+
+
+<!-- ══════════ PAYMENT ══════════ -->
+<section class="screen" id="s-pay">
+  <div class="wrap">
+    <div class="paytop">
+      <p class="payno" id="payNo"></p>
+      <p class="paylab">Amount to pay</p>
+      <p class="payamt" id="payAmt"></p>
+    </div>
+
+    <div class="qrcard">
+      <p class="qrhead">Scan &amp; pay with any UPI app</p>
+      <div class="qrbox"><canvas id="payQr" width="300" height="300" aria-label="UPI payment QR code"></canvas></div>
+      <p class="qrvpa" id="payVpa"></p>
+      <p class="qrmerch">SHRI JAGDAMBA INDUSTRY</p>
+      <div class="qrapps">
+        <span>GPay</span><span>PhonePe</span><span>Paytm</span><span>BHIM</span><span>Any bank app</span>
+      </div>
+    </div>
+
+    <button class="btn btn--teal" id="payNowBtn" onclick="openUpiApp()">
+      <svg viewBox="0 0 24 24"><path d="M3 10h18M6 3h12a3 3 0 013 3v12a3 3 0 01-3 3H6a3 3 0 01-3-3V6a3 3 0 013-3z"/></svg>
+      <span id="payNowLabel">Pay in my UPI app</span>
+    </button>
+
+    <div class="paylinks">
+      <button onclick="copyVpa()" id="copyBtn">Copy UPI ID</button>
+      <span>·</span>
+      <button onclick="showBankQr()">Trouble scanning?</button>
+    </div>
+
+    <div class="note" id="freightNote"></div>
+
+    <p class="paysep">Once you have paid</p>
+    <button class="btn btn--wa" onclick="markPaid()">
+      <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> I have paid
+    </button>
+    <div style="height:10px"></div>
+    <button class="btn btn--line" onclick="payLater()">I will pay on delivery</button>
+
+    <p class="payfoot">We check every payment against our bank before dispatch. If anything does not match we will call you — nothing is dispatched or charged twice.</p>
+    <div class="pad"></div>
+  </div>
+</section>
+
+<!-- ══════════ ORDERS ══════════ -->
+<section class="screen" id="s-orders">
+  <div class="wrap">
+    <h2 class="sect-h" style="margin-top:18px">My Orders</h2>
+    <div id="ordersBody"></div>
+    <div class="pad"></div>
+  </div>
+</section>
+
+<!-- ══════════ HELP ══════════ -->
+<section class="screen" id="s-help">
+  <div class="wrap">
+    <h2 class="sect-h" style="margin-top:18px">Nuova</h2>
+
+    <div id="helpInstall"></div>
+
+    <div class="info">
+      <h4>Talk to us</h4>
+      <p>Monday to Saturday, 9 am to 7 pm<br>
+      <a href="tel:+919763728630">+91 97637 28630</a> &nbsp;·&nbsp; <a href="tel:+917350071696">+91 73500 71696</a></p>
+    </div>
+
+    <button class="btn btn--wa" onclick="waPlain()">
+      <svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 01-12.6 7.3L3 20.5l1.8-5.2A8.4 8.4 0 1121 11.5z"/></svg>
+      Message us on WhatsApp
+    </button>
+    <div style="height:14px"></div>
+
+    <div class="info">
+      <h4>The unit</h4>
+      <p>Shri Jagdamba Industry<br>Sr. No. 23, More Park, Uruli Devachi<br>Pune, Maharashtra 412308</p>
+    </div>
+
+    <div class="info">
+      <h4>Licence</h4>
+      <p>FSSAI Lic. No. 11524083000635</p>
+    </div>
+
+    <div class="info">
+      <h4>Delivery &amp; freight</h4>
+      <p>Free local delivery around Uruli Devachi and Pune. Courier across India — freight depends on weight and destination and is quoted before you pay.</p>
+    </div>
+
+    <div class="info">
+      <h4>Wholesale</h4>
+      <p>We supply monthly to housing societies, kirana shops, caterers, gyms and Ayurvedic practitioners at wholesale rates. Message us with your monthly volume for a rate list.</p>
+    </div>
+
+    <div class="info">
+      <h4>Website</h4>
+      <p><a href="https://www.nuovashop.com" onclick="openExternal('https://www.nuovashop.com');return false;">www.nuovashop.com</a></p>
+    </div>
+
+    <div style="text-align:center;color:var(--muted);font-size:13px;padding:14px 0 4px">
+      Nuova® · Manufactured and marketed by Shri Jagdamba Industry
+    </div>
+    <div class="pad"></div>
+  </div>
+</section>
+
+<!-- ══════════ BOTTOM NAV ══════════ -->
+<nav class="nav">
+  <button id="n-shop" class="on" onclick="go('shop')">
+    <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1h-5v-7H9v7H4a1 1 0 01-1-1z"/></svg><span>Shop</span>
+  </button>
+  <button id="n-cart" onclick="go('cart')">
+    <svg viewBox="0 0 24 24"><path d="M6 2l1.5 4h11L20 15H8L6 2H3"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg><span>Basket</span>
+    <i class="nb" id="navBadge" style="display:none">0</i>
+  </button>
+  <button id="n-orders" onclick="go('orders')">
+    <svg viewBox="0 0 24 24"><path d="M5 3h14a1 1 0 011 1v17l-4-2.5L12 21l-4-2.5L4 21V4a1 1 0 011-1z"/><path d="M9 8h6M9 12h6"/></svg><span>Orders</span>
+  </button>
+  <button id="n-help" onclick="go('help')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 2.5-3 4"/><path d="M12 17h.01"/></svg><span>Help</span>
+  </button>
+</nav>
+
+<!-- ══════════ PACK SHEET ══════════ -->
+<div class="sheet-bg" id="sheetBg" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-grip"></div>
+  <div class="sheet-pad" id="sheetBody"></div>
+</div>
+
+<!-- ══════════ INSTALL PROMPT ══════════ -->
+<div class="install" id="installBar">
+  <img src="icons/icon-192.png" alt="">
+  <div class="t">
+    <b>Add Nuova to your phone</b>
+    <small id="installTip">Order in one tap, next time</small>
+  </div>
+  <button class="go" id="installGo" onclick="doInstall()">Install</button>
+  <button class="x" onclick="hideInstall(true)" aria-label="Dismiss">×</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   NUOVA CUSTOMER APP
+   Step 1 — catalogue, basket, checkout, WhatsApp order
+   ══════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────
+   ▼▼▼  PRICE LIST — EDIT ONLY THIS BLOCK WHEN RATES CHANGE  ▼▼▼
+   These are the RETAIL rates from CATALOG_RATES in your internal order
+   management app, so both apps quote the same price. Change a rate here and
+   change it there too, using the same product key.
+   Only the three 100 ml rates are marked provisional:true — your internal
+   catalogue has no 100 ml entry yet.
+   ───────────────────────────────────────────────────────────── */
+const CATALOG = [
+  { id:'groundnut', name:'Groundnut Oil', mr:'शेंगदाणा तेल', img:'img/groundnut.jpg',
+    note:'High smoke point, strong familiar aroma. The one for bhaji, tadka and deep frying.',
+    packs:[ {sz:'200 ml',rs:105, key:'Groundnut Oil (200 ml)', unit:'Bottles'},
+            {sz:'500 ml',rs:155, key:'Groundnut Oil (500 ml)', unit:'Bottles'},
+            {sz:'1 L',   rs:285, key:'Groundnut Oil (1 ltr)',  unit:'Bottles'},
+            {sz:'5 L',   rs:1350,key:'Groundnut Oil (5 ltr)',  unit:'Bottles'} ] },
+
+  { id:'sunflower', name:'Sunflower Oil', mr:'सूर्यफूल तेल', img:'img/sunflower.jpg',
+    note:'The mildest of the range. Use it when the dish should not taste of the oil.',
+    packs:[ {sz:'200 ml',rs:125, key:'Sunflower Oil (200 ml)', unit:'Bottles'},
+            {sz:'500 ml',rs:180, key:'Sunflower Oil (500 ml)', unit:'Bottles'},
+            {sz:'1 L',   rs:335, key:'Sunflower Oil (1 ltr)',  unit:'Bottles'},
+            {sz:'5 L',   rs:1590,key:'Sunflower Oil (5 ltr)',  unit:'Bottles'} ] },
+
+  { id:'safflower', name:'Safflower Oil', mr:'करडई तेल', img:'img/safflower.jpg',
+    note:'Karadi oil. Light and clean, and the highest polyunsaturated fat we press — 77 g per 100 g.',
+    packs:[ {sz:'200 ml',rs:140, key:'Safflower Oil (200 ml)', unit:'Bottles'},
+            {sz:'500 ml',rs:205, key:'Safflower Oil (500 ml)', unit:'Bottles'},
+            {sz:'1 L',   rs:380, key:'Safflower Oil (1 ltr)',  unit:'Bottles'},
+            {sz:'5 L',   rs:1805,key:'Safflower Oil (5 ltr)',  unit:'Bottles'} ] },
+
+  { id:'coconut', name:'Coconut Oil', mr:'खोबरेल तेल', img:'img/coconut.jpg',
+    note:'For cooking, hair and skin. It sets solid below about 24 °C — that is purity, not a fault.',
+    packs:[ {sz:'100 ml',rs:105, key:'Coconut Oil (100 ml)', unit:'Bottles', provisional:true},
+            {sz:'200 ml',rs:175, key:'Coconut Oil (200 ml)', unit:'Bottles'},
+            {sz:'500 ml',rs:255, key:'Coconut Oil (500 ml)', unit:'Bottles'},
+            {sz:'1 L',   rs:470, key:'Coconut Oil (1 ltr)',  unit:'Bottles'} ] },
+
+  { id:'mustard', name:'Mustard Oil', mr:'मोहरी तेल', img:'img/mustard.jpg',
+    note:'Sharp and pungent. For pickles, fish, sarson and winter cooking.',
+    packs:[ {sz:'200 ml',rs:115, key:'Mustard Oil (200 ml)', unit:'Bottles'},
+            {sz:'500 ml',rs:170, key:'Mustard Oil (500 ml)', unit:'Bottles'},
+            {sz:'1 L',   rs:315, key:'Mustard Oil (1 ltr)',  unit:'Bottles'},
+            {sz:'5 L',   rs:1495,key:'Mustard Oil (5 ltr)',  unit:'Bottles'} ] },
+
+  { id:'sesame', name:'Sesame Oil', mr:'तिळ तेल', img:'img/sesame.jpg',
+    note:'Nutty and aromatic. Everyday cooking, oil pulling and abhyanga massage.',
+    packs:[ {sz:'100 ml',rs:95,  key:'Sesame Oil (100 ml)', unit:'Bottles', provisional:true},
+            {sz:'200 ml',rs:155, key:'Sesame Oil (200 ml)', unit:'Bottles'},
+            {sz:'500 ml',rs:225, key:'Sesame Oil (500 ml)', unit:'Bottles'},
+            {sz:'1 L',   rs:410, key:'Sesame Oil (1 ltr)',  unit:'Bottles'} ] },
+
+  { id:'flaxseed', name:'Flaxseed Oil', mr:'जवस तेल', img:'img/flaxseed.jpg',
+    note:'Use it raw over salad, rice or roti. Do not fry in it. Keep it cool and dark.',
+    packs:[ {sz:'100 ml',rs:80,  key:'Flaxseed Oil (100 ml)', unit:'Bottles', provisional:true},
+            {sz:'200 ml',rs:130, key:'Flaxseed Oil (200 ml)', unit:'Bottles'},
+            {sz:'500 ml',rs:185, key:'Flaxseed Oil (500 ml)', unit:'Bottles'},
+            {sz:'1 L',   rs:345, key:'Flaxseed Oil (1 ltr)',  unit:'Bottles'} ] }
+];
+
+const SHOP = {
+  whatsapp : '919763728630',          // orders land here
+  name     : 'Nuova',
+  company  : 'Shri Jagdamba Industry',
+  upi      : '7350071696m@pnb',          // from your PNB BHIM QR
+  upiName  : 'SHRI JAGDAMBA INDUSTRY',
+  upiMc    : '5099'                      // merchant category, same as the printed QR
+};
+
+/* Same Firebase project as your internal order management app, so a customer
+   order lands directly in Records. Publishable by design — the Firestore
+   rules are what protect the data, not this key. */
+const FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyA_B7m6gqEhm-A2lXc9rqV8uy_3Adg2Fps",
+  authDomain:        "shri-jagdamba-monitor.firebaseapp.com",
+  projectId:         "shri-jagdamba-monitor",
+  storageBucket:     "shri-jagdamba-monitor.firebasestorage.app",
+  messagingSenderId: "987532374562",
+  appId:             "1:987532374562:web:4b4e682f68e185a300d07b"
+};
+/* ───────────── ▲▲▲  END OF EDITABLE BLOCK  ▲▲▲ ───────────── */
+
+
+/* ---------- tiny storage helpers ---------- */
+const store = {
+  get(k, d){ try { const v = localStorage.getItem('nuova_'+k); return v ? JSON.parse(v) : d; } catch(e){ return d; } },
+  set(k, v){ try { localStorage.setItem('nuova_'+k, JSON.stringify(v)); } catch(e){} }
+};
+
+let cart     = store.get('cart', []);
+let orders   = store.get('orders', []);
+let customer = store.get('customer', {});
+let sheetOil = null, sheetPack = 0, sheetQty = 1;
+
+const rs   = n => '₹' + Number(n).toLocaleString('en-IN');
+const esc  = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const byId = id => CATALOG.find(o => o.id === id);
+
+/* ---------- navigation ---------- */
+function go(screen){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  const el = document.getElementById('s-' + screen);
+  if (el) el.classList.add('on');
+
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('on'));
+  const navMap = { shop:'shop', cart:'cart', checkout:'cart', pay:'cart', done:'orders', orders:'orders', help:'help' };
+  const nb = document.getElementById('n-' + (navMap[screen] || 'shop'));
+  if (nb) nb.classList.add('on');
+
+  if (screen === 'cart')     renderCart();
+  if (screen === 'orders')   renderOrders();
+  if (screen === 'checkout') renderCheckoutTotal();
+  if (screen === 'help')     renderHelpInstall();
+
+  window.scrollTo({ top:0, behavior:'instant' in window ? 'instant' : 'auto' });
+  closeSheet();
+}
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('on'), 2200);
+}
+
+/* ---------- catalogue ---------- */
+function renderGrid(){
+  document.getElementById('grid').innerHTML = CATALOG.map(o => {
+    const from = Math.min(...o.packs.map(p => p.rs));
+    return `<div class="card" onclick="openSheet('${o.id}')">
+      <div class="pic"><img src="${o.img}" alt="${esc(o.name)}" loading="lazy"></div>
+      <div class="info">
+        <h3>${esc(o.name.replace(' Oil',''))}</h3>
+        <div class="mr">${esc(o.mr)}</div>
+        <div class="price">${rs(from)} <small>onwards</small></div>
+        <div class="add">Choose pack</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ---------- pack sheet ---------- */
+function openSheet(id){
+  sheetOil = byId(id);
+  if (!sheetOil) return;
+  sheetPack = sheetOil.packs.findIndex(p => p.sz === '1 L');
+  if (sheetPack < 0) sheetPack = sheetOil.packs.length - 1;
+  sheetQty = 1;
+  drawSheet();
+  openSheetUI();
+}
+
+function openSheetUI(){
+  document.getElementById('sheetBg').classList.add('on');
+  document.getElementById('sheet').classList.add('on');
+  document.body.classList.add('sheet-open');
+}
+
+function closeSheet(){
+  document.getElementById('sheetBg').classList.remove('on');
+  document.getElementById('sheet').classList.remove('on');
+  document.body.classList.remove('sheet-open');
+}
+
+function drawSheet(){
+  const o = sheetOil, p = o.packs[sheetPack], amt = p.rs * sheetQty;
+  document.getElementById('sheetBody').innerHTML = `
+    <div class="pk-head">
+      <div class="pic"><img src="${o.img}" alt=""></div>
+      <div>
+        <h2>${esc(o.name)}</h2>
+        <div class="mr">${esc(o.mr)}</div>
+      </div>
+    </div>
+    <p class="pk-note">${esc(o.note)}</p>
+
+    <div class="qtylab" style="margin-bottom:8px">Pack size</div>
+    <div class="packs">
+      ${o.packs.map((pk, i) => `
+        <button class="pack ${i === sheetPack ? 'sel' : ''}" onclick="pickPack(${i})">
+          <div class="sz">${pk.sz}</div>
+          <div class="rs">${rs(pk.rs)}</div>
+        </button>`).join('')}
+    </div>
+
+    <div class="qtyrow">
+      <div class="qtylab">Quantity</div>
+      <div class="stepper">
+        <button onclick="bumpQty(-1)" ${sheetQty <= 1 ? 'disabled' : ''}>−</button>
+        <span>${sheetQty}</span>
+        <button onclick="bumpQty(1)">+</button>
+      </div>
+    </div>
+
+    <div style="height:14px"></div>
+    <button class="btn btn--teal" onclick="addToCart()">
+      <svg viewBox="0 0 24 24"><path d="M6 2l1.5 4h11L20 15H8L6 2H3"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg>
+      Add · ${rs(amt)}
+    </button>`;
+}
+
+function pickPack(i){ sheetPack = i; drawSheet(); }
+function bumpQty(d){ sheetQty = Math.max(1, Math.min(99, sheetQty + d)); drawSheet(); }
+
+/* ---------- basket ---------- */
+function addToCart(){
+  const o = sheetOil, p = o.packs[sheetPack];
+  const key = o.id + '|' + p.sz;
+  const found = cart.find(l => l.key === key);
+  if (found) found.qty = Math.min(99, found.qty + sheetQty);
+  else cart.push({ key, id:o.id, name:o.name, mr:o.mr, img:o.img, sz:p.sz, rs:p.rs, qty:sheetQty, cat:p.key, unit:p.unit });
+  saveCart();
+  closeSheet();
+  toast(`${o.name.replace(' Oil','')} ${p.sz} × ${sheetQty} added`);
+}
+
+function saveCart(){
+  store.set('cart', cart);
+  const n = cart.reduce((a, l) => a + l.qty, 0);
+  ['badge','navBadge'].forEach(id => {
+    const el = document.getElementById(id);
+    el.textContent = n;
+    el.style.display = n ? 'grid' : 'none';
+  });
+}
+
+const cartTotal = () => cart.reduce((a, l) => a + l.rs * l.qty, 0);
+
+function changeQty(key, d){
+  const l = cart.find(x => x.key === key);
+  if (!l) return;
+  l.qty += d;
+  if (l.qty < 1) cart = cart.filter(x => x.key !== key);
+  saveCart();
+  renderCart();
+}
+
+function removeLine(key){
+  cart = cart.filter(x => x.key !== key);
+  saveCart();
+  renderCart();
+  toast('Removed');
+}
+
+function renderCart(){
+  const box = document.getElementById('cartBody');
+  if (!cart.length){
+    box.innerHTML = `<div class="empty">
+      <svg viewBox="0 0 24 24"><path d="M6 2l1.5 4h11L20 15H8L6 2H3"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg>
+      <h3>Your basket is empty</h3>
+      <p>Pick an oil and choose the pack size that suits your kitchen.</p>
+      <button class="btn btn--teal" onclick="go('shop')">See the oils</button>
+    </div>`;
+    return;
+  }
+
+  box.innerHTML =
+    cart.map(l => `
+      <div class="line">
+        <div class="pic"><img src="${l.img}" alt=""></div>
+        <div class="mid">
+          <h4>${esc(l.name.replace(' Oil',''))}</h4>
+          <div class="sub">${l.sz} · ${rs(l.rs)} each</div>
+          <div class="ctl">
+            <button onclick="changeQty('${l.key}',-1)">−</button>
+            <span>${l.qty}</span>
+            <button onclick="changeQty('${l.key}',1)">+</button>
+            <button class="rm" onclick="removeLine('${l.key}')">Remove</button>
+          </div>
+        </div>
+        <div class="amt">${rs(l.rs * l.qty)}</div>
+      </div>`).join('') +
+    `<div class="total">
+      <div class="r"><span>Items (${cart.reduce((a,l)=>a+l.qty,0)})</span><span>${rs(cartTotal())}</span></div>
+      <div class="r"><span>Delivery</span><span style="color:var(--teal)">Confirmed on WhatsApp</span></div>
+      <div class="r big"><span>To pay</span><span>${rs(cartTotal())}</span></div>
+    </div>
+    <div class="note">Free local delivery around Pune. For outstation orders we quote the courier freight before dispatch.</div>
+    <button class="btn btn--teal" onclick="go('checkout')">Continue to delivery details</button>
+    <div style="height:10px"></div>
+    <button class="btn btn--line" onclick="go('shop')">Add more oils</button>`;
+}
+
+/* ---------- checkout ---------- */
+function renderCheckoutTotal(){
+  document.getElementById('coTotal').innerHTML = `
+    ${cart.map(l => `<div class="r"><span>${esc(l.name.replace(' Oil',''))} ${l.sz} × ${l.qty}</span><span>${rs(l.rs * l.qty)}</span></div>`).join('')}
+    <div class="r big"><span>Order value</span><span>${rs(cartTotal())}</span></div>`;
+
+  ['name','phone','addr','city','pin'].forEach(k => {
+    const el = document.getElementById('i-' + k);
+    if (el && customer[k]) el.value = customer[k];
+  });
+  if (!document.getElementById('i-city').value) document.getElementById('i-city').value = 'Pune';
+}
+
+function bad(id, on){ document.getElementById('f-' + id).classList.toggle('bad', on); }
+
+function placeOrder(){
+  const v = k => (document.getElementById('i-' + k).value || '').trim();
+  const d = { name:v('name'), phone:v('phone').replace(/\D/g,''), addr:v('addr'), city:v('city'), pin:v('pin').replace(/\D/g,''), note:v('note') };
+
+  let ok = true;
+  const checks = { name: d.name.length >= 2, phone: /^[6-9]\d{9}$/.test(d.phone), addr: d.addr.length >= 6, city: d.city.length >= 2, pin: /^\d{6}$/.test(d.pin) };
+  Object.keys(checks).forEach(k => { bad(k, !checks[k]); if (!checks[k]) ok = false; });
+
+  if (!ok){
+    document.querySelector('.field.bad')?.scrollIntoView({ behavior:'smooth', block:'center' });
+    toast('Please check the highlighted fields');
+    return;
+  }
+  if (!cart.length){ go('shop'); return; }
+
+  customer = d;
+  store.set('customer', customer);
+
+  const now = new Date();
+  const order = {
+    no      : orderNumber(now),
+    at      : now.toISOString(),
+    items   : cart.map(l => ({ id:l.id, name:l.name, sz:l.sz, rs:l.rs, qty:l.qty, cat:l.cat, unit:l.unit })),
+    total   : cartTotal(),
+    customer: d,
+    status  : 'Placed',
+    synced  : false          // Step 2 will flip this once saved to Firebase
+  };
+
+  order.payment = { method:null, status:'Awaiting payment', utr:'', at:null };
+
+  orders.unshift(order);
+  store.set('orders', orders);
+
+  saveOrderToCloud(order);   // Step 2 — no-op for now
+
+  cart = [];
+  saveCart();
+
+  openPayment(order);        // straight to Scan & Pay
+
+}
+
+/* Make the WhatsApp button impossible to miss when the automatic send
+   did not go through. */
+function nudgeWhatsApp(){
+  const btn = document.getElementById('waBtn');
+  const hint = document.getElementById('waHint');
+  if (btn) btn.classList.add('pulse');
+  if (hint) hint.style.display = 'block';
+}
+
+function orderNumber(dt){
+  const p = n => String(n).padStart(2, '0');
+  const stamp = String(dt.getFullYear()).slice(2) + p(dt.getMonth() + 1) + p(dt.getDate());
+  const seq   = String(Math.floor(Math.random() * 9000) + 1000);
+  return 'NUV-' + stamp + '-' + seq;
+}
+
+
+/* ══════════════════════════════════════════
+   SENDING THE ORDER TO THE ORDER MANAGEMENT APP
+   The order is written into the same Firestore "logs" collection the
+   internal app already listens to, in exactly the record shape it expects,
+   so it appears in Records live — no copying, no re-typing.
+
+   The customer signs in anonymously. That is what lets the security rules
+   allow them to create their own order and nothing else: they cannot read
+   your records, your customers, or anybody else's order.
+   ══════════════════════════════════════════ */
+
+let cloudDb = null, cloudUid = null, cloudReady = false;
+
+function initCloud(){
+  try {
+    if (typeof firebase === 'undefined' || !firebase.initializeApp) return;
+    if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+    cloudDb = firebase.firestore();
+    firebase.auth().signInAnonymously()
+      .then(cred => {
+        cloudUid   = cred.user.uid;
+        cloudReady = true;
+        flushOrderQueue();
+      })
+      .catch(err => console.warn('Nuova: anonymous sign-in unavailable —', err && err.code));
+  } catch (e) {
+    console.warn('Nuova: cloud unavailable —', e);
+  }
+}
+window.addEventListener('nuova-firebase-ready', initCloud);
+setTimeout(initCloud, 3000);            // in case the event fired before this ran
+
+/* Translate one app order into the record the internal app stores. */
+function toAdminRecord(order){
+  const pay = order.payment || {};
+  return {
+    id:            order.no,
+    type:          'order',
+    customer:      order.customer.name,
+    city:          order.customer.city,
+    phone:         order.customer.phone,
+    tier:          'retail',
+    delivered:     false,
+    deliveryDate:  null,
+    items: order.items.map(i => ({
+      product:  i.cat || (i.name + ' (' + i.sz + ')'),
+      quantity: Number(i.qty),
+      unit:     i.unit || 'Bottles',
+      rate:     Number(i.rs)
+    })),
+    totalAmount:   Number(order.total),
+    date:          (order.at || new Date().toISOString()).slice(0, 10),
+
+    /* extras the internal app ignores but you can read on the record */
+    source:        'app',
+    orderNo:       order.no,
+    address:       order.customer.addr,
+    pincode:       order.customer.pin,
+    customerNote:  order.customer.note || '',
+    paymentMethod: pay.method || '',
+    paymentStatus: pay.status || 'Awaiting payment',
+    paymentUtr:    pay.utr || '',
+    paymentAt:     pay.at || '',
+    uid:           cloudUid
+  };
+}
+
+/* Create the order document. Safe to call more than once — same doc id. */
+function saveOrderToCloud(order){
+  if (!cloudDb || !cloudReady){ markSync(order, false); return Promise.resolve(false); }
+  return cloudDb.collection('logs').doc(order.no)
+    .set(Object.assign(toAdminRecord(order), {
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }))
+    .then(() => { markSync(order, true);  return true; })
+    .catch(err => { console.warn('Nuova: order not sent —', err && err.code); markSync(order, false); return false; });
+}
+
+/* Payment choice made after the order was created — update just those fields.
+   The rules allow the customer to touch these four keys and nothing else. */
+function updatePaymentInCloud(order){
+  if (!cloudDb || !cloudReady || !order || !order.synced) return Promise.resolve(false);
+  const pay = order.payment || {};
+  return cloudDb.collection('logs').doc(order.no).update({
+    paymentMethod: pay.method || '',
+    paymentStatus: pay.status || 'Awaiting payment',
+    paymentUtr:    pay.utr || '',
+    paymentAt:     pay.at || ''
+  }).then(() => true)
+    .catch(err => { console.warn('Nuova: payment update failed —', err && err.code); return false; });
+}
+
+function markSync(order, ok){
+  order.synced = ok;
+  const i = orders.findIndex(o => o.no === order.no);
+  if (i > -1) orders[i] = order;
+  store.set('orders', orders);
+  if (document.getElementById('s-orders').classList.contains('on')) renderOrders();
+}
+
+/* Anything that failed to go out — a dead spot, aeroplane mode, a slow CDN —
+   is retried as soon as we are back. */
+function flushOrderQueue(){
+  if (!cloudReady) return;
+  orders.filter(o => !o.synced).forEach(o => {
+    saveOrderToCloud(o).then(ok => { if (ok && o.payment && o.payment.method) updatePaymentInCloud(o); });
+  });
+}
+window.addEventListener('online', flushOrderQueue);
+
+
+/* ---------- WhatsApp ---------- */
+function orderText(o){
+  const lines = o.items.map(i => `• ${i.name} ${i.sz} × ${i.qty} — ₹${(i.rs * i.qty).toLocaleString('en-IN')}`).join('\n');
+  return `*NEW ORDER — ${o.no}*
+_Nuova Cold Pressed Oils_
+━━━━━━━━━━━━━━━━━━
+${lines}
+
+*Order value: ₹${o.total.toLocaleString('en-IN')}*
+━━━━━━━━━━━━━━━━━━
+*Name:* ${o.customer.name}
+*Mobile:* ${o.customer.phone}
+*Address:* ${o.customer.addr}, ${o.customer.city} - ${o.customer.pin}${o.customer.note ? `\n*Note:* ${o.customer.note}` : ''}
+━━━━━━━━━━━━━━━━━━
+*Payment:* ${(o.payment && o.payment.status) || 'Awaiting payment'}${o.payment && o.payment.utr ? `\n*UPI ref:* ${o.payment.utr}` : ''}
+
+_Placed from the Nuova app_`;
+}
+
+function waSend(o, auto){
+  return openExternal('https://wa.me/' + SHOP.whatsapp + '?text=' + encodeURIComponent(orderText(o)), auto);
+}
+
+function waCurrent(){ if (orders[0]) waSend(orders[0]); }
+
+function waPlain(){
+  openExternal('https://wa.me/' + SHOP.whatsapp + '?text=' +
+    encodeURIComponent('Hello Nuova, I have a question about your cold pressed oils.'));
+}
+
+/* ---------- orders ---------- */
+function renderOrders(){
+  const box = document.getElementById('ordersBody');
+  if (!orders.length){
+    box.innerHTML = `<div class="empty">
+      <svg viewBox="0 0 24 24"><path d="M5 3h14a1 1 0 011 1v17l-4-2.5L12 21l-4-2.5L4 21V4a1 1 0 011-1z"/><path d="M9 8h6M9 12h6"/></svg>
+      <h3>No orders yet</h3>
+      <p>Once you place an order it will show up here, and you can repeat it in one tap.</p>
+      <button class="btn btn--teal" onclick="go('shop')">Start an order</button>
+    </div>`;
+    return;
+  }
+
+  box.innerHTML = orders.map((o, idx) => {
+    const d = new Date(o.at);
+    const when = d.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+    const cls  = (o.status || 'Placed').toLowerCase();
+    return `<div class="ord">
+      <div class="top">
+        <div>
+          <div class="no">${o.no}</div>
+          <div class="dt">${when}</div>
+        </div>
+        <span class="chip ${cls}">${esc(o.status || 'Placed')}</span>
+      </div>
+      <div class="items">${o.items.map(i => `${esc(i.name.replace(' Oil',''))} ${i.sz} × ${i.qty}`).join('<br>')}</div>
+      <div class="payrow">${payChip(o)}${syncChip(o)}${payNeeded(o) ? `<button class="rep" onclick="payAgain(${idx})">Pay now</button>` : ''}</div>
+      <div class="foot">
+        <span class="amt">${rs(o.total)}</span>
+        <button class="rep" onclick="repeatOrder(${idx})">Order again</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function payNeeded(o){
+  return !o.payment || !o.payment.method;
+}
+
+function syncChip(o){
+  return o.synced
+    ? '<span class="paychip sent">Received by Nuova</span>'
+    : '<span class="paychip pending">Not sent yet</span>';
+}
+
+function payChip(o){
+  const st = (o.payment && o.payment.status) || 'Awaiting payment';
+  const cls = /claimed|paid/i.test(st) ? 'paid' : /delivery/i.test(st) ? 'cod' : 'unpaid';
+  return `<span class="paychip ${cls}">${esc(st)}</span>`;
+}
+
+function payAgain(idx){
+  const o = orders[idx];
+  if (o) openPayment(o);
+}
+
+function repeatOrder(idx){
+  const o = orders[idx];
+  if (!o) return;
+  o.items.forEach(i => {
+    const oil = byId(i.id);
+    if (!oil) return;
+    const pack = oil.packs.find(p => p.sz === i.sz);
+    if (!pack) return;                       // pack discontinued
+    const key = i.id + '|' + i.sz;
+    const found = cart.find(l => l.key === key);
+    if (found) found.qty = Math.min(99, found.qty + i.qty);
+    else cart.push({ key, id:oil.id, name:oil.name, mr:oil.mr, img:oil.img, sz:pack.sz, rs:pack.rs, qty:i.qty, cat:pack.key, unit:pack.unit });
+  });
+  saveCart();
+  toast('Added to your basket at today’s rates');
+  go('cart');
+}
+
+
+/* ══════════════════════════════════════════
+   UPI PAYMENT
+   The QR is generated on the phone from your bank's own QR parameters
+   (pa / pn / mc, decoded from the PNB card) with the amount and the order
+   number filled in. Nothing is fetched from the internet, so it works
+   offline and there is no third-party image service in the payment path.
+   ══════════════════════════════════════════ */
+
+/* Minimal QR Code encoder — byte mode, ECC level L/M, versions 1-10.
+   Written for the Nuova app so UPI payment QRs work with no internet
+   and no third-party image service. */
+function qrMatrix(text, ecLevel){
+  ecLevel = ecLevel || 'M';
+
+  /* ---- GF(256) ---- */
+  const EXP = new Uint8Array(512), LOG = new Uint8Array(256);
+  (function(){ let x = 1;
+    for (let i = 0; i < 255; i++){ EXP[i] = x; LOG[x] = i; x <<= 1; if (x & 0x100) x ^= 0x11D; }
+    for (let i = 255; i < 512; i++) EXP[i] = EXP[i - 255];
+  })();
+  const gmul = (a,b) => (a === 0 || b === 0) ? 0 : EXP[LOG[a] + LOG[b]];
+
+  function genPoly(n){
+    let p = new Uint8Array([1]);
+    for (let i = 0; i < n; i++){
+      const q = new Uint8Array(p.length + 1);
+      for (let j = 0; j < p.length; j++){ q[j] ^= p[j]; q[j+1] ^= gmul(p[j], EXP[i]); }
+      p = q;
+    }
+    return p;
+  }
+  function rsEcc(data, ecLen){
+    const g = genPoly(ecLen);
+    const r = new Uint8Array(data.length + ecLen);
+    r.set(data);
+    for (let i = 0; i < data.length; i++){
+      const c = r[i];
+      if (!c) continue;
+      for (let j = 0; j < g.length; j++) r[i+j] ^= gmul(g[j], c);
+    }
+    return r.slice(data.length);
+  }
+
+  /* ---- tables (versions 1-10) ---- */
+  const RS = {
+    L: [[1,26,19],[1,44,34],[1,70,55],[1,100,80],[1,134,108],[2,86,68],[2,98,78],[2,121,97],[2,146,116],[2,86,68,2,87,69]],
+    M: [[1,26,16],[1,44,28],[1,70,44],[2,50,32],[2,67,43],[4,43,27],[4,49,31],[2,60,38,2,61,39],[3,58,36,2,59,37],[4,69,43,1,70,44]]
+  };
+  const ALIGN = [[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50]];
+  const VERINFO = { 7:0x07C94, 8:0x085BC, 9:0x09A99, 10:0x0A4D3 };
+  const ECBITS  = { L:1, M:0, Q:3, H:2 };
+
+  /* ---- payload as UTF-8 bytes ---- */
+  const bytes = [];
+  for (const ch of unescape(encodeURIComponent(text))) bytes.push(ch.charCodeAt(0));
+
+  /* ---- pick the smallest version that fits ---- */
+  const blocksFor = v => {
+    const t = RS[ecLevel][v-1], out = [];
+    for (let i = 0; i < t.length; i += 3)
+      for (let k = 0; k < t[i]; k++) out.push({ total:t[i+1], data:t[i+2] });
+    return out;
+  };
+  let version = 0, blocks = null, dataCap = 0;
+  for (let v = 1; v <= 10; v++){
+    const b = blocksFor(v);
+    const cap = b.reduce((a,x) => a + x.data, 0);
+    const lenBits = v < 10 ? 8 : 16;
+    if (cap * 8 >= 4 + lenBits + bytes.length * 8){ version = v; blocks = b; dataCap = cap; break; }
+  }
+  if (!version) throw new Error('QR payload too long: ' + bytes.length + ' bytes');
+
+  /* ---- bit stream ---- */
+  const bits = [];
+  const push = (val, len) => { for (let i = len - 1; i >= 0; i--) bits.push((val >> i) & 1); };
+  push(4, 4);                                   // byte mode
+  push(bytes.length, version < 10 ? 8 : 16);    // character count
+  bytes.forEach(b => push(b, 8));
+  for (let i = 0; i < 4 && bits.length < dataCap * 8; i++) bits.push(0);   // terminator
+  while (bits.length % 8) bits.push(0);
+  const dataBytes = [];
+  for (let i = 0; i < bits.length; i += 8){
+    let b = 0; for (let j = 0; j < 8; j++) b = (b << 1) | bits[i+j];
+    dataBytes.push(b);
+  }
+  const PAD = [0xEC, 0x11];
+  for (let i = 0; dataBytes.length < dataCap; i++) dataBytes.push(PAD[i % 2]);
+
+  /* ---- split into blocks, compute ECC ---- */
+  let pos = 0;
+  const dBlocks = [], eBlocks = [];
+  blocks.forEach(b => {
+    const d = Uint8Array.from(dataBytes.slice(pos, pos + b.data));
+    pos += b.data;
+    dBlocks.push(d);
+    eBlocks.push(rsEcc(d, b.total - b.data));
+  });
+
+  /* ---- interleave ---- */
+  const finalBytes = [];
+  const maxD = Math.max(...dBlocks.map(b => b.length));
+  for (let i = 0; i < maxD; i++) dBlocks.forEach(b => { if (i < b.length) finalBytes.push(b[i]); });
+  const maxE = Math.max(...eBlocks.map(b => b.length));
+  for (let i = 0; i < maxE; i++) eBlocks.forEach(b => { if (i < b.length) finalBytes.push(b[i]); });
+
+  /* ---- module grid ---- */
+  const size = version * 4 + 17;
+  const mod = Array.from({length:size}, () => new Array(size).fill(null));   // null = free
+  const reserved = Array.from({length:size}, () => new Array(size).fill(false));
+
+  const setF = (r,c,v) => { mod[r][c] = v; reserved[r][c] = true; };
+
+  function finder(r0,c0){
+    for (let r = -1; r <= 7; r++) for (let c = -1; c <= 7; c++){
+      const r1 = r0 + r, c1 = c0 + c;
+      if (r1 < 0 || c1 < 0 || r1 >= size || c1 >= size) continue;
+      const on = (r >= 0 && r <= 6 && (c === 0 || c === 6)) ||
+                 (c >= 0 && c <= 6 && (r === 0 || r === 6)) ||
+                 (r >= 2 && r <= 4 && c >= 2 && c <= 4);
+      setF(r1, c1, on ? 1 : 0);
+    }
+  }
+  finder(0,0); finder(0,size-7); finder(size-7,0);
+
+  /* Alignment patterns go down BEFORE the timing pattern: on versions 7+
+     two of them sit on the timing row/column, and the alignment pattern
+     wins there. Only the three that would land on a finder are skipped. */
+  const ap = ALIGN[version-1];
+  const onFinder = (r,c) =>
+    (r < 8 && c < 8) || (r < 8 && c >= size-8) || (r >= size-8 && c < 8);
+  for (const r0 of ap) for (const c0 of ap){
+    if (onFinder(r0, c0)) continue;
+    for (let r = -2; r <= 2; r++) for (let c = -2; c <= 2; c++){
+      const on = Math.max(Math.abs(r), Math.abs(c)) !== 1;
+      setF(r0+r, c0+c, on ? 1 : 0);
+    }
+  }
+
+  // timing — fills only what the alignment patterns left free
+  for (let i = 8; i < size - 8; i++){
+    if (!reserved[6][i]) setF(6, i, i % 2 === 0 ? 1 : 0);
+    if (!reserved[i][6]) setF(i, 6, i % 2 === 0 ? 1 : 0);
+  }
+
+  // dark module + format areas reserved
+  setF(size-8, 8, 1);
+  for (let i = 0; i <= 8; i++){
+    if (!reserved[8][i] || i === 6) { if (i !== 6) reserved[8][i] = true; }
+    if (i !== 6) { reserved[8][i] = true; reserved[i][8] = true; }
+  }
+  reserved[8][8] = true;
+  for (let i = 0; i < 8; i++){ reserved[8][size-1-i] = true; reserved[size-1-i][8] = true; }
+
+  // version info area (v7+)
+  if (version >= 7){
+    for (let i = 0; i < 6; i++) for (let j = 0; j < 3; j++){
+      reserved[i][size-11+j] = true;
+      reserved[size-11+j][i] = true;
+    }
+  }
+
+  /* ---- place data in zigzag ---- */
+  let bi = 0;
+  const dataBits = [];
+  finalBytes.forEach(b => { for (let i = 7; i >= 0; i--) dataBits.push((b >> i) & 1); });
+
+  let up = true;
+  for (let col = size - 1; col > 0; col -= 2){
+    if (col === 6) col--;                       // skip vertical timing column
+    for (let n = 0; n < size; n++){
+      const row = up ? size - 1 - n : n;
+      for (let k = 0; k < 2; k++){
+        const c = col - k;
+        if (reserved[row][c]) continue;
+        mod[row][c] = bi < dataBits.length ? dataBits[bi++] : 0;
+      }
+    }
+    up = !up;
+  }
+
+  /* ---- masking ---- */
+  const MASKS = [
+    (r,c) => (r + c) % 2 === 0,
+    (r,c) => r % 2 === 0,
+    (r,c) => c % 3 === 0,
+    (r,c) => (r + c) % 3 === 0,
+    (r,c) => (Math.floor(r/2) + Math.floor(c/3)) % 2 === 0,
+    (r,c) => (r*c) % 2 + (r*c) % 3 === 0,
+    (r,c) => ((r*c) % 2 + (r*c) % 3) % 2 === 0,
+    (r,c) => ((r+c) % 2 + (r*c) % 3) % 2 === 0
+  ];
+
+  function formatBits(mask){
+    let v = (ECBITS[ecLevel] << 3) | mask;
+    let d = v << 10;
+    for (let i = 4; i >= 0; i--) if (d & (1 << (i + 10))) d ^= 0x537 << i;
+    return ((v << 10) | d) ^ 0x5412;
+  }
+
+  function applyFormat(grid, mask){
+    const f = formatBits(mask);
+    for (let i = 0; i < 15; i++){
+      const bit = (f >> i) & 1;
+      // vertical strip, top-left
+      if (i < 6)       grid[i][8] = bit;
+      else if (i < 8)  grid[i+1][8] = bit;
+      else if (i === 8) grid[8][7] = bit;
+      else             grid[8][14-i] = bit;
+      // horizontal strip
+      if (i < 8)       grid[8][size-1-i] = bit;
+      else             grid[size-15+i][8] = bit;
+    }
+    grid[size-8][8] = 1;                      // dark module
+    if (version >= 7){
+      const vi = VERINFO[version];
+      for (let i = 0; i < 18; i++){
+        const bit = (vi >> i) & 1;
+        const r = Math.floor(i / 3), c = i % 3;
+        grid[r][size-11+c] = bit;
+        grid[size-11+c][r] = bit;
+      }
+    }
+  }
+
+  function penalty(g){
+    let p = 0;
+    // rule 1 — runs of 5+
+    for (let i = 0; i < size; i++){
+      for (const line of [g[i], g.map(row => row[i])]){
+        let run = 1;
+        for (let j = 1; j < size; j++){
+          if (line[j] === line[j-1]) run++;
+          else { if (run >= 5) p += run - 2; run = 1; }
+        }
+        if (run >= 5) p += run - 2;
+      }
+    }
+    // rule 2 — 2x2 blocks
+    for (let r = 0; r < size-1; r++) for (let c = 0; c < size-1; c++)
+      if (g[r][c] === g[r][c+1] && g[r][c] === g[r+1][c] && g[r][c] === g[r+1][c+1]) p += 3;
+    // rule 3 — finder-like patterns
+    const PAT = [1,0,1,1,1,0,1,0,0,0,0];
+    const PATR = PAT.slice().reverse();
+    const scan = line => {
+      for (let i = 0; i + 11 <= size; i++){
+        let a = true, b = true;
+        for (let k = 0; k < 11; k++){ if (line[i+k] !== PAT[k]) a = false; if (line[i+k] !== PATR[k]) b = false; }
+        if (a || b) p += 40;
+      }
+    };
+    for (let i = 0; i < size; i++){ scan(g[i]); scan(g.map(row => row[i])); }
+    // rule 4 — dark/light balance
+    let dark = 0;
+    for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) if (g[r][c]) dark++;
+    p += Math.floor(Math.abs(dark * 100 / (size*size) - 50) / 5) * 10;
+    return p;
+  }
+
+  let best = null, bestScore = Infinity;
+  for (let m = 0; m < 8; m++){
+    const g = mod.map(row => row.slice());
+    for (let r = 0; r < size; r++) for (let c = 0; c < size; c++)
+      if (!reserved[r][c] && MASKS[m](r,c)) g[r][c] ^= 1;
+    applyFormat(g, m);
+    const s = penalty(g);
+    if (s < bestScore){ bestScore = s; best = g; }
+  }
+  return best;
+}
+
+/* Draw a matrix onto the canvas */
+function paintQr(canvas, text){
+  const m = qrMatrix(text, 'M');
+  const n = m.length, quiet = 4, total = n + quiet * 2;
+  const px = Math.max(3, Math.floor(300 / total));
+  canvas.width = canvas.height = total * px;
+  const g = canvas.getContext('2d');
+  g.fillStyle = '#FFFFFF'; g.fillRect(0, 0, canvas.width, canvas.height);
+  g.fillStyle = '#111111';
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++)
+    if (m[r][c]) g.fillRect((c + quiet) * px, (r + quiet) * px, px, px);
+}
+
+/* Build the UPI URI for one order */
+function upiUri(order){
+  /* Built by hand rather than with URLSearchParams: that would write the @ in
+     the VPA as %40 and spaces as +, and some UPI apps show the merchant name
+     literally as "SHRI+JAGDAMBA+INDUSTRY". This mirrors the PNB QR exactly. */
+  const q = [
+    'pa=' + SHOP.upi,                                  // @ stays literal
+    'pn=' + encodeURIComponent(SHOP.upiName),          // spaces become %20
+    'mc=' + SHOP.upiMc,
+    'am=' + Number(order.total).toFixed(2),
+    'cu=INR',
+    'tn=' + encodeURIComponent('Nuova ' + order.no),
+    'mode=02'
+  ];
+  return 'upi://pay?' + q.join('&');
+}
+
+let payingOrder = null;
+
+function openPayment(order){
+  payingOrder = order;
+  document.getElementById('payNo').textContent  = 'Order ' + order.no;
+  document.getElementById('payAmt').textContent = rs(order.total);
+  document.getElementById('payVpa').textContent = SHOP.upi;
+  document.getElementById('payNowLabel').textContent = 'Pay ' + rs(order.total) + ' in my UPI app';
+  document.getElementById('freightNote').innerHTML =
+    'This is the value of the oils. If your order needs couriering, we will quote the freight on WhatsApp and collect it separately — never without telling you first.';
+
+  try {
+    paintQr(document.getElementById('payQr'), upiUri(order));
+  } catch (e) {
+    console.warn('QR build failed:', e);
+    document.querySelector('.qrbox').innerHTML =
+      '<p style="font-size:13.5px;color:var(--muted);padding:20px;line-height:1.5;max-width:210px">' +
+      'Could not draw the QR here. Tap <b>Trouble scanning?</b> below for our standard QR, ' +
+      'or pay to <b>' + SHOP.upi + '</b> and enter ' + rs(order.total) + ' yourself.</p>';
+  }
+  go('pay');
+}
+
+function openUpiApp(){
+  if (!payingOrder) return;
+  const uri = upiUri(payingOrder);
+  if (iOS){
+    /* iPhone has no single UPI chooser the way Android does, so if nothing
+       picks the link up the customer still has the QR in front of them. */
+    const t = setTimeout(() => toast('No UPI app opened — scan the QR above instead'), 2200);
+    window.addEventListener('pagehide', () => clearTimeout(t), { once:true });
+  }
+  window.location.href = uri;
+}
+
+function copyVpa(){
+  const done = () => { const b = document.getElementById('copyBtn'); if (b) b.textContent = 'UPI ID copied'; toast('UPI ID copied'); };
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(SHOP.upi).then(done).catch(fallbackCopy);
+  } else fallbackCopy();
+
+  function fallbackCopy(){
+    const ta = document.createElement('textarea');
+    ta.value = SHOP.upi; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); } catch(e){ toast(SHOP.upi); }
+    document.body.removeChild(ta);
+  }
+}
+
+/* The printed bank QR, as a safety net */
+function showBankQr(){
+  document.getElementById('sheetBody').innerHTML = `
+    <h2 style="font-size:20px;text-transform:uppercase;margin-bottom:4px">Our standard QR</h2>
+    <p class="pk-note" style="margin-bottom:14px">This is the QR from our bank. It does not carry the amount, so type
+      <b>${rs(payingOrder ? payingOrder.total : 0)}</b> into your UPI app yourself${payingOrder ? `, and put <b>${payingOrder.no}</b> in the note` : ''}.</p>
+    <img src="img/bankqr.jpg" alt="Shri Jagdamba Industry BHIM UPI QR code"
+         style="width:100%;max-width:300px;margin:0 auto;border-radius:12px;border:1px solid var(--line)">
+    <div style="height:16px"></div>
+    <button class="btn btn--teal" onclick="closeSheet()">Done</button>`;
+  openSheetUI();
+}
+
+/* The customer says they have paid. We cannot verify it here — the app has no
+   gateway — so it is recorded as claimed and checked against the bank. */
+function markPaid(){
+  if (!payingOrder) { go('orders'); return; }
+  document.getElementById('sheetBody').innerHTML = `
+    <h2 style="font-size:20px;text-transform:uppercase;margin-bottom:4px">Thank you</h2>
+    <p class="pk-note" style="margin-bottom:16px">If your UPI app showed a reference or UTR number, adding it here helps us match your payment straight away. You can also leave it blank.</p>
+    <div class="field" style="margin-bottom:16px">
+      <label>UPI reference / UTR (optional)</label>
+      <input id="i-utr" type="text" inputmode="numeric" placeholder="e.g. 431209876543" maxlength="24">
+    </div>
+    <button class="btn btn--teal" onclick="confirmPaid()">Confirm</button>`;
+  openSheetUI();
+}
+
+function confirmPaid(){
+  const utrEl = document.getElementById('i-utr');
+  const utr = utrEl ? utrEl.value.trim() : '';
+  setPayment(payingOrder, { method:'UPI', status:'Payment claimed', utr:utr, at:new Date().toISOString() });
+  closeSheet();
+  finishPayment('Thank you. We will confirm as soon as the payment shows in our account.');
+}
+
+function payLater(){
+  setPayment(payingOrder, { method:'Cash on delivery', status:'Pay on delivery', utr:'', at:new Date().toISOString() });
+  finishPayment('Noted — please keep the amount ready at delivery.');
+}
+
+function setPayment(order, pay){
+  if (!order) return;
+  order.payment = pay;
+  const i = orders.findIndex(o => o.no === order.no);
+  if (i > -1) orders[i] = order;
+  store.set('orders', orders);
+  if (order.synced) updatePaymentInCloud(order);
+  else saveOrderToCloud(order);          // first attempt failed — try the whole record again
+}
+
+function finishPayment(extra){
+  const o = payingOrder;
+  document.getElementById('doneNo').textContent = o ? o.no : '';
+  document.getElementById('doneMsg').textContent =
+    (o ? `Thank you ${o.customer.name.split(' ')[0]}. ` : '') + extra +
+    ' We will call or WhatsApp you to confirm the delivery. Monday to Saturday, 9 to 7.';
+  go('done');
+  setTimeout(() => {
+    if (o && !waSend(o, true)) nudgeWhatsApp();
+  }, 700);
+}
+
+/* ══════════════════════════════════════════
+   PLATFORM DETECTION
+   ══════════════════════════════════════════ */
+const UA  = navigator.userAgent || '';
+const iOS = /iPad|iPhone|iPod/.test(UA) ||
+            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+/* An installed home-screen app, on either platform */
+const standalone = window.matchMedia('(display-mode: standalone)').matches ||
+                   window.navigator.standalone === true;
+
+/* Real Safari, as opposed to Chrome/Firefox/Edge on iOS — only Safari can
+   Add to Home Screen. Also catches Instagram / Facebook in-app browsers,
+   where installing is impossible. */
+const inAppBrowser = /FBAN|FBAV|Instagram|Line\/|Twitter|LinkedInApp|Snapchat|Pinterest|MicroMessenger/i.test(UA);
+const iOSChromeLike = iOS && /CriOS|FxiOS|EdgiOS|OPiOS/i.test(UA);
+const iOSCanInstall = iOS && !inAppBrowser && !iOSChromeLike;
+
+document.documentElement.dataset.platform = iOS ? 'ios' : 'other';
+if (standalone) document.documentElement.dataset.mode = 'app';
+
+/* ══════════════════════════════════════════
+   OPENING WHATSAPP / PHONE FROM THE APP
+   In an installed iOS app window.open() is a dead end — the tab it wants
+   simply never appears. Navigating the window hands the URL to iOS, which
+   switches to WhatsApp and keeps the app alive behind it.
+
+   Pass auto=true for an attempt the customer did not tap. Browsers block
+   popups that are not user-initiated, and in that case we must NOT fall back
+   to navigating the window — that would throw the customer out of their
+   order confirmation. We return false instead and let them tap the button.
+   ══════════════════════════════════════════ */
+function openExternal(url, auto){
+  if (iOS && standalone){
+    if (auto) return false;                  // would navigate away from the confirmation
+    window.location.href = url;
+    return true;
+  }
+  let w = null;
+  try { w = window.open(url, '_blank', 'noopener'); } catch(e){}
+  if (w) return true;
+  if (auto) return false;                    // blocked, and nobody asked for it
+  window.location.href = url;                // they tapped — take them there
+  return true;
+}
+
+/* ══════════════════════════════════════════
+   INSTALL
+   ══════════════════════════════════════════ */
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallBar('android');
+  renderHelpInstall();
+});
+
+window.addEventListener('appinstalled', () => {
+  hideInstall(true);
+  toast('Nuova is on your home screen');
+});
+
+function showInstallBar(mode){
+  if (standalone || store.get('installDismissed', false)) return;
+  const bar = document.getElementById('installBar');
+  const tip = document.getElementById('installTip');
+  const go  = document.getElementById('installGo');
+
+  if (mode === 'ios'){
+    tip.textContent = 'Two taps in Safari — I will show you';
+    go.textContent  = 'How';
+    go.onclick      = showIosSteps;
+  }
+  setTimeout(() => {
+    bar.classList.add('on');
+    document.body.classList.add('has-install');
+  }, 2500);
+}
+
+function doInstall(){
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.finally(() => { deferredPrompt = null; hideInstall(false); });
+}
+
+function hideInstall(remember){
+  document.getElementById('installBar').classList.remove('on');
+  document.body.classList.remove('has-install');
+  if (remember) store.set('installDismissed', true);
+}
+
+/* The Add to Home Screen walkthrough for iPhone / iPad */
+function showIosSteps(){
+  document.getElementById('sheetBody').innerHTML = `
+    <h2 style="font-size:21px;text-transform:uppercase;margin-bottom:4px">Add Nuova to your iPhone</h2>
+    <p class="pk-note" style="margin-bottom:18px">It takes two taps, and afterwards Nuova opens like any other app — full screen, no address bar, and it works without internet.</p>
+    <ol class="steps">
+      <li>Tap the <b>Share</b> button
+        <span class="shareicon"><svg viewBox="0 0 24 24"><path d="M12 15V3"/><path d="M8 7l4-4 4 4"/><path d="M5 12v7a1 1 0 001 1h12a1 1 0 001-1v-7"/></svg></span>
+        at the bottom of Safari
+        <small>On an iPad it is at the top right.</small>
+      </li>
+      <li>Scroll down and tap <b>Add to Home Screen</b>
+        <span class="plusicon">+</span>
+      </li>
+      <li>Tap <b>Add</b> at the top right
+        <small>The Nuova icon appears on your home screen.</small>
+      </li>
+    </ol>
+    <button class="btn btn--teal" onclick="closeSheet()">Got it</button>`;
+  openSheetUI();
+}
+
+/* iPhone in Safari — no beforeinstallprompt exists, so prompt manually */
+if (iOSCanInstall && !standalone) showInstallBar('ios');
+
+/* Opened inside Instagram / Facebook — installing is not possible there */
+function renderBrowserWarning(){
+  if (!inAppBrowser && !iOSChromeLike) return;
+  if (standalone) return;
+
+  const box = document.getElementById('browserWarn');
+  if (inAppBrowser){
+    box.innerHTML = `<div class="warn">
+      <b>Open in your browser</b>
+      <p>You are viewing this inside another app, so it cannot be added to your home screen. Tap the ⋯ menu at the top and choose <b>Open in ${iOS ? 'Safari' : 'Chrome'}</b> — then you can install Nuova properly. Ordering works fine here either way.</p>
+    </div>`;
+  } else if (iOSChromeLike){
+    box.innerHTML = `<div class="warn">
+      <b>Use Safari to install</b>
+      <p>On iPhone only Safari can add an app to the home screen. Copy this page's address into Safari to install Nuova. Ordering works fine here either way.</p>
+    </div>`;
+  }
+}
+
+/* An install row on the Help screen, so it is always findable */
+function renderHelpInstall(){
+  const box = document.getElementById('helpInstall');
+  if (!box) return;
+  if (standalone){
+    box.innerHTML = `<div class="info" style="background:var(--teal-soft);border-color:#BFE0DA">
+      <h4 style="color:var(--teal-dark)">Installed</h4>
+      <p style="color:var(--teal-dark)">Nuova is on your home screen and works offline.</p>
+    </div>`;
+    return;
+  }
+  if (iOSCanInstall){
+    box.innerHTML = `<div class="info">
+      <h4>Add to home screen</h4>
+      <p style="margin-bottom:12px">Keep Nuova one tap away, and order without opening the browser.</p>
+      <button class="btn btn--teal sm" onclick="showIosSteps()">Show me how</button>
+    </div>`;
+  } else if (deferredPrompt){
+    box.innerHTML = `<div class="info">
+      <h4>Add to home screen</h4>
+      <p style="margin-bottom:12px">Keep Nuova one tap away, and order without opening the browser.</p>
+      <button class="btn btn--teal sm" onclick="doInstall()">Install the app</button>
+    </div>`;
+  }
+}
+
+/* ---------- iOS keyboard: lift the fixed nav out of the way ----------
+   focusin/focusout catch the common case; visualViewport is the reliable
+   backstop, because iOS does not always fire focusout when the keyboard
+   is dismissed with the Done button or a swipe. */
+if (iOS){
+  const vv = window.visualViewport;
+
+  const settle = () => {
+    const focused = document.querySelector('input:focus, textarea:focus');
+    const kbUp = vv ? (window.innerHeight - vv.height) > 120 : !!focused;
+    document.body.classList.toggle('kb', kbUp && !!focused);
+  };
+
+  document.addEventListener('focusin',  e => { if (e.target.matches('input, textarea')) document.body.classList.add('kb'); });
+  document.addEventListener('focusout', e => { if (e.target.matches('input, textarea')) setTimeout(settle, 150); });
+  if (vv) vv.addEventListener('resize', settle);
+  window.addEventListener('orientationchange', () => setTimeout(settle, 300));
+}
+
+/* ---------- service worker ---------- */
+if ('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(e => console.warn('SW failed', e));
+  });
+}
+
+/* ---------- boot ---------- */
+renderGrid();
+saveCart();
+renderBrowserWarning();
+renderHelpInstall();
+if (orders.length) renderOrders();
+
+/* home-screen shortcut: index.html?go=orders */
+(function(){
+  const want = new URLSearchParams(location.search).get('go');
+  if (want && document.getElementById('s-' + want)) go(want);
+})();
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>window.dispatchEvent(new Event('nuova-firebase-ready'));</script>
+</body>
+</html>

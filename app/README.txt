@@ -1,56 +1,49 @@
-NUOVA CUSTOMER APP — STEP 1c (UPI payment)
-==========================================
+NUOVA — STEP 2: THE TWO APPS ARE NOW LINKED
+===========================================
+Customer app  →  Firestore "logs"  →  your Order Management app (live)
 
-WHAT IS NEW
-After the customer fills in their delivery details and taps Place Order,
-they now land on a PAYMENT screen:
+WHAT IS IN THIS PACKAGE
+  app/                  the customer app (upload to your NUOVASITE repo)
+  admin-index.html      your Order Management app, updated — see below
+  firestore.rules       the security rules to paste into Firebase
+  SETUP.txt             the 15-minute setup, in order
 
-  • A QR code with the EXACT amount and the order number already in it
-  • "Pay ₹___ in my UPI app" — opens GPay / PhonePe / Paytm on the phone
-  • The UPI ID with a Copy button
-  • "Trouble scanning?" shows your printed PNB bank QR as a fallback
-  • "I have paid" — with an optional UTR / reference box
-  • "I will pay on delivery"
+DO THE SETUP FIRST (SETUP.txt). If you upload the apps before the Firebase
+settings are in place, sign-in will fail and orders will not go through.
 
-The WhatsApp order you receive now carries the payment status and the UTR,
-so you can match it against your bank. Unpaid orders keep a "Pay now"
-button in the customer's Orders tab, so they can come back and pay later.
+PRICES ARE NOW YOUR REAL RATES
+The customer app used to quote the old website prices. It now uses the
+RETAIL column of CATALOG_RATES from your Order Management app:
 
-WHERE THE QR COMES FROM
-Your PNB QR was decoded. It contains:
-   pa=7350071696m@pnb   pn=SHRI JAGDAMBA INDUSTRY   mc=5099
-with the amount field deliberately left blank. The app rebuilds that same
-QR on the phone with the amount and order number filled in. The QR is drawn
-by the app itself — no internet, no third-party QR service in the payment
-path, so it works even on a weak connection.
+              200 ml   500 ml    1 ltr    5 ltr
+  Groundnut      105      155      285     1350
+  Sunflower      125      180      335     1590
+  Safflower      140      205      380     1805
+  Coconut        175      255      470        -
+  Mustard        115      170      315     1495
+  Sesame         155      225      410        -
+  Flaxseed       130      185      345        -
 
-IMPORTANT — THIS IS NOT A PAYMENT GATEWAY
-The app cannot confirm that money actually arrived. "I have paid" is the
-customer telling you so. ALWAYS check your PNB account or BHIM app before
-dispatching. The UTR the customer enters is what lets you match a payment
-to an order quickly.
+You were quoting BELOW these on every single oil. Your website
+(nuovashop.com index.html) still carries the old figures — worth fixing.
 
-HOW TO UPDATE THE LIVE APP
-1. Unzip. Rename the unzipped folder to  app
-2. github.com → NUOVASITE → repo ROOT → Add file → Upload files
-3. Drag the  app  folder in. Commit.
-4. Close the app fully on your phone and reopen it.
-   (Service worker bumped to nuova-v3, so the new build is picked up.)
+STILL PROVISIONAL — 100 ml
+Your catalogue has no 100 ml rate. Until you send them, the app charges
+Coconut 105, Sesame 95, Flaxseed 80 and each pack is marked
+provisional:true in the price block. Send the real rates and add matching
+'Coconut Oil (100 ml)' style entries to CATALOG_RATES.
 
-TESTING THE PAYMENT
-Place a small test order — say one 200 ml bottle. On the payment screen,
-scan the QR with your own GPay or PhonePe from a SECOND phone. The amount
-and the note "Nuova NUV-…" should already be filled in. Do not complete
-the payment unless you want to pay yourself.
+CHECK THIS: 'Flaxseed Oil (1 ltr)' in your app is retail 345 / wholesale 345.
+Every other oil has a lower wholesale rate. Looks like a typo.
 
-CHANGING PRICES
-index.html →  ▼▼▼ PRICE LIST — EDIT ONLY THIS BLOCK ▼▼▼
-Then bump 'nuova-v3' to 'nuova-v4' in sw.js.
+WHAT YOU WILL SEE
+A customer order appears in Records within a second or two, tagged with a
+teal "App" badge and its payment status. Tax invoice, delivery toggle,
+Excel export and the dashboard all work on it exactly like an order you
+typed yourself.
 
-STILL PROVISIONAL
-Only the 1 litre rates are real. The 100 ml, 200 ml, 500 ml and 5 L rates
-are estimates until you send the actual price list.
-
-NEXT
-  Step 2 — orders saving into Firebase
-  Step 3 — live order status (Placed / Confirmed / Dispatched / Delivered)
+CHANGING PRICES FROM NOW ON
+Change them in BOTH files, using the same product key:
+  1. admin-index.html  → CATALOG_RATES
+  2. app/index.html    → the PRICE LIST block
+Then bump 'nuova-v4' to 'nuova-v5' in app/sw.js.

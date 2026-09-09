@@ -1,0 +1,79 @@
+rules_version = '2';
+
+// ════════════════════════════════════════════════════════════════
+//  SHRI JAGDAMBA INDUSTRY — Firestore security rules
+//  Project: shri-jagdamba-monitor
+//
+//  Two kinds of visitor:
+//    STAFF     — Shreeram / Smita, signed in with email + password.
+//                Full access to everything.
+//    CUSTOMER  — anyone using the Nuova app, signed in anonymously.
+//                May create their own order and later mark it paid.
+//                May read that one order and nothing else.
+//
+//  A customer can NEVER read your records, your customer directory,
+//  your seed and cost data, or another customer's name, phone or address.
+// ════════════════════════════════════════════════════════════════
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn()   { return request.auth != null; }
+    function provider()   { return request.auth.token.firebase.sign_in_provider; }
+    function isStaff()    { return signedIn() && provider() == 'password'; }
+    function isCustomer() { return signedIn() && provider() == 'anonymous'; }
+
+    function d()          { return request.resource.data; }
+
+    // An order the Nuova app is allowed to create.
+    // Deliberately strict: right type, own uid, sane numbers, no delivery
+    // flag set by the customer, and a size cap so nobody can dump junk in.
+    function validAppOrder() {
+      return d().type == 'order'
+          && d().source == 'app'
+          && d().uid == request.auth.uid
+          && d().delivered == false
+          && d().customer is string  && d().customer.size()  > 1   && d().customer.size()  < 80
+          && d().phone    is string  && d().phone.size()    == 10
+          && d().city     is string  && d().city.size()      < 60
+          && d().address  is string  && d().address.size()   < 300
+          && d().totalAmount is number && d().totalAmount > 0 && d().totalAmount < 500000
+          && d().items is list && d().items.size() > 0 && d().items.size() <= 30
+          && d().date is string
+          && d().keys().size() <= 24;
+    }
+
+    // After paying, the customer may touch these four fields and no others.
+    function onlyPaymentFieldsChanged() {
+      return d().diff(resource.data).affectedKeys()
+               .hasOnly(['paymentMethod', 'paymentStatus', 'paymentUtr', 'paymentAt']);
+    }
+
+    // ── Orders, production, purchases, everything the business records ──
+    match /logs/{docId} {
+      allow read:   if isStaff()
+                    || (isCustomer() && resource.data.uid == request.auth.uid);
+
+      allow create: if isStaff()
+                    || (isCustomer() && validAppOrder());
+
+      allow update: if isStaff()
+                    || (isCustomer()
+                        && resource.data.uid == request.auth.uid
+                        && resource.data.source == 'app'
+                        && onlyPaymentFieldsChanged());
+
+      allow delete: if isStaff();
+    }
+
+    // ── Customer directory — staff only, never public ──
+    match /customers/{docId} {
+      allow read, write: if isStaff();
+    }
+
+    // ── Anything else added later stays closed until you open it ──
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

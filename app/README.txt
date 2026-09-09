@@ -1,43 +1,45 @@
-NUOVA CUSTOMER APP — STEP 1
-===========================
+NUOVA CUSTOMER APP — STEP 1b (iPhone support)
+=============================================
 
-WHAT THIS IS
-An installable web app (PWA) for your customers. It works on Android and
-iPhone, costs nothing, and needs no app store.
+WHAT CHANGED SINCE THE FIRST UPLOAD
+  • iPhone launch screens — no more white flash when the app opens
+  • An "Add to Home Screen" walkthrough for Safari, with the real icons
+  • WhatsApp now opens correctly from inside an installed iPhone app
+  • The order confirmation is never navigated away from
+  • Bottom bar gets out of the way when the iPhone keyboard is up
+  • Warning when opened inside Instagram / Facebook, where installing fails
+  • Install bar no longer covers the products or the sheet
+  • New folder: splash/
 
-FILES
-  index.html              the whole app
-  manifest.webmanifest    makes it installable (name, icon, colours)
-  sw.js                   offline cache — the app opens without internet
-  icons/                  app icons for the home screen
-  img/                    your bottle photos, taken from nuovashop.com
+HOW TO UPDATE THE LIVE APP
+1. Unzip this package. Rename the unzipped folder to  app
+2. github.com → NUOVASITE repo → at the ROOT (not inside a folder)
+   → Add file → Upload files
+3. Drag the  app  folder in. GitHub will overwrite the changed files
+   and add the new splash/ folder.
+4. Commit. Vercel redeploys in under a minute.
+5. On your phone, close the app fully and reopen it. The service worker
+   version was bumped to nuova-v2, so the new build is picked up.
 
-HOW TO PUT IT LIVE
-1. In your existing "nuovashop" GitHub repo, create a folder called  app
-2. Upload every file and folder from this package into it, keeping the
-   folder structure exactly as it is.
-3. Commit. Vercel deploys automatically.
-4. Open  https://www.nuovashop.com/app/  on your phone.
-
-HOW A CUSTOMER INSTALLS IT
-  Android (Chrome) : a black bar appears at the bottom — tap INSTALL.
-  iPhone  (Safari) : tap the Share button, then "Add to Home Screen".
-Either way they get a Nuova icon on their home screen.
+TESTING ON AN IPHONE
+  • Open https://www.nuovashop.com/app/ in SAFARI (not Chrome — on iPhone
+    only Safari can install a home-screen app)
+  • A black bar appears: tap HOW for the walkthrough
+  • Share → Add to Home Screen → Add
+  • Open the Nuova icon. You should see the teal launch screen, then the
+    app full screen with no address bar.
 
 CHANGING PRICES
-Open index.html and look for the block marked
+Open index.html, find the block marked
      ▼▼▼ PRICE LIST — EDIT ONLY THIS BLOCK ▼▼▼
-Every rate is there in plain numbers. Change them, save, upload.
-Then open sw.js and change  'nuova-v1'  to  'nuova-v2'  so every
-customer's phone picks up the new prices.
+Change the numbers, save, upload. Then open sw.js and change
+'nuova-v2' to 'nuova-v3' so every phone picks up the new rates.
 
-IMPORTANT — THE PACK PRICES ARE PROVISIONAL
-Only the 1 litre rates are real (taken from your website). The 100 ml,
-200 ml, 500 ml and 5 L rates are estimates. Send the real rate list and
-they will be corrected.
+STILL PROVISIONAL
+Only the 1 litre rates are real. The 100 ml, 200 ml, 500 ml and 5 L rates
+are estimates until you send the actual price list.
 
-WHAT IS NOT DONE YET
+NEXT STEPS
   Step 2 — orders saving into Firebase
   Step 3 — live order status (Placed / Confirmed / Dispatched / Delivered)
   Step 4 — UPI payment at checkout
-  Step 5 — publishing and install testing on both phones

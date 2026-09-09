@@ -8,11 +8,26 @@
 <meta name="theme-color" content="#108474">
 
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+
+<!-- ─── iOS / iPadOS home-screen app ─── -->
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Nuova">
-<link rel="icon" href="icons/icon-192.png">
+<meta name="format-detection" content="telephone=no">
+
+<!-- iPhone launch screens (stops the white flash on open) -->
+<link rel="apple-touch-startup-image" href="splash/750x1334.png"  media="(device-width:375px) and (device-height:667px) and (-webkit-device-pixel-ratio:2)">
+<link rel="apple-touch-startup-image" href="splash/828x1792.png"  media="(device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:2)">
+<link rel="apple-touch-startup-image" href="splash/1125x2436.png" media="(device-width:375px) and (device-height:812px) and (-webkit-device-pixel-ratio:3)">
+<link rel="apple-touch-startup-image" href="splash/1170x2532.png" media="(device-width:390px) and (device-height:844px) and (-webkit-device-pixel-ratio:3)">
+<link rel="apple-touch-startup-image" href="splash/1179x2556.png" media="(device-width:393px) and (device-height:852px) and (-webkit-device-pixel-ratio:3)">
+<link rel="apple-touch-startup-image" href="splash/1242x2688.png" media="(device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:3)">
+<link rel="apple-touch-startup-image" href="splash/1284x2778.png" media="(device-width:428px) and (device-height:926px) and (-webkit-device-pixel-ratio:3)">
+<link rel="apple-touch-startup-image" href="splash/1290x2796.png" media="(device-width:430px) and (device-height:932px) and (-webkit-device-pixel-ratio:3)">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,14 +45,21 @@
   --safe-b:env(safe-area-inset-bottom,0px);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0}
+html,body{margin:0;padding:0;overscroll-behavior-y:none}
+html{background:var(--band)}          /* iOS bounce shows this, not white */
 body{
   background:var(--band);color:var(--body);
   font-family:var(--text);font-size:17px;line-height:1.6;
   -webkit-font-smoothing:antialiased;
+  -webkit-text-size-adjust:100%;
   padding-bottom:calc(var(--bar) + var(--safe-b));
-  overscroll-behavior-y:none;
 }
+/* extra room so the install bar never sits on top of content */
+body.has-install{padding-bottom:calc(var(--bar) + var(--safe-b) + 84px)}
+/* iOS: when the keyboard is up, get the fixed nav out of the way */
+body.kb .nav{display:none}
+body.kb{padding-bottom:24px}
+body.kb .install{display:none}
 h1,h2,h3,h4{font-family:var(--head);color:var(--ink);margin:0;font-weight:500;letter-spacing:.02em}
 button{font-family:inherit;font-size:inherit;cursor:pointer;border:0;background:none;color:inherit}
 input,textarea,select{font-family:inherit;font-size:16px}
@@ -139,6 +161,12 @@ img{display:block;max-width:100%}
 .btn--orange{background:var(--orange);color:#fff}
 .btn:disabled{opacity:.45}
 .btn.sm{padding:11px;font-size:12px}
+.btn.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,.55)}
+  55%{box-shadow:0 0 0 12px rgba(37,211,102,0)}
+}
+@media (prefers-reduced-motion:reduce){.btn.pulse{animation:none;outline:2px solid var(--orange);outline-offset:2px}}
 
 /* ---------- Cart ---------- */
 .line{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;gap:12px;margin-bottom:10px}
@@ -230,6 +258,25 @@ img{display:block;max-width:100%}
   display:grid;place-items:center;border:2px solid #fff}
 
 /* ---------- Toast / install ---------- */
+/* ---------- iOS install steps ---------- */
+.steps{margin:4px 0 0;padding:0;list-style:none;counter-reset:st}
+.steps li{position:relative;padding:0 0 16px 44px;counter-increment:st;font-size:15.5px;line-height:1.5;color:var(--ink)}
+.steps li:before{
+  content:counter(st);position:absolute;left:0;top:-1px;width:30px;height:30px;border-radius:50%;
+  background:var(--teal-soft);color:var(--teal-dark);font-family:var(--head);font-size:14px;
+  font-weight:600;display:grid;place-items:center}
+.steps li small{display:block;color:var(--muted);font-size:13.5px;margin-top:2px}
+.shareicon{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:7px;
+  background:#F0F0F2;vertical-align:-8px;margin:0 2px}
+.shareicon svg{width:15px;height:15px;stroke:#007AFF;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.plusicon{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:7px;
+  background:#F0F0F2;color:var(--ink);vertical-align:-8px;margin:0 2px;font-size:17px;font-family:var(--head)}
+
+/* ---------- in-app browser warning ---------- */
+.warn{background:#FFF4E2;border:1px solid #F5D9AB;border-radius:14px;padding:14px 16px;margin:14px 0}
+.warn b{font-family:var(--head);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--orange-dark);display:block;margin-bottom:5px}
+.warn p{margin:0;font-size:14.5px;line-height:1.5;color:#7A5216}
+
 .toast{position:fixed;left:50%;bottom:calc(var(--bar) + var(--safe-b) + 14px);transform:translate(-50%,20px);
   background:var(--ink);color:#fff;padding:11px 18px;border-radius:24px;font-size:14px;
   z-index:80;opacity:0;transition:.24s;pointer-events:none;max-width:88vw;text-align:center}
@@ -238,6 +285,7 @@ img{display:block;max-width:100%}
   background:var(--ink);color:#fff;border-radius:15px;padding:13px 15px;display:none;
   align-items:center;gap:12px;max-width:616px;margin:0 auto}
 .install.on{display:flex}
+body.sheet-open .install{display:none}
 .install img{width:36px;height:36px;border-radius:9px;flex:none}
 .install .t{flex:1;min-width:0}
 .install b{display:block;font-family:var(--head);font-size:14px;letter-spacing:.04em}
@@ -281,6 +329,7 @@ img{display:block;max-width:100%}
       </div>
     </div>
   </div>
+  <div class="wrap" id="browserWarn"></div>
   <div class="wrap">
     <h2 class="sect-h">Our Oils</h2>
     <div class="grid" id="grid"></div>
@@ -365,9 +414,12 @@ img{display:block;max-width:100%}
       <div class="no" id="doneNo"></div>
       <p id="doneMsg"></p>
     </div>
-    <button class="btn btn--wa" onclick="waCurrent()">
+    <p id="waHint" style="display:none;text-align:center;font-size:14.5px;color:var(--orange-dark);background:#FFF4E2;border-radius:12px;padding:11px 14px;margin:0 0 12px">
+      One last tap — send the order across so we receive it.
+    </p>
+    <button class="btn btn--wa" id="waBtn" onclick="waCurrent()">
       <svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 01-12.6 7.3L3 20.5l1.8-5.2A8.4 8.4 0 1121 11.5z"/></svg>
-      Send it on WhatsApp too
+      Send it on WhatsApp
     </button>
     <div style="height:10px"></div>
     <button class="btn btn--line" onclick="go('orders')">See my orders</button>
@@ -390,6 +442,8 @@ img{display:block;max-width:100%}
 <section class="screen" id="s-help">
   <div class="wrap">
     <h2 class="sect-h" style="margin-top:18px">Nuova</h2>
+
+    <div id="helpInstall"></div>
 
     <div class="info">
       <h4>Talk to us</h4>
@@ -425,7 +479,7 @@ img{display:block;max-width:100%}
 
     <div class="info">
       <h4>Website</h4>
-      <p><a href="https://www.nuovashop.com" target="_blank" rel="noopener">www.nuovashop.com</a></p>
+      <p><a href="https://www.nuovashop.com" onclick="openExternal('https://www.nuovashop.com');return false;">www.nuovashop.com</a></p>
     </div>
 
     <div style="text-align:center;color:var(--muted);font-size:13px;padding:14px 0 4px">
@@ -553,6 +607,7 @@ function go(screen){
   if (screen === 'cart')     renderCart();
   if (screen === 'orders')   renderOrders();
   if (screen === 'checkout') renderCheckoutTotal();
+  if (screen === 'help')     renderHelpInstall();
 
   window.scrollTo({ top:0, behavior:'instant' in window ? 'instant' : 'auto' });
   closeSheet();
@@ -590,13 +645,19 @@ function openSheet(id){
   if (sheetPack < 0) sheetPack = sheetOil.packs.length - 1;
   sheetQty = 1;
   drawSheet();
+  openSheetUI();
+}
+
+function openSheetUI(){
   document.getElementById('sheetBg').classList.add('on');
   document.getElementById('sheet').classList.add('on');
+  document.body.classList.add('sheet-open');
 }
 
 function closeSheet(){
   document.getElementById('sheetBg').classList.remove('on');
   document.getElementById('sheet').classList.remove('on');
+  document.body.classList.remove('sheet-open');
 }
 
 function drawSheet(){
@@ -772,10 +833,27 @@ function placeOrder(){
 
   document.getElementById('doneNo').textContent  = order.no;
   document.getElementById('doneMsg').textContent =
-    `Thank you ${d.name.split(' ')[0]}. We will call or WhatsApp you on ${d.phone} to confirm the rate and the delivery. Monday to Saturday, 9 to 7.`;
+    `Thank you ${d.name.split(' ')[0]}. We will call or WhatsApp you on ${d.phone} to confirm the rate and the delivery. Monday to Saturday, 9 to 7.` +
+    ((iOS && standalone) ? ' Tap below to send it across on WhatsApp straight away.' : '');
   go('done');
 
-  setTimeout(() => waSend(order), 600);   // hand it to WhatsApp as well
+  /* Try to hand it to WhatsApp as well. If the browser blocks the automatic
+     open — or we are inside an installed iPhone app, where it would navigate
+     away from the confirmation — we leave the green button for them to tap
+     and make it unmissable. */
+  setTimeout(() => {
+    const sent = waSend(order, true);
+    if (!sent) nudgeWhatsApp();
+  }, 700);
+}
+
+/* Make the WhatsApp button impossible to miss when the automatic send
+   did not go through. */
+function nudgeWhatsApp(){
+  const btn = document.getElementById('waBtn');
+  const hint = document.getElementById('waHint');
+  if (btn) btn.classList.add('pulse');
+  if (hint) hint.style.display = 'block';
 }
 
 function orderNumber(dt){
@@ -805,15 +883,15 @@ ${lines}
 _Placed from the Nuova app_`;
 }
 
-function waSend(o){
-  window.open('https://wa.me/' + SHOP.whatsapp + '?text=' + encodeURIComponent(orderText(o)), '_blank');
+function waSend(o, auto){
+  return openExternal('https://wa.me/' + SHOP.whatsapp + '?text=' + encodeURIComponent(orderText(o)), auto);
 }
 
 function waCurrent(){ if (orders[0]) waSend(orders[0]); }
 
 function waPlain(){
-  window.open('https://wa.me/' + SHOP.whatsapp + '?text=' +
-    encodeURIComponent('Hello Nuova, I have a question about your cold pressed oils.'), '_blank');
+  openExternal('https://wa.me/' + SHOP.whatsapp + '?text=' +
+    encodeURIComponent('Hello Nuova, I have a question about your cold pressed oils.'));
 }
 
 /* ---------- orders ---------- */
@@ -868,24 +946,84 @@ function repeatOrder(idx){
   go('cart');
 }
 
-/* ---------- install prompt (PWA) ---------- */
+/* ══════════════════════════════════════════
+   PLATFORM DETECTION
+   ══════════════════════════════════════════ */
+const UA  = navigator.userAgent || '';
+const iOS = /iPad|iPhone|iPod/.test(UA) ||
+            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+/* An installed home-screen app, on either platform */
+const standalone = window.matchMedia('(display-mode: standalone)').matches ||
+                   window.navigator.standalone === true;
+
+/* Real Safari, as opposed to Chrome/Firefox/Edge on iOS — only Safari can
+   Add to Home Screen. Also catches Instagram / Facebook in-app browsers,
+   where installing is impossible. */
+const inAppBrowser = /FBAN|FBAV|Instagram|Line\/|Twitter|LinkedInApp|Snapchat|Pinterest|MicroMessenger/i.test(UA);
+const iOSChromeLike = iOS && /CriOS|FxiOS|EdgiOS|OPiOS/i.test(UA);
+const iOSCanInstall = iOS && !inAppBrowser && !iOSChromeLike;
+
+document.documentElement.dataset.platform = iOS ? 'ios' : 'other';
+if (standalone) document.documentElement.dataset.mode = 'app';
+
+/* ══════════════════════════════════════════
+   OPENING WHATSAPP / PHONE FROM THE APP
+   In an installed iOS app window.open() is a dead end — the tab it wants
+   simply never appears. Navigating the window hands the URL to iOS, which
+   switches to WhatsApp and keeps the app alive behind it.
+
+   Pass auto=true for an attempt the customer did not tap. Browsers block
+   popups that are not user-initiated, and in that case we must NOT fall back
+   to navigating the window — that would throw the customer out of their
+   order confirmation. We return false instead and let them tap the button.
+   ══════════════════════════════════════════ */
+function openExternal(url, auto){
+  if (iOS && standalone){
+    if (auto) return false;                  // would navigate away from the confirmation
+    window.location.href = url;
+    return true;
+  }
+  let w = null;
+  try { w = window.open(url, '_blank', 'noopener'); } catch(e){}
+  if (w) return true;
+  if (auto) return false;                    // blocked, and nobody asked for it
+  window.location.href = url;                // they tapped — take them there
+  return true;
+}
+
+/* ══════════════════════════════════════════
+   INSTALL
+   ══════════════════════════════════════════ */
 let deferredPrompt = null;
-const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   deferredPrompt = e;
-  showInstall();
+  showInstallBar('android');
+  renderHelpInstall();
 });
 
-function showInstall(iosMode){
+window.addEventListener('appinstalled', () => {
+  hideInstall(true);
+  toast('Nuova is on your home screen');
+});
+
+function showInstallBar(mode){
   if (standalone || store.get('installDismissed', false)) return;
   const bar = document.getElementById('installBar');
-  if (iosMode){
-    document.getElementById('installTip').textContent = 'Tap Share, then “Add to Home Screen”';
-    document.getElementById('installGo').style.display = 'none';
+  const tip = document.getElementById('installTip');
+  const go  = document.getElementById('installGo');
+
+  if (mode === 'ios'){
+    tip.textContent = 'Two taps in Safari — I will show you';
+    go.textContent  = 'How';
+    go.onclick      = showIosSteps;
   }
-  setTimeout(() => bar.classList.add('on'), 2500);
+  setTimeout(() => {
+    bar.classList.add('on');
+    document.body.classList.add('has-install');
+  }, 2500);
 }
 
 function doInstall(){
@@ -896,15 +1034,98 @@ function doInstall(){
 
 function hideInstall(remember){
   document.getElementById('installBar').classList.remove('on');
+  document.body.classList.remove('has-install');
   if (remember) store.set('installDismissed', true);
 }
 
-/* iPhone / iPad — no beforeinstallprompt, so show the manual hint */
-(function(){
-  const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-              (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  if (iOS && !standalone) showInstall(true);
-})();
+/* The Add to Home Screen walkthrough for iPhone / iPad */
+function showIosSteps(){
+  document.getElementById('sheetBody').innerHTML = `
+    <h2 style="font-size:21px;text-transform:uppercase;margin-bottom:4px">Add Nuova to your iPhone</h2>
+    <p class="pk-note" style="margin-bottom:18px">It takes two taps, and afterwards Nuova opens like any other app — full screen, no address bar, and it works without internet.</p>
+    <ol class="steps">
+      <li>Tap the <b>Share</b> button
+        <span class="shareicon"><svg viewBox="0 0 24 24"><path d="M12 15V3"/><path d="M8 7l4-4 4 4"/><path d="M5 12v7a1 1 0 001 1h12a1 1 0 001-1v-7"/></svg></span>
+        at the bottom of Safari
+        <small>On an iPad it is at the top right.</small>
+      </li>
+      <li>Scroll down and tap <b>Add to Home Screen</b>
+        <span class="plusicon">+</span>
+      </li>
+      <li>Tap <b>Add</b> at the top right
+        <small>The Nuova icon appears on your home screen.</small>
+      </li>
+    </ol>
+    <button class="btn btn--teal" onclick="closeSheet()">Got it</button>`;
+  openSheetUI();
+}
+
+/* iPhone in Safari — no beforeinstallprompt exists, so prompt manually */
+if (iOSCanInstall && !standalone) showInstallBar('ios');
+
+/* Opened inside Instagram / Facebook — installing is not possible there */
+function renderBrowserWarning(){
+  if (!inAppBrowser && !iOSChromeLike) return;
+  if (standalone) return;
+
+  const box = document.getElementById('browserWarn');
+  if (inAppBrowser){
+    box.innerHTML = `<div class="warn">
+      <b>Open in your browser</b>
+      <p>You are viewing this inside another app, so it cannot be added to your home screen. Tap the ⋯ menu at the top and choose <b>Open in ${iOS ? 'Safari' : 'Chrome'}</b> — then you can install Nuova properly. Ordering works fine here either way.</p>
+    </div>`;
+  } else if (iOSChromeLike){
+    box.innerHTML = `<div class="warn">
+      <b>Use Safari to install</b>
+      <p>On iPhone only Safari can add an app to the home screen. Copy this page's address into Safari to install Nuova. Ordering works fine here either way.</p>
+    </div>`;
+  }
+}
+
+/* An install row on the Help screen, so it is always findable */
+function renderHelpInstall(){
+  const box = document.getElementById('helpInstall');
+  if (!box) return;
+  if (standalone){
+    box.innerHTML = `<div class="info" style="background:var(--teal-soft);border-color:#BFE0DA">
+      <h4 style="color:var(--teal-dark)">Installed</h4>
+      <p style="color:var(--teal-dark)">Nuova is on your home screen and works offline.</p>
+    </div>`;
+    return;
+  }
+  if (iOSCanInstall){
+    box.innerHTML = `<div class="info">
+      <h4>Add to home screen</h4>
+      <p style="margin-bottom:12px">Keep Nuova one tap away, and order without opening the browser.</p>
+      <button class="btn btn--teal sm" onclick="showIosSteps()">Show me how</button>
+    </div>`;
+  } else if (deferredPrompt){
+    box.innerHTML = `<div class="info">
+      <h4>Add to home screen</h4>
+      <p style="margin-bottom:12px">Keep Nuova one tap away, and order without opening the browser.</p>
+      <button class="btn btn--teal sm" onclick="doInstall()">Install the app</button>
+    </div>`;
+  }
+}
+
+/* ---------- iOS keyboard: lift the fixed nav out of the way ----------
+   focusin/focusout catch the common case; visualViewport is the reliable
+   backstop, because iOS does not always fire focusout when the keyboard
+   is dismissed with the Done button or a swipe. */
+if (iOS){
+  const vv = window.visualViewport;
+
+  const settle = () => {
+    const focused = document.querySelector('input:focus, textarea:focus');
+    const kbUp = vv ? (window.innerHeight - vv.height) > 120 : !!focused;
+    document.body.classList.toggle('kb', kbUp && !!focused);
+  };
+
+  document.addEventListener('focusin',  e => { if (e.target.matches('input, textarea')) document.body.classList.add('kb'); });
+  document.addEventListener('focusout', e => { if (e.target.matches('input, textarea')) setTimeout(settle, 150); });
+  if (vv) vv.addEventListener('resize', settle);
+  window.addEventListener('orientationchange', () => setTimeout(settle, 300));
+}
 
 /* ---------- service worker ---------- */
 if ('serviceWorker' in navigator){
@@ -916,6 +1137,8 @@ if ('serviceWorker' in navigator){
 /* ---------- boot ---------- */
 renderGrid();
 saveCart();
+renderBrowserWarning();
+renderHelpInstall();
 if (orders.length) renderOrders();
 
 /* home-screen shortcut: index.html?go=orders */

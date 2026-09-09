@@ -2,7 +2,7 @@
    Bump CACHE version whenever you change index.html or the images,
    so every customer's phone picks up the new version. */
 
-const CACHE = 'nuova-v1';
+const CACHE = 'nuova-v2';
 
 const SHELL = [
   './',

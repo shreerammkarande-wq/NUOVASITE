@@ -2,7 +2,7 @@
    Service worker. Bump CACHE whenever you change index.html so both
    phones pick up the new version instead of the cached one. */
 
-const CACHE = 'sjmonitor-v3';
+const CACHE = 'sjmonitor-v4';
 
 const SHELL = [
   './',
@@ -10,7 +10,8 @@ const SHELL = [
   './manifest.webmanifest',
   './icons/icon-192.png',
   './icons/icon-512.png',
-  './icons/apple-touch-icon.png'
+  './icons/apple-touch-icon.png',
+  './img/logo.jpg'
 ];
 
 self.addEventListener('install', e => {

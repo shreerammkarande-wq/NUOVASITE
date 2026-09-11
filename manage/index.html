@@ -142,6 +142,31 @@
   }
   p, span, td, li, label, div{ letter-spacing:normal !important; }
 
+
+  /* ── one size up, across the board ──
+     Tailwind's own steps for the named classes; +2px for the hand-set
+     small labels. Both apps are read at arm's length on a phone in a
+     working unit, so the old 9-11px labels were too tight. */
+  .text-xs   { font-size:0.875rem !important; line-height:1.35rem !important; }  /* was 12px */
+  .text-sm   { font-size:1rem     !important; line-height:1.5rem  !important; }  /* was 14px */
+  .text-base { font-size:1.125rem !important; line-height:1.75rem !important; }  /* was 16px */
+  .text-lg   { font-size:1.25rem  !important; line-height:1.75rem !important; }  /* was 18px */
+  .text-xl   { font-size:1.5rem   !important; line-height:2rem    !important; }  /* was 20px */
+  .text-2xl  { font-size:1.875rem !important; line-height:2.25rem !important; }
+  .text-3xl  { font-size:2.25rem  !important; line-height:2.5rem  !important; }
+
+  .text-\[8px\]    { font-size:10px   !important; }
+  .text-\[8\.5px\]{ font-size:10.5px !important; }
+  .text-\[9px\]    { font-size:11px   !important; }
+  .text-\[9\.5px\]{ font-size:11.5px !important; }
+  .text-\[10px\]   { font-size:12px   !important; }
+  .text-\[11px\]   { font-size:13px   !important; }
+  .text-\[12px\]   { font-size:14px   !important; }
+  .text-\[13px\]   { font-size:15px   !important; }
+
+  /* headings keep their relative weight in the new scale */
+  header h1 { font-size:1.25rem !important; }
+
   /* ── brand red → Nuova teal ── */
   .text-\[\#C0392B\]{ color:var(--n-teal) !important; }
   .bg-\[\#C0392B\]{ background-color:var(--n-teal) !important; }
@@ -196,7 +221,7 @@
 <div id="sji-gate" style="position:fixed;inset:0;z-index:9999;background:#F7F6F4;display:flex;align-items:center;justify-content:center;padding:20px">
   <div style="width:100%;max-width:380px;background:#fff;border:1px solid #E4E1DD;border-radius:20px;padding:26px 24px;box-shadow:0 10px 40px rgba(0,0,0,.06)">
     <div style="text-align:center;margin-bottom:22px">
-      <img src="/app/img/logo.jpg" alt="Nuova" style="height:34px;width:auto;margin:0 auto 14px;display:block"
+      <img src="img/logo.jpg" alt="Nuova" style="height:34px;width:auto;margin:0 auto 14px;display:block"
            onerror="this.outerHTML='&lt;div style=&quot;width:52px;height:52px;border-radius:14px;background:#108474;color:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-family:Oswald,sans-serif;font-size:24px;font-weight:600&quot;&gt;N&lt;/div&gt;'">
       <h1 style="margin:0;font-family:Oswald,Arial,sans-serif;font-size:16px;font-weight:500;color:#1A1A1A;letter-spacing:.1em;text-transform:uppercase">Shri Jagdamba Industry</h1>
       <p style="margin:5px 0 0;font-family:Abel,Arial,sans-serif;font-size:13.5px;color:#958E88;letter-spacing:.02em">Order &amp; Production Management</p>
@@ -231,11 +256,10 @@
   <header class="sticky top-0 z-30 bg-white border-b border-rose-200 px-4 py-3 shadow-md">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <img 
-          src="sjiicon.png" 
-          alt="Shri Jagdamba Industry" 
-          class="h-10 w-10 object-contain flex-shrink-0"
-          onerror="this.src='https://raw.githubusercontent.com/ShreeramKarande/Shri-Jagdamba-Industry/main/sjiicon.png'"
+        <img
+          src="img/logo.jpg"
+          alt="Nuova"
+          class="h-9 w-auto object-contain flex-shrink-0"
         />
         <div>
           <h1 class="text-base sm:text-lg font-black tracking-tight text-[#1A1A1A] leading-tight">Shri Jagdamba Ind.</h1>
@@ -1762,16 +1786,16 @@
         <div class="p-5 sm:p-6 bg-white space-y-4 max-h-[90vh] overflow-y-auto">
           <!-- Printable / Exportable Invoice Card -->
           <div id="receipt-card" class="bg-white space-y-4 p-1">
-            <!-- Header with Exact sjiicon.png -->
+            <!-- Header with the Nuova mark -->
             <div class="border-b-2 border-gray-900 pb-3 flex justify-between items-start gap-2">
               <div>
                 <div class="flex items-center gap-3">
                   <img 
-                    src="sjiicon.png" 
+                    src="img/logo.jpg" 
                     alt="Shri Jagdamba Industry" 
                     class="h-12 w-12 object-contain flex-shrink-0"
                     crossorigin="anonymous"
-                    onerror="this.src='https://raw.githubusercontent.com/ShreeramKarande/Shri-Jagdamba-Industry/main/sjiicon.png'"
+                    
                   />
                   <div>
                     <h2 class="text-sm sm:text-base font-black tracking-tight text-gray-950 uppercase leading-none">Shri Jagdamba Industry</h2>

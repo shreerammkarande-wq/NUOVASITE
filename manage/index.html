@@ -287,6 +287,9 @@
     
     <!-- Tab Views -->
     <div id="view-dashboard" class="space-y-4">
+      <!-- Unverified app payments warning (filled by renderPaymentAlert) -->
+      <div id="pay-alert-dash"></div>
+
       <!-- Quick Actions -->
       <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-rose-100 shadow-xl space-y-2.5">
         <p class="text-[11px] font-extrabold text-[#C0392B] uppercase tracking-wider">Fast Entry Actions</p>
@@ -439,6 +442,9 @@
 
     <!-- Daily Records Tab -->
     <div id="view-records" class="hidden space-y-3">
+      <!-- Unverified app payments warning (filled by renderPaymentAlert) -->
+      <div id="pay-alert-rec"></div>
+
       <div class="bg-white p-4 rounded-2xl border border-rose-100 shadow-xl space-y-3">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-gray-100 pb-3">
           <h3 class="font-black text-xs sm:text-sm text-[#1A1A1A] flex items-center gap-1.5">
@@ -510,14 +516,14 @@
 
       <div class="bg-white rounded-2xl border border-rose-100 shadow-xl overflow-hidden w-full">
         <div class="overflow-x-auto custom-scrollbar w-full">
-          <table class="w-full text-left text-xs min-w-[680px]">
+          <table class="w-full text-left text-xs min-w-[740px]">
             <thead class="bg-rose-50/70 text-gray-700 uppercase font-bold border-b border-rose-100">
               <tr>
                 <th class="p-2.5">Date</th>
                 <th class="p-2.5">Type</th>
                 <th class="p-2.5">Party / Details</th>
                 <th class="p-2.5">Order Items / Output</th>
-                <th class="p-2.5">Delivery Status</th>
+                <th class="p-2.5">Delivery / Payment</th>
                 <th class="p-2.5 text-right">Amount</th>
                 <th class="p-2.5 text-center">Receipt & Actions</th>
               </tr>
@@ -1598,6 +1604,112 @@
         `;
       }).join('');
 
+      renderPaymentAlert();
+      renderFilteredRecords();
+    }
+
+    /* ── Payment verification ─────────────────────────────────────────────
+       An order placed in the Nuova app arrives with paymentStatus
+       'Payment claimed' when the customer says they have paid by UPI.
+       That is the customer's word, not proof — nothing in either app can
+       see the bank account. So until one of us has matched it against the
+       PNB statement the order counts as UNVERIFIED and is flagged amber.
+       Tapping Verify records who confirmed it and when, so there is an
+       audit trail instead of a flag that silently disappears. */
+
+    let showOnlyUnverifiedPay = false;
+
+    /* True only for an app order with a payment claim still unchecked.
+       Cash-on-delivery and 'Awaiting payment' are not unverified — there
+       is no claim to check in the first place. */
+    function isPaymentUnverified(l) {
+      return !!l
+          && l.type === 'order'
+          && l.source === 'app'
+          && /claimed|paid/i.test(l.paymentStatus || '')
+          && l.paymentVerified !== true;
+    }
+
+    function countUnverifiedPayments() {
+      return logs.filter(isPaymentUnverified).length;
+    }
+
+    function sumUnverifiedPayments() {
+      return logs.filter(isPaymentUnverified)
+                 .reduce((t, l) => t + Number(l.totalAmount || l.amount || 0), 0);
+    }
+
+    async function togglePaymentVerified(id, newStatus) {
+      const who   = (typeof sjiUser !== 'undefined' && sjiUser && sjiUser.email) ? sjiUser.email : 'staff';
+      const stamp = newStatus ? new Date().toISOString() : null;
+
+      logs = logs.map(l => l.id === id ? { ...l,
+        paymentVerified:   newStatus,
+        paymentVerifiedBy: newStatus ? who : null,
+        paymentVerifiedAt: stamp
+      } : l);
+      localStorage.setItem('sji_logs_v35', JSON.stringify(logs));
+      renderAll();
+
+      if (db) {
+        try {
+          await db.collection('logs').doc(id).update({
+            paymentVerified:   newStatus,
+            paymentVerifiedBy: newStatus ? who : null,
+            paymentVerifiedAt: stamp
+          });
+        } catch (e) {
+          console.warn('Payment verify cloud notice:', e);
+        }
+      }
+    }
+
+    /* The amber banner. Rendered into both the dashboard and the records
+       tab, so it is visible wherever you happen to be standing. */
+    function renderPaymentAlert() {
+      const n   = countUnverifiedPayments();
+      const amt = sumUnverifiedPayments();
+
+      const html = (n === 0) ? '' : `
+        <div class="bg-amber-50 border border-amber-300 rounded-2xl shadow-xl p-3.5 flex items-start gap-3">
+          <div class="w-8 h-8 rounded-lg bg-amber-200 text-amber-900 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-indian-rupee-sign text-sm"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-black text-amber-900">
+              ${n} app order${n === 1 ? '' : 's'} claim${n === 1 ? 's' : ''} payment &mdash; not verified yet
+            </p>
+            <p class="text-[11px] font-medium text-amber-800 mt-0.5">
+              &#8377;${amt.toLocaleString()} in total. Match each UPI reference against the bank account before dispatch.
+            </p>
+          </div>
+          <button onclick="showUnverifiedPayments()" class="px-3 py-1.5 rounded-lg text-[11px] font-black bg-amber-600 hover:bg-amber-700 text-white whitespace-nowrap transition">
+            Review
+          </button>
+        </div>`;
+
+      ['pay-alert-dash', 'pay-alert-rec'].forEach(elId => {
+        const el = document.getElementById(elId);
+        if (el) el.innerHTML = html;
+      });
+    }
+
+    /* Jump to Records showing only the orders that still need checking. */
+    function showUnverifiedPayments() {
+      showOnlyUnverifiedPay = true;
+      switchTab('records');
+      const t = document.getElementById('filter-type-val');
+      const d = document.getElementById('filter-delivery-val');
+      if (t) t.value = 'ALL';
+      if (d) d.value = 'ALL';
+      setFilterScope('all');
+      renderFilteredRecords();
+      const rec = document.getElementById('view-records');
+      if (rec && rec.scrollIntoView) rec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function clearUnverifiedFilter() {
+      showOnlyUnverifiedPay = false;
       renderFilteredRecords();
     }
 
@@ -1609,6 +1721,9 @@
       const yearVal = document.getElementById('filter-year-val').value;
 
       return logs.filter(l => {
+        /* The Review button narrows to just the unchecked payment claims. */
+        if (showOnlyUnverifiedPay && !isPaymentUnverified(l)) return false;
+
         if (typeFilter !== 'ALL' && l.type !== typeFilter) return false;
 
         if (deliveryFilter !== 'ALL') {
@@ -1637,14 +1752,30 @@
       if (currentFilterScope === 'date') label = `Date: ${dateVal} (${filtered.length} records)`;
       else if (currentFilterScope === 'month') label = `Month: ${monthVal} (${filtered.length} records)`;
       else if (currentFilterScope === 'year') label = `Year: ${yearVal} (${filtered.length} records)`;
+
       const statsLabelEl = document.getElementById('filtered-stats-label');
-      if (statsLabelEl) statsLabelEl.innerText = label;
+      if (statsLabelEl) {
+        if (showOnlyUnverifiedPay) {
+          /* Say plainly that the view is narrowed, and give a way out of it —
+             otherwise an empty table looks like lost records. */
+          statsLabelEl.innerHTML =
+            `Unverified payments only (${filtered.length}) ` +
+            `<button onclick="clearUnverifiedFilter()" class="underline font-black ml-1">show all</button>`;
+        } else {
+          statsLabelEl.innerText = label;
+        }
+      }
 
       const tbody = document.getElementById('table-logs-body');
       if (!tbody) return;
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="py-10 text-center text-gray-400 text-xs font-medium">No records found for the selected criteria.</td></tr>`;
+        tbody.innerHTML = showOnlyUnverifiedPay
+          ? `<tr><td colspan="7" class="py-10 text-center text-emerald-700 text-xs font-bold">
+               <i class="fa-solid fa-circle-check mr-1"></i>
+               Every app payment has been verified. Nothing waiting.
+             </td></tr>`
+          : `<tr><td colspan="7" class="py-10 text-center text-gray-400 text-xs font-medium">No records found for the selected criteria.</td></tr>`;
       } else {
         tbody.innerHTML = filtered.map(l => {
           let itemsHtml = '-';
@@ -1676,19 +1807,56 @@
             <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#108474] text-white text-[9px] font-extrabold tracking-wider uppercase ml-1" title="Placed by the customer in the Nuova app${l.orderNo ? ' — ' + l.orderNo : ''}">
               <i class="fa-solid fa-mobile-screen text-[8px]"></i>App
             </span>` : '';
+          /* A claim is the customer saying they paid. Verified means one of
+             us has seen it in the bank. Those are different things and the
+             tag must not blur them. */
+          const payClaimed  = /claimed|paid/i.test(l.paymentStatus || '');
+          const payVerified = (l.paymentVerified === true);
+
+          const payTagClass = payClaimed
+            ? (payVerified ? 'bg-emerald-100 text-emerald-800'
+                           : 'bg-amber-100 text-amber-900 ring-1 ring-amber-400')
+            : (/delivery/i.test(l.paymentStatus || '') ? 'bg-gray-100 text-gray-700'
+                                                       : 'bg-amber-100 text-amber-800');
+
+          const payTagTitle = payClaimed
+            ? (payVerified
+                ? 'Verified by ' + (l.paymentVerifiedBy || 'staff') +
+                  (l.paymentVerifiedAt ? ' on ' + String(l.paymentVerifiedAt).slice(0, 10) : '')
+                : 'Customer says they have paid' + (l.paymentUtr ? ' (ref ' + l.paymentUtr + ')' : '') +
+                  ' — not yet checked against the bank')
+            : 'No payment claimed yet';
+
+          const payTagText = payClaimed
+            ? (payVerified ? 'Paid ✓' : 'Unverified')
+            : l.paymentStatus;
+
           const payTag = (l.source === 'app' && l.paymentStatus) ? `
-            <span class="inline-block px-1.5 py-0.5 rounded text-[9px] font-extrabold tracking-wider uppercase ml-1 ${/claimed|paid/i.test(l.paymentStatus) ? 'bg-emerald-100 text-emerald-800' : /delivery/i.test(l.paymentStatus) ? 'bg-gray-100 text-gray-700' : 'bg-amber-100 text-amber-800'}" title="${l.paymentUtr ? 'UPI ref ' + l.paymentUtr : 'Verify against your bank before dispatch'}">
-              ${l.paymentStatus}
+            <span class="inline-block px-1.5 py-0.5 rounded text-[9px] font-extrabold tracking-wider uppercase ml-1 ${payTagClass}" title="${payTagTitle}">
+              ${payTagText}
             </span>` : '';
 
           let deliveryCell = '-';
           if (l.type === 'order') {
             const isDone = (l.delivered === true);
-            deliveryCell = `
-              <button onclick="toggleDeliveryStatus('${l.id}', ${!isDone})" class="px-2 py-1 rounded-lg text-[10px] font-bold transition flex items-center gap-1.5 ${isDone ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-rose-100 text-[#C0392B] hover:bg-rose-200'}">
-                <i class="fa-solid ${isDone ? 'fa-circle-check text-emerald-600' : 'fa-clock text-[#C0392B]'}"></i>
-                ${isDone ? 'Delivered' : 'Pending'}
+
+            /* Only app orders with a payment claim get a verify control.
+               A walk-in order entered by hand needs no second opinion. */
+            const payBtn = (l.source === 'app' && payClaimed) ? `
+              <button onclick="togglePaymentVerified('${l.id}', ${!payVerified})" class="px-2 py-1 rounded-lg text-[10px] font-bold transition flex items-center gap-1.5 ${payVerified ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-amber-100 text-amber-900 hover:bg-amber-200 ring-1 ring-amber-400'}" title="${payVerified ? 'Tap to undo — verified by ' + (l.paymentVerifiedBy || 'staff') : 'Tap once the money shows in the bank account'}">
+                <i class="fa-solid ${payVerified ? 'fa-shield-halved' : 'fa-circle-question'}"></i>
+                ${payVerified ? 'Payment OK' : 'Verify pay'}
               </button>
+              ${l.paymentUtr ? `<span class="text-[9px] text-gray-500 font-bold leading-tight break-all max-w-[110px]">Ref ${l.paymentUtr}</span>` : ''}` : '';
+
+            deliveryCell = `
+              <div class="flex flex-col items-start gap-1">
+                <button onclick="toggleDeliveryStatus('${l.id}', ${!isDone})" class="px-2 py-1 rounded-lg text-[10px] font-bold transition flex items-center gap-1.5 ${isDone ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-rose-100 text-[#C0392B] hover:bg-rose-200'}">
+                  <i class="fa-solid ${isDone ? 'fa-circle-check text-emerald-600' : 'fa-clock text-[#C0392B]'}"></i>
+                  ${isDone ? 'Delivered' : 'Pending'}
+                </button>
+                ${payBtn}
+              </div>
             `;
           }
 
@@ -2734,6 +2902,13 @@
               "Total Bill Amount (Rs)": Number(l.totalAmount || 0),
               "Delivery Status": l.delivered ? "Delivered" : "Pending",
               "Delivery Date": l.deliveryDate || '',
+              "Order Source": l.source === 'app' ? 'Nuova App' : 'Entered by hand',
+              "Payment Claim": l.paymentStatus || '',
+              "UPI Reference": l.paymentUtr || '',
+              "Payment Verified": (l.source === 'app' && /claimed|paid/i.test(l.paymentStatus || ''))
+                                    ? (l.paymentVerified === true ? 'Yes' : 'NOT VERIFIED') : '',
+              "Verified By": l.paymentVerifiedBy || '',
+              "Verified On": l.paymentVerifiedAt ? String(l.paymentVerifiedAt).slice(0, 10) : '',
               "Payment Method": '',
               "Supplier / Vendor": '',
               "Seed Crushed (Kg)": '',
@@ -2764,6 +2939,12 @@
             "Total Bill Amount (Rs)": l.amount || l.totalAmount || '',
             "Delivery Status": '',
             "Delivery Date": '',
+            "Order Source": '',
+            "Payment Claim": '',
+            "UPI Reference": '',
+            "Payment Verified": '',
+            "Verified By": '',
+            "Verified On": '',
             "Payment Method": l.mode || '',
             "Supplier / Vendor": l.supplier || '',
             "Seed Crushed (Kg)": l.type === 'crush' ? (qty || '') : '',

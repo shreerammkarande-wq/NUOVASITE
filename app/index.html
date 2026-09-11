@@ -284,6 +284,8 @@ img{display:block;max-width:100%}
 .paychip.paid{background:#E8F5E9;color:#2E7D32}
 .paychip.cod{background:var(--band);color:var(--body)}
 .paychip.unpaid{background:#FFF4E2;color:var(--orange-dark)}
+.paychip.sent{background:#E7F2F0;color:var(--teal-dark)}
+.paychip.pending{background:#FDECEA;color:var(--red)}
 .ord .payrow{display:flex;align-items:center;gap:8px;margin-top:9px;flex-wrap:wrap}
 
 /* ---------- iOS install steps ---------- */
@@ -607,38 +609,61 @@ body.sheet-open .install{display:none}
 
 /* ─────────────────────────────────────────────────────────────
    ▼▼▼  PRICE LIST — EDIT ONLY THIS BLOCK WHEN RATES CHANGE  ▼▼▼
-   Prices are per pack, in rupees, inclusive.
-   The 1 L rates are the real ones from nuovashop.com.
-   The other pack rates are PROVISIONAL — replace with your list.
+   These are the RETAIL rates from CATALOG_RATES in your internal order
+   management app, so both apps quote the same price. Change a rate here and
+   change it there too, using the same product key.
+   Only the three 100 ml rates are marked provisional:true — your internal
+   catalogue has no 100 ml entry yet.
    ───────────────────────────────────────────────────────────── */
 const CATALOG = [
   { id:'groundnut', name:'Groundnut Oil', mr:'शेंगदाणा तेल', img:'img/groundnut.jpg',
     note:'High smoke point, strong familiar aroma. The one for bhaji, tadka and deep frying.',
-    packs:[ {sz:'200 ml',rs:60}, {sz:'500 ml',rs:140}, {sz:'1 L',rs:270}, {sz:'5 L',rs:1270} ] },
+    packs:[ {sz:'200 ml',rs:105, key:'Groundnut Oil (200 ml)', unit:'Bottles'},
+            {sz:'500 ml',rs:155, key:'Groundnut Oil (500 ml)', unit:'Bottles'},
+            {sz:'1 L',   rs:285, key:'Groundnut Oil (1 ltr)',  unit:'Bottles'},
+            {sz:'5 L',   rs:1350,key:'Groundnut Oil (5 ltr)',  unit:'Bottles'} ] },
 
   { id:'sunflower', name:'Sunflower Oil', mr:'सूर्यफूल तेल', img:'img/sunflower.jpg',
     note:'The mildest of the range. Use it when the dish should not taste of the oil.',
-    packs:[ {sz:'200 ml',rs:68}, {sz:'500 ml',rs:165}, {sz:'1 L',rs:310}, {sz:'5 L',rs:1460} ] },
+    packs:[ {sz:'200 ml',rs:125, key:'Sunflower Oil (200 ml)', unit:'Bottles'},
+            {sz:'500 ml',rs:180, key:'Sunflower Oil (500 ml)', unit:'Bottles'},
+            {sz:'1 L',   rs:335, key:'Sunflower Oil (1 ltr)',  unit:'Bottles'},
+            {sz:'5 L',   rs:1590,key:'Sunflower Oil (5 ltr)',  unit:'Bottles'} ] },
 
   { id:'safflower', name:'Safflower Oil', mr:'करडई तेल', img:'img/safflower.jpg',
     note:'Karadi oil. Light and clean, and the highest polyunsaturated fat we press — 77 g per 100 g.',
-    packs:[ {sz:'200 ml',rs:76}, {sz:'500 ml',rs:185}, {sz:'1 L',rs:350}, {sz:'5 L',rs:1650} ] },
+    packs:[ {sz:'200 ml',rs:140, key:'Safflower Oil (200 ml)', unit:'Bottles'},
+            {sz:'500 ml',rs:205, key:'Safflower Oil (500 ml)', unit:'Bottles'},
+            {sz:'1 L',   rs:380, key:'Safflower Oil (1 ltr)',  unit:'Bottles'},
+            {sz:'5 L',   rs:1805,key:'Safflower Oil (5 ltr)',  unit:'Bottles'} ] },
 
   { id:'coconut', name:'Coconut Oil', mr:'खोबरेल तेल', img:'img/coconut.jpg',
     note:'For cooking, hair and skin. It sets solid below about 24 °C — that is purity, not a fault.',
-    packs:[ {sz:'100 ml',rs:50}, {sz:'200 ml',rs:95}, {sz:'500 ml',rs:230}, {sz:'1 L',rs:435} ] },
+    packs:[ {sz:'100 ml',rs:105, key:'Coconut Oil (100 ml)', unit:'Bottles', provisional:true},
+            {sz:'200 ml',rs:175, key:'Coconut Oil (200 ml)', unit:'Bottles'},
+            {sz:'500 ml',rs:255, key:'Coconut Oil (500 ml)', unit:'Bottles'},
+            {sz:'1 L',   rs:470, key:'Coconut Oil (1 ltr)',  unit:'Bottles'} ] },
 
   { id:'mustard', name:'Mustard Oil', mr:'मोहरी तेल', img:'img/mustard.jpg',
     note:'Sharp and pungent. For pickles, fish, sarson and winter cooking.',
-    packs:[ {sz:'200 ml',rs:62}, {sz:'500 ml',rs:150}, {sz:'1 L',rs:285}, {sz:'5 L',rs:1340} ] },
+    packs:[ {sz:'200 ml',rs:115, key:'Mustard Oil (200 ml)', unit:'Bottles'},
+            {sz:'500 ml',rs:170, key:'Mustard Oil (500 ml)', unit:'Bottles'},
+            {sz:'1 L',   rs:315, key:'Mustard Oil (1 ltr)',  unit:'Bottles'},
+            {sz:'5 L',   rs:1495,key:'Mustard Oil (5 ltr)',  unit:'Bottles'} ] },
 
   { id:'sesame', name:'Sesame Oil', mr:'तिळ तेल', img:'img/sesame.jpg',
     note:'Nutty and aromatic. Everyday cooking, oil pulling and abhyanga massage.',
-    packs:[ {sz:'100 ml',rs:42}, {sz:'200 ml',rs:85}, {sz:'500 ml',rs:200}, {sz:'1 L',rs:385} ] },
+    packs:[ {sz:'100 ml',rs:95,  key:'Sesame Oil (100 ml)', unit:'Bottles', provisional:true},
+            {sz:'200 ml',rs:155, key:'Sesame Oil (200 ml)', unit:'Bottles'},
+            {sz:'500 ml',rs:225, key:'Sesame Oil (500 ml)', unit:'Bottles'},
+            {sz:'1 L',   rs:410, key:'Sesame Oil (1 ltr)',  unit:'Bottles'} ] },
 
   { id:'flaxseed', name:'Flaxseed Oil', mr:'जवस तेल', img:'img/flaxseed.jpg',
     note:'Use it raw over salad, rice or roti. Do not fry in it. Keep it cool and dark.',
-    packs:[ {sz:'100 ml',rs:35}, {sz:'200 ml',rs:65}, {sz:'500 ml',rs:160}, {sz:'1 L',rs:300} ] }
+    packs:[ {sz:'100 ml',rs:80,  key:'Flaxseed Oil (100 ml)', unit:'Bottles', provisional:true},
+            {sz:'200 ml',rs:130, key:'Flaxseed Oil (200 ml)', unit:'Bottles'},
+            {sz:'500 ml',rs:185, key:'Flaxseed Oil (500 ml)', unit:'Bottles'},
+            {sz:'1 L',   rs:345, key:'Flaxseed Oil (1 ltr)',  unit:'Bottles'} ] }
 ];
 
 const SHOP = {
@@ -648,6 +673,18 @@ const SHOP = {
   upi      : '7350071696m@pnb',          // from your PNB BHIM QR
   upiName  : 'SHRI JAGDAMBA INDUSTRY',
   upiMc    : '5099'                      // merchant category, same as the printed QR
+};
+
+/* Same Firebase project as your internal order management app, so a customer
+   order lands directly in Records. Publishable by design — the Firestore
+   rules are what protect the data, not this key. */
+const FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyA_B7m6gqEhm-A2lXc9rqV8uy_3Adg2Fps",
+  authDomain:        "shri-jagdamba-monitor.firebaseapp.com",
+  projectId:         "shri-jagdamba-monitor",
+  storageBucket:     "shri-jagdamba-monitor.firebasestorage.app",
+  messagingSenderId: "987532374562",
+  appId:             "1:987532374562:web:4b4e682f68e185a300d07b"
 };
 /* ───────────── ▲▲▲  END OF EDITABLE BLOCK  ▲▲▲ ───────────── */
 
@@ -780,7 +817,7 @@ function addToCart(){
   const key = o.id + '|' + p.sz;
   const found = cart.find(l => l.key === key);
   if (found) found.qty = Math.min(99, found.qty + sheetQty);
-  else cart.push({ key, id:o.id, name:o.name, mr:o.mr, img:o.img, sz:p.sz, rs:p.rs, qty:sheetQty });
+  else cart.push({ key, id:o.id, name:o.name, mr:o.mr, img:o.img, sz:p.sz, rs:p.rs, qty:sheetQty, cat:p.key, unit:p.unit });
   saveCart();
   closeSheet();
   toast(`${o.name.replace(' Oil','')} ${p.sz} × ${sheetQty} added`);
@@ -890,7 +927,7 @@ function placeOrder(){
   const order = {
     no      : orderNumber(now),
     at      : now.toISOString(),
-    items   : cart.map(l => ({ id:l.id, name:l.name, sz:l.sz, rs:l.rs, qty:l.qty })),
+    items   : cart.map(l => ({ id:l.id, name:l.name, sz:l.sz, rs:l.rs, qty:l.qty, cat:l.cat, unit:l.unit })),
     total   : cartTotal(),
     customer: d,
     status  : 'Placed',
@@ -927,8 +964,117 @@ function orderNumber(dt){
   return 'NUV-' + stamp + '-' + seq;
 }
 
-/* Step 2 will replace the body of this function with a Firestore write. */
-function saveOrderToCloud(order){ /* Firebase goes here in Step 2 */ }
+
+/* ══════════════════════════════════════════
+   SENDING THE ORDER TO THE ORDER MANAGEMENT APP
+   The order is written into the same Firestore "logs" collection the
+   internal app already listens to, in exactly the record shape it expects,
+   so it appears in Records live — no copying, no re-typing.
+
+   The customer signs in anonymously. That is what lets the security rules
+   allow them to create their own order and nothing else: they cannot read
+   your records, your customers, or anybody else's order.
+   ══════════════════════════════════════════ */
+
+let cloudDb = null, cloudUid = null, cloudReady = false;
+
+function initCloud(){
+  try {
+    if (typeof firebase === 'undefined' || !firebase.initializeApp) return;
+    if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+    cloudDb = firebase.firestore();
+    firebase.auth().signInAnonymously()
+      .then(cred => {
+        cloudUid   = cred.user.uid;
+        cloudReady = true;
+        flushOrderQueue();
+      })
+      .catch(err => console.warn('Nuova: anonymous sign-in unavailable —', err && err.code));
+  } catch (e) {
+    console.warn('Nuova: cloud unavailable —', e);
+  }
+}
+window.addEventListener('nuova-firebase-ready', initCloud);
+setTimeout(initCloud, 3000);            // in case the event fired before this ran
+
+/* Translate one app order into the record the internal app stores. */
+function toAdminRecord(order){
+  const pay = order.payment || {};
+  return {
+    id:            order.no,
+    type:          'order',
+    customer:      order.customer.name,
+    city:          order.customer.city,
+    phone:         order.customer.phone,
+    tier:          'retail',
+    delivered:     false,
+    deliveryDate:  null,
+    items: order.items.map(i => ({
+      product:  i.cat || (i.name + ' (' + i.sz + ')'),
+      quantity: Number(i.qty),
+      unit:     i.unit || 'Bottles',
+      rate:     Number(i.rs)
+    })),
+    totalAmount:   Number(order.total),
+    date:          (order.at || new Date().toISOString()).slice(0, 10),
+
+    /* extras the internal app ignores but you can read on the record */
+    source:        'app',
+    orderNo:       order.no,
+    address:       order.customer.addr,
+    pincode:       order.customer.pin,
+    customerNote:  order.customer.note || '',
+    paymentMethod: pay.method || '',
+    paymentStatus: pay.status || 'Awaiting payment',
+    paymentUtr:    pay.utr || '',
+    paymentAt:     pay.at || '',
+    uid:           cloudUid
+  };
+}
+
+/* Create the order document. Safe to call more than once — same doc id. */
+function saveOrderToCloud(order){
+  if (!cloudDb || !cloudReady){ markSync(order, false); return Promise.resolve(false); }
+  return cloudDb.collection('logs').doc(order.no)
+    .set(Object.assign(toAdminRecord(order), {
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }))
+    .then(() => { markSync(order, true);  return true; })
+    .catch(err => { console.warn('Nuova: order not sent —', err && err.code); markSync(order, false); return false; });
+}
+
+/* Payment choice made after the order was created — update just those fields.
+   The rules allow the customer to touch these four keys and nothing else. */
+function updatePaymentInCloud(order){
+  if (!cloudDb || !cloudReady || !order || !order.synced) return Promise.resolve(false);
+  const pay = order.payment || {};
+  return cloudDb.collection('logs').doc(order.no).update({
+    paymentMethod: pay.method || '',
+    paymentStatus: pay.status || 'Awaiting payment',
+    paymentUtr:    pay.utr || '',
+    paymentAt:     pay.at || ''
+  }).then(() => true)
+    .catch(err => { console.warn('Nuova: payment update failed —', err && err.code); return false; });
+}
+
+function markSync(order, ok){
+  order.synced = ok;
+  const i = orders.findIndex(o => o.no === order.no);
+  if (i > -1) orders[i] = order;
+  store.set('orders', orders);
+  if (document.getElementById('s-orders').classList.contains('on')) renderOrders();
+}
+
+/* Anything that failed to go out — a dead spot, aeroplane mode, a slow CDN —
+   is retried as soon as we are back. */
+function flushOrderQueue(){
+  if (!cloudReady) return;
+  orders.filter(o => !o.synced).forEach(o => {
+    saveOrderToCloud(o).then(ok => { if (ok && o.payment && o.payment.method) updatePaymentInCloud(o); });
+  });
+}
+window.addEventListener('online', flushOrderQueue);
+
 
 /* ---------- WhatsApp ---------- */
 function orderText(o){
@@ -986,7 +1132,7 @@ function renderOrders(){
         <span class="chip ${cls}">${esc(o.status || 'Placed')}</span>
       </div>
       <div class="items">${o.items.map(i => `${esc(i.name.replace(' Oil',''))} ${i.sz} × ${i.qty}`).join('<br>')}</div>
-      <div class="payrow">${payChip(o)}${payNeeded(o) ? `<button class="rep" onclick="payAgain(${idx})">Pay now</button>` : ''}</div>
+      <div class="payrow">${payChip(o)}${syncChip(o)}${payNeeded(o) ? `<button class="rep" onclick="payAgain(${idx})">Pay now</button>` : ''}</div>
       <div class="foot">
         <span class="amt">${rs(o.total)}</span>
         <button class="rep" onclick="repeatOrder(${idx})">Order again</button>
@@ -997,6 +1143,12 @@ function renderOrders(){
 
 function payNeeded(o){
   return !o.payment || !o.payment.method;
+}
+
+function syncChip(o){
+  return o.synced
+    ? '<span class="paychip sent">Received by Nuova</span>'
+    : '<span class="paychip pending">Not sent yet</span>';
 }
 
 function payChip(o){
@@ -1021,7 +1173,7 @@ function repeatOrder(idx){
     const key = i.id + '|' + i.sz;
     const found = cart.find(l => l.key === key);
     if (found) found.qty = Math.min(99, found.qty + i.qty);
-    else cart.push({ key, id:oil.id, name:oil.name, mr:oil.mr, img:oil.img, sz:pack.sz, rs:pack.rs, qty:i.qty });
+    else cart.push({ key, id:oil.id, name:oil.name, mr:oil.mr, img:oil.img, sz:pack.sz, rs:pack.rs, qty:i.qty, cat:pack.key, unit:pack.unit });
   });
   saveCart();
   toast('Added to your basket at today’s rates');
@@ -1426,6 +1578,8 @@ function setPayment(order, pay){
   const i = orders.findIndex(o => o.no === order.no);
   if (i > -1) orders[i] = order;
   store.set('orders', orders);
+  if (order.synced) updatePaymentInCloud(order);
+  else saveOrderToCloud(order);          // first attempt failed — try the whole record again
 }
 
 function finishPayment(extra){
@@ -1513,6 +1667,10 @@ function showInstallBar(mode){
     tip.textContent = 'Two taps in Safari — I will show you';
     go.textContent  = 'How';
     go.onclick      = showIosSteps;
+  } else if (mode === 'manual'){
+    tip.textContent = 'Two taps in the Chrome menu — I will show you';
+    go.textContent  = 'How';
+    go.onclick      = showAndroidSteps;
   }
   setTimeout(() => {
     bar.classList.add('on');
@@ -1533,6 +1691,26 @@ function hideInstall(remember){
 }
 
 /* The Add to Home Screen walkthrough for iPhone / iPad */
+/* Chrome decides for itself whether to fire beforeinstallprompt, and often
+   skips it. When it does, we still offer the install and show the menu route
+   rather than letting the customer think there is no app. */
+function showAndroidSteps(){
+  document.getElementById('sheetBody').innerHTML = `
+    <h2 style="font-size:21px;text-transform:uppercase;margin-bottom:4px">Add Nuova to your phone</h2>
+    <p class="pk-note" style="margin-bottom:18px">Two taps in the Chrome menu. Afterwards Nuova opens like any other app — full screen, no address bar, and it works without internet.</p>
+    <ol class="steps">
+      <li>Tap the <b>&#8942;</b> menu at the top right of Chrome</li>
+      <li>Tap <b>Add to Home screen</b>
+        <small>Some versions call it <b>Install app</b>. Same thing.</small>
+      </li>
+      <li>Tap <b>Add</b>
+        <small>The Nuova icon appears on your home screen.</small>
+      </li>
+    </ol>
+    <button class="btn btn--teal" onclick="closeSheet()">Got it</button>`;
+  openSheetUI();
+}
+
 function showIosSteps(){
   document.getElementById('sheetBody').innerHTML = `
     <h2 style="font-size:21px;text-transform:uppercase;margin-bottom:4px">Add Nuova to your iPhone</h2>
@@ -1556,6 +1734,13 @@ function showIosSteps(){
 
 /* iPhone in Safari — no beforeinstallprompt exists, so prompt manually */
 if (iOSCanInstall && !standalone) showInstallBar('ios');
+
+/* Android and the rest: if Chrome has not offered by now, offer it ourselves */
+setTimeout(() => {
+  if (standalone || deferredPrompt || iOS) return;
+  if (inAppBrowser) return;                       // cannot install in there anyway
+  if (navigator.maxTouchPoints > 0) showInstallBar('manual');
+}, 4000);
 
 /* Opened inside Instagram / Facebook — installing is not possible there */
 function renderBrowserWarning(){
@@ -1599,6 +1784,12 @@ function renderHelpInstall(){
       <p style="margin-bottom:12px">Keep Nuova one tap away, and order without opening the browser.</p>
       <button class="btn btn--teal sm" onclick="doInstall()">Install the app</button>
     </div>`;
+  } else if (!inAppBrowser && navigator.maxTouchPoints > 0){
+    box.innerHTML = `<div class="info">
+      <h4>Add to home screen</h4>
+      <p style="margin-bottom:12px">Keep Nuova one tap away, and order without opening the browser.</p>
+      <button class="btn btn--teal sm" onclick="showAndroidSteps()">Show me how</button>
+    </div>`;
   }
 }
 
@@ -1641,5 +1832,9 @@ if (orders.length) renderOrders();
   if (want && document.getElementById('s-' + want)) go(want);
 })();
 </script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>window.dispatchEvent(new Event('nuova-firebase-ready'));</script>
 </body>
 </html>

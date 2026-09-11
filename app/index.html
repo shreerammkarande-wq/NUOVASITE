@@ -490,6 +490,17 @@ body.sheet-open .install{display:none}
       <button onclick="showBankQr()">Trouble scanning?</button>
     </div>
 
+    <!-- Card / netbanking / wallet. Hidden until the server says the
+         payment gateway is switched on, so the shop works without it. -->
+    <div id="payCardWrap" hidden>
+      <p class="paysep">Or pay by card</p>
+      <button class="btn btn--line" id="payCardBtn" onclick="payByCard()">
+        <svg viewBox="0 0 24 24"><path d="M2 9h20M4 5h16a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2z"/></svg>
+        <span id="payCardLabel">Card, netbanking or wallet</span>
+      </button>
+      <p class="payfoot" style="margin-top:9px">Confirmed the moment it goes through — nothing to wait for.</p>
+    </div>
+
     <div class="note" id="freightNote"></div>
 
     <p class="paysep">Once you have paid</p>
@@ -1501,6 +1512,9 @@ function openPayment(order){
       'Could not draw the QR here. Tap <b>Trouble scanning?</b> below for our standard QR, ' +
       'or pay to <b>' + SHOP.upi + '</b> and enter ' + rs(order.total) + ' yourself.</p>';
   }
+
+  cardBtnState(false);
+  showCardOption();
   go('pay');
 }
 
@@ -1514,6 +1528,205 @@ function openUpiApp(){
     window.addEventListener('pagehide', () => clearTimeout(t), { once:true });
   }
   window.location.href = uri;
+}
+
+/* ══════════ CARD / NETBANKING / WALLET ══════════════════════════════════
+   Everything above this pays by UPI, which costs the business nothing and
+   needs no gateway. Cards cannot work that way — they need an acquirer —
+   so they go through Razorpay, and only if the server has been given keys.
+
+   The security work is all server-side and deliberately so: this file runs
+   on the customer's phone, where anything it decides can be edited. The
+   browser sends an order NUMBER and never an amount; the server looks the
+   price up, and confirms the payment with Razorpay before anything is
+   marked paid. See api/rzp-order.js and api/rzp-verify.js.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+const RZP_CHECKOUT = 'https://checkout.razorpay.com/v1/checkout.js';
+let gatewayReady = null;          // null = not asked yet
+let rzpScriptP   = null;
+
+/* Ask once per session whether cards are available. A failure here is not
+   an error the customer should ever see — it just means no card button. */
+function probeGateway(){
+  if (gatewayReady !== null) return Promise.resolve(gatewayReady);
+  return fetch('/api/rzp-order', { method:'GET' })
+    .then(r => r.ok ? r.json() : { configured:false })
+    .then(j => { gatewayReady = !!(j && j.configured); return gatewayReady; })
+    .catch(() => { gatewayReady = false; return false; });
+}
+
+function showCardOption(){
+  probeGateway().then(ok => {
+    const w = document.getElementById('payCardWrap');
+    if (w) w.hidden = !ok;
+  });
+}
+
+function loadRzpScript(){
+  if (window.Razorpay) return Promise.resolve(true);
+  if (rzpScriptP) return rzpScriptP;
+  rzpScriptP = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = RZP_CHECKOUT;
+    s.onload  = () => resolve(true);
+    s.onerror = () => { rzpScriptP = null; reject(new Error('checkout script blocked')); };
+    document.head.appendChild(s);
+    setTimeout(() => { if (!window.Razorpay){ rzpScriptP = null; reject(new Error('checkout script timed out')); } }, 12000);
+  });
+  return rzpScriptP;
+}
+
+function cardBtnState(busy, label){
+  const b = document.getElementById('payCardBtn');
+  const l = document.getElementById('payCardLabel');
+  if (b) { b.disabled = !!busy; b.style.opacity = busy ? '.55' : ''; }
+  if (l) l.textContent = label || 'Card, netbanking or wallet';
+}
+
+async function payByCard(){
+  if (!payingOrder) return;
+  const order = payingOrder;
+
+  cardBtnState(true, 'Opening secure checkout…');
+
+  try {
+    await loadRzpScript();
+
+    /* The order has to exist in Firestore first — that record is where the
+       server reads the price from. If it never synced (dead spot at the
+       moment of ordering), push it now and try once more. */
+    let r = await fetch('/api/rzp-order', {
+      method:  'POST',
+      headers: { 'Content-Type':'application/json' },
+      body:    JSON.stringify({ orderNo: order.no })
+    });
+
+    if (r.status === 404){
+      await saveOrderToCloud(order);
+      r = await fetch('/api/rzp-order', {
+        method:  'POST',
+        headers: { 'Content-Type':'application/json' },
+        body:    JSON.stringify({ orderNo: order.no })
+      });
+    }
+
+    const data = await r.json().catch(() => ({}));
+
+    if (r.status === 409 && data.error === 'already_paid'){
+      cardBtnState(false);
+      toast('This order is already paid');
+      return;
+    }
+    if (!r.ok || !data.orderId){
+      throw new Error(data.error || ('server said ' + r.status));
+    }
+
+    cardBtnState(false);
+
+    const rzp = new Razorpay({
+      key:         data.keyId,
+      amount:      data.amount,
+      currency:    data.currency || 'INR',
+      order_id:    data.orderId,
+      name:        data.name || 'Shri Jagdamba Industry',
+      description: 'Nuova order ' + order.no,
+      image:       location.origin + '/app/icons/icon-192.png',
+      prefill: {
+        name:    (data.prefill && data.prefill.name) || '',
+        contact: (data.prefill && data.prefill.contact) || ''
+      },
+      notes:  { orderNo: order.no },
+      theme:  { color: '#108474' },
+      handler: function (resp){ confirmCardPayment(order, resp); },
+      modal: {
+        ondismiss: function (){
+          cardBtnState(false);
+          toast('Payment cancelled — you can still pay by UPI');
+        }
+      }
+    });
+
+    rzp.on('payment.failed', function (resp){
+      cardBtnState(false);
+      const d = resp && resp.error ? resp.error.description : '';
+      toast(d ? ('Payment failed: ' + d) : 'Payment failed — nothing was charged');
+    });
+
+    rzp.open();
+
+  } catch (err){
+    console.warn('Card payment unavailable:', err);
+    cardBtnState(false);
+    toast('Card payment is not available right now — please use UPI above');
+  }
+}
+
+/* Razorpay says it went through. That is the browser talking, so the server
+   checks it with Razorpay directly before anything is treated as paid. */
+async function confirmCardPayment(order, resp){
+  cardBtnState(true, 'Confirming…');
+  try {
+    const r = await fetch('/api/rzp-verify', {
+      method:  'POST',
+      headers: { 'Content-Type':'application/json' },
+      body:    JSON.stringify({
+        orderNo:             order.no,
+        razorpay_order_id:   resp.razorpay_order_id,
+        razorpay_payment_id: resp.razorpay_payment_id,
+        razorpay_signature:  resp.razorpay_signature
+      })
+    });
+    const data = await r.json().catch(() => ({}));
+
+    if (r.ok && data.ok){
+      /* The server has already written the verified record. Update the copy
+         on this phone only — pushing it back would be refused anyway, since
+         the rules lock the customer out once a payment is verified. */
+      setPaymentLocal(order, {
+        method: data.method || 'Card',
+        status: 'Paid',
+        utr:    resp.razorpay_payment_id || '',
+        at:     new Date().toISOString()
+      });
+      cardBtnState(false);
+      finishPayment('Payment received and confirmed. Thank you.');
+      return;
+    }
+
+    /* Money may well have left their account — Razorpay is the record of
+       truth, not us. Never say "failed" when we simply could not confirm. */
+    console.warn('Verify said:', r.status, data);
+    setPaymentLocal(order, {
+      method: 'Card',
+      status: 'Payment claimed',
+      utr:    resp.razorpay_payment_id || '',
+      at:     new Date().toISOString()
+    });
+    cardBtnState(false);
+    finishPayment('Your payment went through. We are confirming it and will message you shortly.');
+
+  } catch (err){
+    console.warn('Verify call failed:', err);
+    setPaymentLocal(order, {
+      method: 'Card',
+      status: 'Payment claimed',
+      utr:    (resp && resp.razorpay_payment_id) || '',
+      at:     new Date().toISOString()
+    });
+    cardBtnState(false);
+    finishPayment('Your payment went through. We are confirming it and will message you shortly.');
+  }
+}
+
+/* Same as setPayment but without the cloud push — used when the server has
+   already written the authoritative record. */
+function setPaymentLocal(order, pay){
+  if (!order) return;
+  order.payment = pay;
+  const i = orders.findIndex(o => o.no === order.no);
+  if (i > -1) orders[i] = order;
+  store.set('orders', orders);
 }
 
 function copyVpa(){

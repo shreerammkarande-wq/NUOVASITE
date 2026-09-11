@@ -29,19 +29,8 @@
      FIREBASE_SERVICE_ACCOUNT   the whole service-account JSON, one line\
    \uc0\u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552  */\
 \
-const admin = require('firebase-admin');\
-\
-function db() \{\
-  if (!admin.apps.length) \{\
-    const raw = process.env.FIREBASE_SERVICE_ACCOUNT;\
-    if (!raw) throw new Error('FIREBASE_SERVICE_ACCOUNT is not set');\
-    const sa = JSON.parse(raw);\
-    // Vercel stores the JSON with the newlines escaped; put them back.\
-    if (sa.private_key) sa.private_key = sa.private_key.replace(/\\\\n/g, '\\n');\
-    admin.initializeApp(\{ credential: admin.credential.cert(sa) \});\
-  \}\
-  return admin.firestore();\
-\}\
+/* No npm packages at all \'97 see sji-firestore.js for why that matters. */\
+const fs = require('./sji-firestore.js');\
 \
 module.exports = async (req, res) => \{\
   const keyId     = process.env.RAZORPAY_KEY_ID;\
@@ -76,10 +65,8 @@ module.exports = async (req, res) => \{\
       return res.status(400).json(\{ error: 'bad_order_number' \});\
     \}\
 \
-    const snap = await db().collection('logs').doc(orderNo).get();\
-    if (!snap.exists) return res.status(404).json(\{ error: 'order_not_found' \});\
-\
-    const order = snap.data();\
+    const order = await fs.getDoc('logs/' + orderNo);\
+    if (!order) return res.status(404).json(\{ error: 'order_not_found' \});\
 \
     if (order.type !== 'order' || order.source !== 'app') \{\
       return res.status(400).json(\{ error: 'not_an_app_order' \});\
@@ -127,7 +114,7 @@ module.exports = async (req, res) => \{\
 \
     // Remember which Razorpay order belongs to which of ours, so the\
     // webhook can cross-check it later rather than trusting the notes alone.\
-    await snap.ref.update(\{\
+    await fs.updateDoc('logs/' + orderNo, \{\
       rzpOrderId: rzp.id,\
       rzpOrderAt: new Date().toISOString()\
     \});\
@@ -146,6 +133,12 @@ module.exports = async (req, res) => \{\
 \
   \} catch (err) \{\
     console.error('rzp-order failed', err);\
+    const msg = String((err && err.message) || '');\
+    /* A setup mistake should say so rather than hiding behind a bare 500.\
+       These messages name the missing setting, never any key material. */\
+    if (/FIREBASE_SERVICE_ACCOUNT|service account|Firestore (read|write)/i.test(msg)) \{\
+      return res.status(503).json(\{ error: 'firebase_not_configured', detail: msg \});\
+    \}\
     return res.status(500).json(\{ error: 'server_error' \});\
   \}\
 \};}

@@ -36,23 +36,8 @@
    \uc0\u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552  */\
 \
 const crypto = require('crypto');\
-const admin  = require('firebase-admin');\
-\
-/* Ask Vercel not to eat the body, so the signature can be checked against\
-   the exact bytes Razorpay signed. Re-serialising parsed JSON does not\
-   work \'97 key order and spacing would differ and the signature would fail. */\
-module.exports.config = \{ api: \{ bodyParser: false \} \};\
-\
-function db() \{\
-  if (!admin.apps.length) \{\
-    const raw = process.env.FIREBASE_SERVICE_ACCOUNT;\
-    if (!raw) throw new Error('FIREBASE_SERVICE_ACCOUNT is not set');\
-    const sa = JSON.parse(raw);\
-    if (sa.private_key) sa.private_key = sa.private_key.replace(/\\\\n/g, '\\n');\
-    admin.initializeApp(\{ credential: admin.credential.cert(sa) \});\
-  \}\
-  return admin.firestore();\
-\}\
+/* No npm packages at all \'97 see sji-firestore.js for why that matters. */\
+const fs = require('./sji-firestore.js');\
 \
 function safeEqual(a, b) \{\
   const ba = Buffer.from(String(a), 'utf8');\
@@ -146,13 +131,12 @@ module.exports = async (req, res) => \{\
       return res.status(200).json(\{ ok: true, ignored: true \});\
     \}\
 \
-    const snap = await db().collection('logs').doc(String(orderNo)).get();\
-    if (!snap.exists) \{\
+    const docPath = 'logs/' + String(orderNo);\
+    const order = await fs.getDoc(docPath);\
+    if (!order) \{\
       console.warn('Webhook: no such order', orderNo);\
       return res.status(200).json(\{ ok: true, ignored: true \});\
     \}\
-\
-    const order = snap.data();\
     if (order.paymentVerified === true) \{\
       return res.status(200).json(\{ ok: true, alreadyVerified: true \});\
     \}\
@@ -162,7 +146,7 @@ module.exports = async (req, res) => \{\
       /* Deliberately NOT marked paid. A short payment is a real thing that\
          needs a person to look at it, not a flag flipped automatically. */\
       console.warn('Webhook amount mismatch', orderNo, pay.amount, expectedPaise);\
-      await snap.ref.update(\{\
+      await fs.updateDoc(docPath, \{\
         paymentStatus: 'Amount mismatch \'97 check manually',\
         rzpPaymentId:  pay.id\
       \});\
@@ -176,7 +160,7 @@ module.exports = async (req, res) => \{\
       : pay.method === 'upi'        ? 'UPI (gateway)'\
       : String(pay.method || 'Razorpay');\
 \
-    await snap.ref.update(\{\
+    await fs.updateDoc(docPath, \{\
       paymentMethod:     method,\
       paymentStatus:     'Paid',\
       paymentUtr:        pay.acquirer_data && (pay.acquirer_data.rrn || pay.acquirer_data.upi_transaction_id)\
@@ -194,7 +178,25 @@ module.exports = async (req, res) => \{\
 \
   \} catch (err) \{\
     console.error('rzp-webhook failed', err);\
-    // 500 makes Razorpay retry rather than drop a real payment.\
+    /* 500 makes Razorpay retry rather than drop a real payment \'97 which is\
+       exactly what we want if the fault is a misconfiguration at our end\
+       that we are about to fix. The detail names the missing setting and\
+       never any key material. */\
+    const msg = String((err && err.message) || '');\
+    if (/FIREBASE_SERVICE_ACCOUNT|service account|Firestore (read|write)/i.test(msg)) \{\
+      return res.status(500).json(\{ error: 'firebase_not_configured', detail: msg \});\
+    \}\
     return res.status(500).json(\{ error: 'server_error' \});\
   \}\
-\};}
+\};\
+\
+/* Ask the host not to consume the request body, so the signature can be\
+   checked against the exact bytes Razorpay signed. Re-serialising parsed\
+   JSON does not work \'97 key order and spacing would differ and the\
+   signature would never match.\
+\
+   This MUST come after the assignment above. Setting it first would work\
+   for about one second and then be silently wiped, because assigning to\
+   module.exports replaces the whole object, property and all. The code\
+   would look correct and the config would simply not exist. */\
+module.exports.config = \{ api: \{ bodyParser: false \} \};}

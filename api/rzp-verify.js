@@ -30,18 +30,9 @@
    \uc0\u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552 \u9552  */\
 \
 const crypto = require('crypto');\
-const admin  = require('firebase-admin');\
+/* No npm packages at all \'97 see sji-firestore.js for why that matters. */\
+const fs = require('./sji-firestore.js');\
 \
-function db() \{\
-  if (!admin.apps.length) \{\
-    const raw = process.env.FIREBASE_SERVICE_ACCOUNT;\
-    if (!raw) throw new Error('FIREBASE_SERVICE_ACCOUNT is not set');\
-    const sa = JSON.parse(raw);\
-    if (sa.private_key) sa.private_key = sa.private_key.replace(/\\\\n/g, '\\n');\
-    admin.initializeApp(\{ credential: admin.credential.cert(sa) \});\
-  \}\
-  return admin.firestore();\
-\}\
 \
 /* Constant-time compare. A plain === leaks, through how long it takes to\
    fail, roughly how much of the signature was right \'97 which is enough to\
@@ -89,9 +80,8 @@ module.exports = async (req, res) => \{\
       return res.status(400).json(\{ error: 'bad_signature' \});\
     \}\
 \
-    const snap = await db().collection('logs').doc(orderNo).get();\
-    if (!snap.exists) return res.status(404).json(\{ error: 'order_not_found' \});\
-    const order = snap.data();\
+    const order = await fs.getDoc('logs/' + orderNo);\
+    if (!order) return res.status(404).json(\{ error: 'order_not_found' \});\
 \
     if (order.paymentVerified === true) \{\
       return res.status(200).json(\{ ok: true, alreadyVerified: true \});\
@@ -136,7 +126,7 @@ module.exports = async (req, res) => \{\
       : pay.method === 'upi'        ? 'UPI (gateway)'\
       : String(pay.method || 'Razorpay');\
 \
-    await snap.ref.update(\{\
+    await fs.updateDoc('logs/' + orderNo, \{\
       paymentMethod:     method,\
       paymentStatus:     'Paid',\
       paymentUtr:        pay.acquirer_data && (pay.acquirer_data.rrn || pay.acquirer_data.upi_transaction_id)\
@@ -154,6 +144,12 @@ module.exports = async (req, res) => \{\
 \
   \} catch (err) \{\
     console.error('rzp-verify failed', err);\
+    const msg = String((err && err.message) || '');\
+    /* A setup mistake should say so rather than hiding behind a bare 500.\
+       These messages name the missing setting, never any key material. */\
+    if (/FIREBASE_SERVICE_ACCOUNT|service account|Firestore (read|write)/i.test(msg)) \{\
+      return res.status(503).json(\{ error: 'firebase_not_configured', detail: msg \});\
+    \}\
     return res.status(500).json(\{ error: 'server_error' \});\
   \}\
 \};}

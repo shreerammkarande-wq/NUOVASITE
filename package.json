@@ -1,0 +1,9 @@
+{
+  "name": "nuovasite",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Nuova shop — static site plus the Razorpay payment endpoints in api/",
+  "dependencies": {
+    "firebase-admin": "^12.7.0"
+  }
+}

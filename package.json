@@ -1,6 +1,0 @@
-{
-  "name": "nuovasite",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Nuova shop — static site plus the Razorpay payment endpoints in api/. No dependencies: the endpoints use only Node's built-in modules, so there is nothing to install and nothing that can be missing."
-}

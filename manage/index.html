@@ -4,7 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Shri Jagdamba Industry - Daily Monitor</title>
-  <meta name="theme-color" content="#C0392B">
+  <meta name="theme-color" content="#108474">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600&family=Abel&family=Mukta:wght@400;600&display=swap">
   <meta name="robots" content="noindex,nofollow">
   <meta name="description" content="Internal stock, crushing and order management for Shri Jagdamba Industry.">
 
@@ -65,7 +69,7 @@
       letter-spacing: -0.015em;
     }
     body {
-      background-color: #FA8072;
+      background-color: #F7F6F4;
       color: #1A1A1A;
       -webkit-tap-highlight-color: transparent;
       -webkit-font-smoothing: antialiased;
@@ -97,21 +101,110 @@
       }
     }
   </style>
+
+  <!-- ══════════════════════════════════════════════════════════
+       NUOVA THEME LAYER
+       The same typography and palette as the customer app, laid over
+       the existing markup. !important is deliberate: the Tailwind CDN
+       injects its stylesheet at runtime, after this one.
+       ══════════════════════════════════════════════════════════ -->
+  <style>
+  :root{
+    --n-teal:#108474; --n-teal-dark:#0B6154; --n-teal-soft:#E7F2F0; --n-teal-line:#CFE3DF;
+    --n-orange:#F69623; --n-orange-dark:#D2780F;
+    --n-ink:#1A1A1A; --n-body:#6E6C6A; --n-muted:#958E88;
+    --n-band:#F7F6F4; --n-line:#E4E1DD;
+    --n-head:"Oswald","Arial Narrow",Arial,sans-serif;
+    --n-text:"Abel","Mukta","Helvetica Neue",Helvetica,Arial,sans-serif;
+  }
+
+  /* ── type ── */
+  html, body{
+    font-family:var(--n-text) !important;
+    letter-spacing:normal !important;
+    font-size:16px;
+  }
+  body{ background-color:var(--n-band) !important; color:var(--n-body) !important; }
+
+  /* Oswald is condensed — right for headings, labels and buttons, wrong for
+     anything you have to read a lot of or type into. Everything else is Abel,
+     exactly as in the shop. */
+  h1,h2,h3,h4,h5,h6,
+  .uppercase, button, th{
+    font-family:var(--n-head) !important;
+  }
+  h1,h2,h3,h4{ color:var(--n-ink) !important; letter-spacing:.02em !important; font-weight:500 !important; }
+  .uppercase{ letter-spacing:.1em !important; }
+  input, select, textarea{
+    font-family:var(--n-text) !important;
+    letter-spacing:normal !important;
+    font-size:16px !important;          /* stops iOS zooming the page on focus */
+  }
+  p, span, td, li, label, div{ letter-spacing:normal !important; }
+
+  /* ── brand red → Nuova teal ── */
+  .text-\[\#C0392B\]{ color:var(--n-teal) !important; }
+  .bg-\[\#C0392B\]{ background-color:var(--n-teal) !important; }
+  .border-\[\#C0392B\]{ border-color:var(--n-teal) !important; }
+  .from-\[\#C0392B\]{ --tw-gradient-from:var(--n-teal) !important;
+    --tw-gradient-to:rgb(16 132 116 / 0) !important;
+    --tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+  .hover\:bg-\[\#A93226\]:hover, .hover\:bg-\[\#C0392B\]:hover{ background-color:var(--n-teal-dark) !important; }
+  .to-\[\#A93226\]{ --tw-gradient-to:var(--n-teal-dark) !important; }
+
+  /* ── rose supporting family → teal tints ── */
+  .bg-rose-50{  background-color:#F2F8F7 !important; }
+  .bg-rose-100{ background-color:var(--n-teal-soft) !important; }
+  .hover\:bg-rose-50:hover{  background-color:#F2F8F7 !important; }
+  .hover\:bg-rose-100:hover{ background-color:var(--n-teal-soft) !important; }
+  .border-rose-100{ border-color:#E2EFEC !important; }
+  .border-rose-200{ border-color:var(--n-teal-line) !important; }
+  .border-rose-300{ border-color:#B9D6D0 !important; }
+  .text-rose-600,.text-rose-700,.text-rose-800{ color:var(--n-teal-dark) !important; }
+  .bg-rose-600,.bg-rose-700{ background-color:var(--n-teal) !important; }
+  .from-rose-50{ --tw-gradient-from:#F2F8F7 !important; }
+  .via-rose-50\/70{ --tw-gradient-via:#F2F8F7 !important; }
+
+  /* deletion stays red — that is meaning, not branding */
+  .hover\:text-red-600:hover{ color:#C0392B !important; }
+
+  /* ── surfaces ── */
+  header.sticky{ border-bottom-color:var(--n-line) !important; box-shadow:0 1px 0 rgba(0,0,0,.03) !important; }
+  nav, footer{ border-color:var(--n-line) !important; }
+  .rounded-2xl{ border-radius:16px !important; }
+  .rounded-xl{ border-radius:12px !important; }
+  .shadow-md{ box-shadow:0 1px 2px rgba(26,26,26,.05) !important; }
+  .shadow-lg,.shadow-xl{ box-shadow:0 4px 18px rgba(26,26,26,.07) !important; }
+
+  /* ── buttons read like the shop's ── */
+  button.uppercase, .btn-nuova{ letter-spacing:.12em !important; }
+
+  /* ── scrollbar ── */
+  .custom-scrollbar::-webkit-scrollbar-track{ background:var(--n-teal-soft) !important; }
+  .custom-scrollbar::-webkit-scrollbar-thumb{ background:var(--n-teal) !important; }
+
+  /* ── focus ── */
+  input:focus, select:focus, textarea:focus{ outline-color:var(--n-teal) !important; }
+
+  /* keep the amber / emerald status colours — they mean pending and done
+     in both apps, so they stay as they are. */
+  </style>
 </head>
-<body class="bg-[#FA8072] text-[#1A1A1A] pb-24 md:pb-8">
+<body class="text-[#1A1A1A] pb-24 md:pb-8" style="background-color:#F7F6F4">
 
 <!-- ══════════ STAFF LOGIN GATE ══════════ -->
 <div id="sji-gate" style="position:fixed;inset:0;z-index:9999;background:#F7F6F4;display:flex;align-items:center;justify-content:center;padding:20px">
   <div style="width:100%;max-width:380px;background:#fff;border:1px solid #E4E1DD;border-radius:20px;padding:26px 24px;box-shadow:0 10px 40px rgba(0,0,0,.06)">
-    <div style="text-align:center;margin-bottom:20px">
-      <div style="width:54px;height:54px;border-radius:14px;background:#C0392B;color:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px;font-weight:800">SJ</div>
-      <h1 style="margin:0;font-size:17px;font-weight:800;color:#1A1A1A;letter-spacing:.02em">SHRI JAGDAMBA INDUSTRY</h1>
-      <p style="margin:4px 0 0;font-size:12px;color:#958E88">Order &amp; Production Management</p>
+    <div style="text-align:center;margin-bottom:22px">
+      <img src="/app/img/logo.jpg" alt="Nuova" style="height:34px;width:auto;margin:0 auto 14px;display:block"
+           onerror="this.outerHTML='&lt;div style=&quot;width:52px;height:52px;border-radius:14px;background:#108474;color:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-family:Oswald,sans-serif;font-size:24px;font-weight:600&quot;&gt;N&lt;/div&gt;'">
+      <h1 style="margin:0;font-family:Oswald,Arial,sans-serif;font-size:16px;font-weight:500;color:#1A1A1A;letter-spacing:.1em;text-transform:uppercase">Shri Jagdamba Industry</h1>
+      <p style="margin:5px 0 0;font-family:Abel,Arial,sans-serif;font-size:13.5px;color:#958E88;letter-spacing:.02em">Order &amp; Production Management</p>
     </div>
 
     <div id="sji-gate-form">
       <button id="sji-login-btn" onclick="sjiLogin()"
-              style="width:100%;padding:13px;border:1.5px solid #E4E1DD;border-radius:11px;background:#fff;color:#1A1A1A;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px">
+              style="width:100%;padding:14px;border:1.5px solid #E4E1DD;border-radius:12px;background:#fff;color:#1A1A1A;font-family:Oswald,Arial,sans-serif;font-size:13px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px">
         <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
           <path fill="#4285F4" d="M45.1 24.5c0-1.6-.1-3.2-.4-4.7H24v8.9h11.8c-.5 2.7-2.1 5-4.4 6.6v5.5h7.1c4.2-3.8 6.6-9.5 6.6-16.3z"/>
           <path fill="#34A853" d="M24 46c6 0 11-2 14.6-5.3l-7.1-5.5c-2 1.3-4.5 2.1-7.5 2.1-5.8 0-10.6-3.9-12.4-9.1H4.3v5.7C7.9 41.1 15.4 46 24 46z"/>
@@ -120,7 +213,7 @@
         </svg>
         Sign in with Google
       </button>
-      <p id="sji-gate-msg" style="display:none;font-size:13px;color:#C0392B;margin:14px 0 0;line-height:1.45"></p>
+      <p id="sji-gate-msg" style="display:none;font-size:13px;color:#C0392B;margin:14px 0 0;line-height:1.45;font-family:Abel,Arial,sans-serif"></p>
       <p style="font-size:11.5px;color:#958E88;text-align:center;margin:16px 0 0;line-height:1.55">
         Only Shreeram's and Smita's Google accounts can open this.<br>
         Customer orders arrive without any login.

@@ -2,7 +2,7 @@
    Service worker. Bump CACHE whenever you change index.html so both
    phones pick up the new version instead of the cached one. */
 
-const CACHE = 'sjmonitor-v1';
+const CACHE = 'sjmonitor-v2';
 
 const SHELL = [
   './',

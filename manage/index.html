@@ -1735,9 +1735,16 @@
                 </p>
                 ${c.phone ? `<p class="text-[11px] text-gray-500 font-medium mt-0.5"><i class="fa-solid fa-phone text-gray-400 mr-1 text-[10px]"></i>${c.phone}</p>` : ''}
               </div>
-              <span class="text-[10px] px-2 py-0.5 rounded-md font-bold ${due > 0 ? 'bg-rose-100 text-[#C0392B]' : 'bg-emerald-100 text-emerald-800'}">
-                ${due > 0 ? 'Due: ₹' + due.toLocaleString() : 'Cleared'}
-              </span>
+              <div class="flex items-center gap-1.5 flex-none">
+                <span class="text-[10px] px-2 py-0.5 rounded-md font-bold ${due > 0 ? 'bg-rose-100 text-[#C0392B]' : 'bg-emerald-100 text-emerald-800'}">
+                  ${due > 0 ? 'Due: ₹' + due.toLocaleString() : 'Cleared'}
+                </span>
+                <button onclick="editCustomer('${jsAttr(c.name)}')"
+                        class="w-7 h-7 rounded-lg bg-gray-100 hover:bg-rose-100 text-gray-600 hover:text-[#C0392B] flex items-center justify-center transition"
+                        title="Edit name, mobile number or city">
+                  <i class="fa-solid fa-pen-to-square text-[11px]"></i>
+                </button>
+              </div>
             </div>
 
             <!-- Google review: one tap to record it, one to ask for it -->
@@ -3931,6 +3938,29 @@ function getAllCustomerList() {
       return customers.find(c => String(c.name || '').trim().toLowerCase() === key) || null;
     }
 
+    /* The details as the CARD shows them, which is not the same as what the
+       customer record holds. Most buyers here were never registered through
+       the form — they exist only because they ordered — so their phone and
+       city live on the order. The card already merges the two; anything that
+       edits a buyer has to start from the same merged view, or opening the
+       dialog would show blanks and saving would erase a number that was
+       plainly on screen a second earlier. */
+    function customerDetailsFor(name) {
+      const clean = String(name || '').trim();
+      const rec = findCustomerByName(clean) || {};
+      const lastOrder = logs
+        .filter(l => l.type === 'order' && l.customer &&
+                     l.customer.trim().toLowerCase() === clean.toLowerCase())
+        .sort((a, b) => (b.date || '').localeCompare(a.date || ''))[0] || {};
+
+      return {
+        id:    rec.id || null,
+        name:  rec.name || clean,
+        phone: rec.phone || lastOrder.phone || '',
+        city:  rec.city  || lastOrder.city  || ''
+      };
+    }
+
     function hasGoogleReview(name) {
       const c = findCustomerByName(name);
       return !!(c && c.googleReview === true);
@@ -3964,16 +3994,14 @@ function getAllCustomerList() {
       };
 
       if (!cust) {
-        /* Known only from their orders — give them a real record now, taking
-           the phone and city from the most recent order we have. */
-        const last = logs.filter(l => l.type === 'order' && l.customer &&
-                                      l.customer.trim().toLowerCase() === clean.toLowerCase())
-                         .sort((a, b) => (b.date || '').localeCompare(a.date || ''))[0] || {};
+        /* Known only from their orders — give them a real record now, carrying
+           across the phone and city the card has been showing. */
+        const seen = customerDetailsFor(clean);
         cust = Object.assign({
           id:    'rev-' + Date.now().toString(),
           name:  clean,
-          phone: last.phone || '',
-          city:  last.city || ''
+          phone: seen.phone,
+          city:  seen.city
         }, patch);
         customers.push(cust);
       } else {
@@ -4019,6 +4047,163 @@ function getAllCustomerList() {
           ? navigator.clipboard.writeText(msg).then(
               () => alert('No mobile number saved for ' + name + '.\n\nThe review request has been copied — paste it wherever you like.'))
           : alert(msg);
+      }
+    }
+
+    /* ── Editing a buyer ──────────────────────────────────────────────────
+       Straightforward except for one thing: orders and payments are linked to
+       a customer by their NAME, not by an id. So renaming someone without
+       moving their history would split them in two — the new name on an empty
+       card, and every past order still sitting under the old spelling,
+       carrying the outstanding dues with it.
+
+       So a rename here rewrites the name on that customer's records too, and
+       says how many before doing it. Phone and city are simple edits and
+       touch nothing else: the card reads those from the customer record in
+       preference to the order, so old orders keep the address they were
+       actually delivered to, which is what you want on a past invoice. */
+
+    function editCustomer(name) {
+      const clean = String(name || '').trim();
+      const c = customerDetailsFor(clean);
+      const orderCount = logs.filter(l => l.type === 'order' && l.customer &&
+                                          l.customer.trim().toLowerCase() === clean.toLowerCase()).length;
+
+      document.getElementById('modal-body').innerHTML = `
+        <div class="p-5 space-y-4">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h3 class="text-base font-black text-gray-900">Edit buyer</h3>
+              <p class="text-xs text-gray-500 mt-0.5">
+                ${orderCount > 0
+                  ? orderCount + ' order' + (orderCount === 1 ? '' : 's') + ' on record'
+                  : 'No orders yet'}
+              </p>
+            </div>
+            <button type="button" onclick="closeModal()" class="w-8 h-8 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center flex-none">
+              <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+          </div>
+
+          <div class="space-y-2.5">
+            <div>
+              <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Name</label>
+              <input id="edit-cust-name" type="text" value="${jsAttr(c.name)}"
+                     class="w-full p-2.5 text-sm rounded-xl border border-gray-300 focus:outline-[#C0392B]" />
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Mobile number</label>
+              <input id="edit-cust-phone" type="tel" inputmode="numeric" value="${jsAttr(c.phone || '')}"
+                     placeholder="10 digits" maxlength="15"
+                     class="w-full p-2.5 text-sm rounded-xl border border-gray-300 focus:outline-[#C0392B]" />
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">City / area</label>
+              <input id="edit-cust-city" type="text" value="${jsAttr(c.city || '')}"
+                     class="w-full p-2.5 text-sm rounded-xl border border-gray-300 focus:outline-[#C0392B]" />
+            </div>
+          </div>
+
+          <p id="edit-cust-error" class="hidden text-xs font-bold text-[#C0392B] bg-rose-50 border border-rose-200 rounded-xl p-2.5"></p>
+
+          ${orderCount > 0 ? `
+            <p class="text-[11px] text-gray-500 leading-relaxed bg-gray-50 border border-gray-200 rounded-xl p-2.5">
+              Changing the name will move all ${orderCount} record${orderCount === 1 ? '' : 's'} across with it,
+              so the dues and history stay with this buyer.
+            </p>` : ''}
+
+          <div class="flex gap-2 pt-1">
+            <button type="button" onclick="closeModal()" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-gray-100 hover:bg-gray-200 text-gray-700 transition">
+              Cancel
+            </button>
+            <button type="button" onclick="saveCustomerEdit('${jsAttr(clean)}')" id="btn-save-cust"
+                    class="flex-1 py-2.5 rounded-xl text-xs font-black bg-[#C0392B] hover:bg-[#A93226] text-white transition shadow-md">
+              Save changes
+            </button>
+          </div>
+        </div>`;
+
+      document.getElementById('modal-container').classList.remove('hidden');
+      setTimeout(() => { const el = document.getElementById('edit-cust-name'); if (el) el.focus(); }, 120);
+    }
+
+    function editCustError(msg) {
+      const el = document.getElementById('edit-cust-error');
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    async function saveCustomerEdit(originalName) {
+      const nameEl  = document.getElementById('edit-cust-name');
+      const phoneEl = document.getElementById('edit-cust-phone');
+      const cityEl  = document.getElementById('edit-cust-city');
+      if (!nameEl) return;
+
+      const name  = nameEl.value.trim();
+      const phone = phoneEl.value.trim();
+      const city  = cityEl.value.trim();
+
+      if (!name) { editCustError('A buyer needs a name.'); return; }
+
+      /* A number that cannot receive a WhatsApp message is worse than a blank
+         one, because nothing tells you it is broken until a message fails. */
+      const digits = phone.replace(/\D/g, '');
+      if (phone && digits.length < 10) {
+        editCustError('That mobile number is too short — 10 digits, or leave it blank.');
+        return;
+      }
+
+      const renamed = name.toLowerCase() !== originalName.toLowerCase();
+
+      /* Renaming onto a buyer who already exists would silently merge two
+         accounts and their dues. Refuse rather than guess. */
+      if (renamed) {
+        const clash = customers.find(c =>
+          String(c.name || '').trim().toLowerCase() === name.toLowerCase());
+        const clashInLogs = logs.some(l => l.type === 'order' && l.customer &&
+          l.customer.trim().toLowerCase() === name.toLowerCase());
+        if (clash || clashInLogs) {
+          editCustError('"' + name + '" already exists as a separate buyer. Merging two accounts has to be done by hand — tell me and I will do it.');
+          return;
+        }
+      }
+
+      const btn = document.getElementById('btn-save-cust');
+      if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+
+      let cust = findCustomerByName(originalName);
+      if (!cust) {
+        cust = { id: 'cust-' + Date.now().toString(), name: name, phone: phone, city: city };
+        customers.push(cust);
+      } else {
+        cust.name = name; cust.phone = phone; cust.city = city;
+      }
+
+      /* Move the history across before anything else, so a failure halfway
+         leaves the records findable under the old name rather than lost. */
+      let moved = [];
+      if (renamed) {
+        moved = logs.filter(l => l.customer &&
+                                 l.customer.trim().toLowerCase() === originalName.toLowerCase());
+        moved.forEach(l => { l.customer = name; });
+        localStorage.setItem('sji_logs_v35', JSON.stringify(logs));
+      }
+
+      localStorage.setItem('sji_customers_v35', JSON.stringify(customers));
+      renderAll();
+      closeModal();
+
+      if (db) {
+        try {
+          await db.collection('customers').doc(cust.id).set(
+            { name: name, phone: phone, city: city }, { merge: true });
+          for (const l of moved) {
+            await db.collection('logs').doc(l.id).update({ customer: name });
+          }
+        } catch (err) {
+          console.warn('Buyer save cloud notice:', err);
+        }
       }
     }
 

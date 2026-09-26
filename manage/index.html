@@ -32,6 +32,14 @@
   <link rel="apple-touch-startup-image" href="splash/1284x2778.png" media="(device-width:428px) and (device-height:926px) and (-webkit-device-pixel-ratio:3)">
   <link rel="apple-touch-startup-image" href="splash/1290x2796.png" media="(device-width:430px) and (device-height:932px) and (-webkit-device-pixel-ratio:3)">
 
+  <!-- Two leftovers from the original single-file admin page used to sit here:
+       a second manifest link pointing at /manifest.json, and a second
+       theme-color. That file does not exist — the address returns 404 — and a
+       page whose manifest is broken is not installable, so Chrome on Android
+       quietly downgraded "Install app" to "Create shortcut" and offered a grey
+       letter icon instead of the SJ one. The real manifest is linked near the
+       top of this head block. There must only ever be ONE of them. -->
+
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
@@ -225,6 +233,90 @@
 
   /* keep the amber / emerald status colours — they mean pending and done
      in both apps, so they stay as they are. */
+
+  /* ══ AI Copilot panel ══════════════════════════════════════════════════
+     This was running off all four edges of the phone. Three separate causes,
+     all of them mine:
+
+     1. The panel was laid out against the LAYOUT viewport. The Records table
+        is deliberately 740px wide inside its own scroller, which makes the
+        document wider than a phone screen — and a `fixed` box then sizes
+        itself to that wider document, not to the glass. Hence content cut off
+        at both the left and the right. Pinning to 100vw and hiding overflow
+        on the backdrop fixes it at the root.
+
+     2. `max-height: 92vh`. On iOS, `vh` counts the viewport as if the browser
+        chrome were hidden, so 92vh is taller than what you can actually see
+        and the header and send box fall off the top and bottom. `dvh` is the
+        unit that means "what is visible right now"; the vh line stays first
+        as the fallback for older phones.
+
+     3. Nothing stopped the page behind from scrolling, so the whole thing
+        drifted while being read. The body is locked while the panel is open.
+
+     Safe-area insets keep the send box clear of the home indicator.
+
+     4. The panel's geometry is declared HERE rather than left to Tailwind
+        utility classes. Tailwind arrives from a CDN; if that is slow, blocked
+        on a weak connection at the unit, or simply has not painted yet, a
+        panel relying on it for "fixed inset-0" drops back into normal page
+        flow and spills off the screen — which is this exact failure. The
+        containment of a full-screen panel should not hang on a third-party
+        script, so these few properties stand on their own. */
+
+  #ai-modal-container{
+    position:fixed;
+    inset:0;
+    z-index:50;
+    display:flex;
+    align-items:flex-end;          /* sheet rises from the bottom on a phone */
+    justify-content:center;
+    width:100vw;
+    max-width:100vw;
+    overflow:hidden;
+    padding-left:env(safe-area-inset-left);
+    padding-right:env(safe-area-inset-right);
+  }
+  /* must out-specify the rule above, or the panel would never close */
+  #ai-modal-container.hidden{ display:none !important; }
+
+  #ai-modal-container > div{
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    max-width:min(100%, 36rem);
+    max-height:92vh;
+    max-height:92dvh;              /* what is actually visible, toolbars and all */
+    overflow:hidden;
+  }
+
+  /* the conversation is the part that gives way; min-height:0 is what lets a
+     flex child actually shrink instead of forcing its parent taller */
+  #ai-chat-stream{
+    flex:1 1 auto;
+    min-height:0;
+    overflow-y:auto;
+  }
+  #ai-modal-container .ai-scroll{
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+  }
+  /* the quick-action chips scroll sideways inside their own strip and must
+     never widen the panel itself */
+  #ai-quick-actions{ max-width:100%; overflow-x:auto; flex:none; }
+  #ai-input-bar{
+    flex:none;
+    /* clear of the home indicator on a gesture-bar phone */
+    padding-bottom:calc(0.75rem + env(safe-area-inset-bottom));
+  }
+
+  @media (min-width:640px){
+    #ai-modal-container{ align-items:center; padding:1rem; }
+    #ai-modal-container > div{ max-height:85vh; max-height:85dvh; }
+  }
+
+  /* while the panel is open the page behind must not move */
+  body.ai-open{ overflow:hidden !important; }
   </style>
 </head>
 <body class="text-[#1A1A1A] pb-24 md:pb-8" style="background-color:#F7F6F4">
@@ -534,9 +626,15 @@
     <!-- Customers Tab -->
     <div id="view-customers" class="hidden space-y-4">
       <div class="bg-white p-4 rounded-2xl border border-rose-100 shadow-xl space-y-3">
-        <div class="flex items-center justify-between border-b border-gray-100 pb-2">
-          <h3 class="text-xs font-black text-[#1A1A1A]">Customer Management</h3>
-          <button onclick="exportCustomersToExcel()" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#C0392B] hover:bg-[#A93226] text-white flex items-center gap-1.5 shadow-sm transition">
+        <div class="flex items-center justify-between gap-2 flex-wrap border-b border-gray-100 pb-2">
+          <div class="flex items-baseline gap-2.5 flex-wrap min-w-0">
+            <h3 class="text-xs font-black text-[#1A1A1A]">Customer Management</h3>
+            <span class="text-[11px] flex items-center gap-1">
+              <i class="fa-brands fa-google text-[10px] text-amber-700"></i>
+              <span id="review-tally" class="text-gray-500">&mdash;</span>
+            </span>
+          </div>
+          <button onclick="exportCustomersToExcel()" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#C0392B] hover:bg-[#A93226] text-white flex items-center gap-1.5 shadow-sm transition flex-none">
             <i class="fa-solid fa-file-excel text-sm"></i> Export Directory to Excel
           </button>
         </div>
@@ -549,8 +647,8 @@
       </div>
       <div id="grid-customers" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
     </div>
-    <!-- Floating AI Copilot Action Trigger Button -->
-  <div class="fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-40 flex items-center gap-2">
+    <!-- Floating AI Copilot Action Trigger Button (dashboard only) -->
+  <div id="ai-trigger-wrap" class="fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-40 flex items-center gap-2">
     <button onclick="toggleAiCopilot()" id="btn-ai-copilot-trigger" class="px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-full bg-gradient-to-r from-[#C0392B] via-[#D35400] to-[#E67E22] text-white font-black text-xs sm:text-sm shadow-2xl hover:scale-105 active:scale-95 transition flex items-center gap-2 border-2 border-white/40 ring-4 ring-rose-300/40 animate-bounce hover:animate-none" title="Open AI Action Assistant">
       <i class="fa-solid fa-wand-magic-sparkles text-amber-200 text-sm sm:text-base animate-spin" style="animation-duration: 6s;"></i>
       <span class="tracking-wide">AI Copilot</span>
@@ -604,7 +702,7 @@
       </div>
 
       <!-- Quick Action Prompt Chips -->
-      <div class="p-2.5 bg-gray-50/90 border-b border-gray-200 overflow-x-auto custom-scrollbar flex items-center gap-1.5 flex-nowrap text-xs whitespace-nowrap">
+      <div id="ai-quick-actions" class="p-2.5 bg-gray-50/90 border-b border-gray-200 overflow-x-auto custom-scrollbar flex items-center gap-1.5 flex-nowrap text-xs whitespace-nowrap">
         <span class="text-[10px] font-black text-gray-400 uppercase tracking-wider pl-1">Quick Actions:</span>
         <button onclick="quickAiPrompt('Crushed 2500 kg groundnut seeds')" class="px-2.5 py-1 rounded-full bg-white hover:bg-rose-50 border border-gray-300 hover:border-rose-300 text-gray-700 hover:text-[#C0392B] font-bold text-[11px] transition shadow-2xs">
           ⚙️ Log 2500kg Groundnut Crush
@@ -627,7 +725,7 @@
       </div>
 
       <!-- Chat History Container -->
-      <div id="ai-chat-stream" class="flex-1 p-3 sm:p-4 overflow-y-auto space-y-3 custom-scrollbar bg-gray-50/50 min-h-[260px] sm:min-h-[300px]">
+      <div id="ai-chat-stream" class="ai-scroll flex-1 p-3 sm:p-4 overflow-y-auto space-y-3 custom-scrollbar bg-gray-50/50 min-h-[160px] sm:min-h-[300px]">
         <!-- Welcome Message -->
         <div class="flex items-start gap-2.5 max-w-[90%]">
           <div class="w-8 h-8 rounded-full bg-[#C0392B] text-white flex-shrink-0 flex items-center justify-center text-xs shadow-sm font-black">
@@ -651,7 +749,7 @@
       </div>
 
       <!-- Input Bar -->
-      <div class="p-3 bg-white border-t border-gray-200">
+      <div id="ai-input-bar" class="p-3 bg-white border-t border-gray-200">
         <form onsubmit="handleAiSubmit(event)" class="flex items-center gap-2">
           <button type="button" onclick="startAiSpeech()" id="btn-ai-mic" class="w-10 h-10 rounded-2xl bg-gray-100 hover:bg-rose-100 text-gray-600 hover:text-[#C0392B] flex items-center justify-center text-sm transition flex-shrink-0" title="Voice Input (Speech Recognition)">
             <i class="fa-solid fa-microphone"></i>
@@ -710,11 +808,22 @@
       { id: 'sesame', name: 'Sesame', unit: 'Kg', yieldOil: 45, yieldCake: 53 },
       { id: 'mustard', name: 'Mustard', unit: 'Kg', yieldOil: 35, yieldCake: 63 },
       { id: 'coconut', name: 'Coconut (Copra)', unit: 'Kg', yieldOil: 62, yieldCake: 36 },
-      { id: 'flaxseed', name: 'Flaxseed', unit: 'Kg', yieldOil: 34, yieldCake: 64 }
+      { id: 'flaxseed', name: 'Flaxseed', unit: 'Kg', yieldOil: 34, yieldCake: 64 },
+
+      /* Almond has to be listed here, not only in the rate card. Everything
+         that counts stock — the dashboard tiles, the oil and cake ledgers,
+         what a sale deducts — works off this list, so a product priced but
+         not listed here would sell without ever moving a stock figure.
+
+         yieldOil / yieldCake below are UNCONFIRMED. They only matter if you
+         press almonds yourself; if the almond oil is bought in ready and
+         entered through Ready Oil Arrival, these two numbers are never used.
+         Tell me the real figures if you do press it. */
+      { id: 'almond', name: 'Almond', unit: 'Kg', yieldOil: 40, yieldCake: 58 }
     ];
 
     const VARIETY_COLORS = [
-      '#C0392B', '#E67E22', '#F39C12', '#27AE60', '#2980B9', '#8E44AD', '#D35400'
+      '#C0392B', '#E67E22', '#F39C12', '#27AE60', '#2980B9', '#8E44AD', '#D35400', '#7D6608'
     ];
 
     const PACKAGING_TYPES = [
@@ -789,7 +898,24 @@
       'Flaxseed Oil (5 ltr)': { name: 'Flaxseed Oil (5 ltr)', retail: 1635, wholesale: 1550, unit: 'Bottles' },
       'Flaxseed Oil (Loose)': { name: 'Flaxseed Oil (Loose)', retail: 320, wholesale: 300, unit: 'Litres (Ltr)' },
       'Flaxseed Cake (Loose)': { name: 'Flaxseed Cake (Loose)', retail: 35, wholesale: 30, unit: 'Kg' },
-      'Flaxseed Cake (50 Kg Bag)': { name: 'Flaxseed Cake (50 Kg Bag)', retail: 1700, wholesale: 1450, unit: 'Bags (50Kg)' }
+      'Flaxseed Cake (50 Kg Bag)': { name: 'Flaxseed Cake (50 Kg Bag)', retail: 1700, wholesale: 1450, unit: 'Bags (50Kg)' },
+
+      /* ── Almond ────────────────────────────────────────────────────────
+         Retail rates are the ones you gave: 200 ml 530, 500 ml 1230, 1 L 2320.
+
+         WHOLESALE IS DELIBERATELY SET EQUAL TO RETAIL. You have not given a
+         wholesale rate for almond, and the discount on your other oils runs
+         anywhere from 5% to 11%, so there is no safe figure to infer. Equal
+         means the worst case is quoting a trade buyer full price — someone
+         will query it. A guessed lower number would quietly undersell every
+         almond order and nobody would notice. Send the three wholesale rates
+         and these change in a minute.
+
+         No 100 ml, no 5 L, no loose and no cake listed — you did not give
+         rates for them, so they are not offered rather than offered wrong. */
+      'Almond Oil (200 ml)': { name: 'Almond Oil (200 ml)', retail: 530,  wholesale: 530,  unit: 'Bottles' },
+      'Almond Oil (500 ml)': { name: 'Almond Oil (500 ml)', retail: 1230, wholesale: 1230, unit: 'Bottles' },
+      'Almond Oil (1 ltr)':  { name: 'Almond Oil (1 ltr)',  retail: 2320, wholesale: 2320, unit: 'Bottles' }
     };
 
     let logs = [];
@@ -862,9 +988,10 @@
        your Firestore rules. Changing it here alone grants nobody anything. */
     const SJI_STAFF_EMAILS = [
       'shreerammkarande@gmail.com',
-      'smitakarande1@gmail.com', 'laxmansatpute75@gmail.com',
+      'smitakarande1@gmail.com',
+      'laxmansatpute75@gmail.com',
       'kailassatpute92@gmail.com',
-      'sjagdambaind@gmail.com', 'amolshinde7901@gmail.com'            // ← put Smita's Google address here
+      'sjagdambaind@gmail.com'
     ].map(e => e.toLowerCase());
 
     function sjiIsStaffEmail(email){
@@ -1012,6 +1139,7 @@
       if (p.includes('til')) return 'sesame';
       if (p.includes('sarson') || p.includes('rai')) return 'mustard';
       if (p.includes('alsi') || p.includes('jawas')) return 'flaxseed';
+      if (p.includes('badam')) return 'almond';
       return null;
     }
 
@@ -1167,6 +1295,7 @@
         if (deskBtn) deskBtn.className = active ? 'px-4 py-1.5 rounded-full text-xs font-bold bg-[#C0392B] text-white' : 'px-4 py-1.5 rounded-full text-xs font-bold text-gray-600 hover:bg-rose-50';
       });
       if (tab === 'records') renderFilteredRecords();
+      syncAiVisibility(tab);
     }
 
     function setDashScope(scope) {
@@ -1580,6 +1709,7 @@
         const billed = logs.filter(l => l.type === 'order' && l.customer === c.name).reduce((s, o) => s + Number(o.totalAmount || 0), 0);
         const paid = logs.filter(l => l.type === 'payment' && l.customer === c.name).reduce((s, p) => s + Number(p.amount || 0), 0);
         const due = billed - paid;
+        const reviewed = hasGoogleReview(c.name);
         return `
           <div class="bg-white p-3.5 rounded-2xl border border-rose-100 shadow-xl flex flex-col justify-between">
             <div class="flex justify-between items-start">
@@ -1595,13 +1725,43 @@
                 ${due > 0 ? 'Due: ₹' + due.toLocaleString() : 'Cleared'}
               </span>
             </div>
-            <div class="flex gap-2 mt-3 pt-2.5 border-t border-gray-100">
+
+            <!-- Google review: one tap to record it, one to ask for it -->
+            <div class="flex items-center gap-2 mt-2.5 pt-2.5 border-t border-gray-100">
+              <label class="flex items-center gap-2 cursor-pointer select-none flex-1 min-w-0" title="${reviewed ? 'Reviewed on Google' + (c.googleReviewBy ? ' — ticked by ' + c.googleReviewBy : '') : 'Tick once this customer has left a Google review'}">
+                <input type="checkbox" class="sr-only" ${reviewed ? 'checked' : ''}
+                       onchange="toggleGoogleReview(${JSON.stringify(c.name)})">
+                <span class="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 border transition ${reviewed ? 'bg-emerald-500 border-emerald-500 text-white' : 'bg-white border-gray-300 text-transparent'}">
+                  <i class="fa-solid fa-check text-[10px]"></i>
+                </span>
+                <span class="text-[11px] font-bold truncate ${reviewed ? 'text-emerald-700' : 'text-gray-500'}">
+                  ${reviewed ? 'Google review done' : 'Google review pending'}
+                </span>
+              </label>
+              ${reviewed ? '' : `
+                <button onclick="askForReview(${JSON.stringify(c.name)}, ${JSON.stringify(c.phone || '')})"
+                        class="flex-none px-2 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-[10px] font-black uppercase tracking-wide transition"
+                        title="Send this customer the review link on WhatsApp">Ask</button>`}
+            </div>
+
+            <div class="flex gap-2 mt-2.5">
               <button onclick="openModal('order', '${c.name}')" class="flex-1 bg-[#C0392B] hover:bg-[#A93226] text-white py-1 rounded-lg text-xs font-bold shadow-sm">Order</button>
               <button onclick="openModal('payment', '${c.name}')" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-900 py-1 rounded-lg text-xs font-bold">Payment</button>
             </div>
           </div>
         `;
       }).join('');
+
+      /* How many buying customers have still not been asked. */
+      const revEl = document.getElementById('review-tally');
+      if (revEl) {
+        const missing = countMissingReviews();
+        const done = custArray.filter(c => hasGoogleReview(c.name)).length;
+        revEl.innerHTML = missing === 0
+          ? `<span class="text-emerald-700 font-black">Every customer has reviewed us</span>`
+          : `<span class="font-black text-amber-800">${missing}</span>
+             <span class="text-gray-600">still to ask &middot; ${done} done</span>`;
+      }
 
       renderPaymentAlert();
       renderFilteredRecords();
@@ -1621,11 +1781,15 @@
     /* True only for an app order with a payment claim still unchecked.
        Cash-on-delivery and 'Awaiting payment' are not unverified — there
        is no claim to check in the first place. */
+    /* 'mismatch' is in here on purpose. When the gateway reports a captured
+       payment for the wrong amount, the server deliberately refuses to mark
+       it paid and writes that status instead — so it has to surface in this
+       queue, or a short payment would sit there unnoticed. */
     function isPaymentUnverified(l) {
       return !!l
           && l.type === 'order'
           && l.source === 'app'
-          && /claimed|paid/i.test(l.paymentStatus || '')
+          && /claimed|paid|mismatch/i.test(l.paymentStatus || '')
           && l.paymentVerified !== true;
     }
 
@@ -1809,8 +1973,9 @@
           /* A claim is the customer saying they paid. Verified means one of
              us has seen it in the bank. Those are different things and the
              tag must not blur them. */
-          const payClaimed  = /claimed|paid/i.test(l.paymentStatus || '');
+          const payClaimed  = /claimed|paid|mismatch/i.test(l.paymentStatus || '');
           const payVerified = (l.paymentVerified === true);
+          const payShort    = /mismatch/i.test(l.paymentStatus || '');
 
           const payTagClass = payClaimed
             ? (payVerified ? 'bg-emerald-100 text-emerald-800'
@@ -1822,12 +1987,14 @@
             ? (payVerified
                 ? 'Verified by ' + (l.paymentVerifiedBy || 'staff') +
                   (l.paymentVerifiedAt ? ' on ' + String(l.paymentVerifiedAt).slice(0, 10) : '')
-                : 'Customer says they have paid' + (l.paymentUtr ? ' (ref ' + l.paymentUtr + ')' : '') +
-                  ' — not yet checked against the bank')
+                : payShort
+                  ? 'The gateway captured a payment for a DIFFERENT amount than this order. Check it before dispatch.'
+                  : 'Customer says they have paid' + (l.paymentUtr ? ' (ref ' + l.paymentUtr + ')' : '') +
+                    ' — not yet checked against the bank')
             : 'No payment claimed yet';
 
           const payTagText = payClaimed
-            ? (payVerified ? 'Paid ✓' : 'Unverified')
+            ? (payVerified ? 'Paid ✓' : (payShort ? 'Wrong amount' : 'Unverified'))
             : l.paymentStatus;
 
           const payTag = (l.source === 'app' && l.paymentStatus) ? `
@@ -2075,29 +2242,19 @@
           <!-- Modal Actions -->
           <div class="pt-3 border-t border-gray-200 no-print space-y-2">
 
-            <!-- Download Options -->
+            <!-- Download Options
+                 PDF and the two WhatsApp file buttons were removed on request.
+                 The image is the one that actually behaves on a phone: it opens
+                 in the gallery, previews in the chat before sending, and needs
+                 no reader app at the other end. -->
             <p class="text-[9px] font-extrabold uppercase tracking-wider text-gray-400">Download Tax Invoice</p>
-            <div class="grid grid-cols-2 gap-2">
-              <button type="button" onclick="downloadInvoicePDFDirect('${id}')" id="btn-save-pdf" class="py-2.5 rounded-xl text-xs sm:text-sm font-black bg-[#C0392B] hover:bg-[#A93226] text-white flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition">
-                <i class="fa-solid fa-file-pdf text-sm"></i> <span>Download PDF</span>
-              </button>
+            <div class="grid grid-cols-1 gap-2">
               <button type="button" onclick="downloadInvoiceImageDirect('${id}')" id="btn-save-img" class="py-2.5 rounded-xl text-xs sm:text-sm font-black bg-gray-900 hover:bg-gray-800 text-white flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition">
                 <i class="fa-solid fa-image text-sm"></i> <span>Download Image</span>
               </button>
             </div>
 
-            <!-- Share Options -->
-            <p class="text-[9px] font-extrabold uppercase tracking-wider text-gray-400 pt-1">Share Invoice File on WhatsApp</p>
-            <div class="grid grid-cols-2 gap-2">
-              <button type="button" onclick="shareInvoicePdfWhatsApp('${id}')" id="btn-wa-pdf" class="py-2.5 rounded-xl text-xs sm:text-sm font-black bg-[#25D366] hover:bg-[#1DA851] text-white flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition">
-                <i class="fa-brands fa-whatsapp text-base"></i> <span>Send PDF</span>
-              </button>
-              <button type="button" onclick="shareInvoiceImageWhatsApp('${id}')" id="btn-wa-img" class="py-2.5 rounded-xl text-xs sm:text-sm font-black bg-[#128C7E] hover:bg-[#0f7266] text-white flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition">
-                <i class="fa-brands fa-whatsapp text-base"></i> <span>Send Image</span>
-              </button>
-            </div>
-
-            <div class="grid grid-cols-2 gap-2">
+            <div class="grid grid-cols-2 gap-2 pt-1">
               <button type="button" onclick="sendInvoiceWhatsApp('${id}')" id="btn-send-whatsapp" class="py-2.5 rounded-xl text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center gap-2 transition">
                 <i class="fa-solid fa-comment-dots text-sm"></i> <span>Text Only</span>
               </button>
@@ -3005,7 +3162,10 @@
           "Total Paid (Rs)": totalPaid,
           "Outstanding Due (Rs)": due,
           "Account Status": due > 0 ? "Pending Due" : "Cleared",
-          "Total Orders Count": orders.length
+          "Total Orders Count": orders.length,
+          "Google Review": hasGoogleReview(c.name) ? "Done" : "Not yet",
+          "Review Ticked By": c.googleReviewBy || '',
+          "Review Ticked On": c.googleReviewAt ? String(c.googleReviewAt).slice(0, 10) : ''
         };
       });
 
@@ -3721,6 +3881,112 @@ function getAllCustomerList() {
       });
     }
 
+    /* ── Google review tracking ───────────────────────────────────────────
+       A review is worth more to this business than almost any advertising,
+       but the only way to know who has already left one is to ask and then
+       remember. This is that memory: a tick per customer, recorded with who
+       ticked it and when, so nobody gets pestered twice and nobody is missed.
+
+       It has to work for customers who were never "registered" too — most
+       names in this list come from orders, not from the form above — so
+       ticking one of those creates the customer record on the spot. */
+
+    function findCustomerByName(name) {
+      const key = String(name || '').trim().toLowerCase();
+      return customers.find(c => String(c.name || '').trim().toLowerCase() === key) || null;
+    }
+
+    function hasGoogleReview(name) {
+      const c = findCustomerByName(name);
+      return !!(c && c.googleReview === true);
+    }
+
+    function countMissingReviews() {
+      const seen = new Set();
+      let missing = 0;
+      logs.forEach(l => {
+        if (l.type !== 'order' || !l.customer) return;
+        const key = l.customer.trim().toLowerCase();
+        if (seen.has(key)) return;
+        seen.add(key);
+        if (!hasGoogleReview(l.customer)) missing++;
+      });
+      return missing;
+    }
+
+    async function toggleGoogleReview(name) {
+      const clean = String(name || '').trim();
+      if (!clean) return;
+
+      const who = (typeof sjiUser !== 'undefined' && sjiUser && sjiUser.email) ? sjiUser.email : 'staff';
+      let cust = findCustomerByName(clean);
+      const nowOn = !(cust && cust.googleReview === true);
+
+      const patch = {
+        googleReview:   nowOn,
+        googleReviewBy: nowOn ? who : null,
+        googleReviewAt: nowOn ? new Date().toISOString() : null
+      };
+
+      if (!cust) {
+        /* Known only from their orders — give them a real record now, taking
+           the phone and city from the most recent order we have. */
+        const last = logs.filter(l => l.type === 'order' && l.customer &&
+                                      l.customer.trim().toLowerCase() === clean.toLowerCase())
+                         .sort((a, b) => (b.date || '').localeCompare(a.date || ''))[0] || {};
+        cust = Object.assign({
+          id:    'rev-' + Date.now().toString(),
+          name:  clean,
+          phone: last.phone || '',
+          city:  last.city || ''
+        }, patch);
+        customers.push(cust);
+      } else {
+        Object.assign(cust, patch);
+      }
+
+      localStorage.setItem('sji_customers_v35', JSON.stringify(customers));
+      renderAll();
+
+      if (db) {
+        try {
+          await db.collection('customers').doc(cust.id).set({
+            name: cust.name, phone: cust.phone || '', city: cust.city || '',
+            googleReview:   patch.googleReview,
+            googleReviewBy: patch.googleReviewBy,
+            googleReviewAt: patch.googleReviewAt
+          }, { merge: true });
+        } catch (err) {
+          console.warn('Review flag cloud notice:', err);
+        }
+      }
+    }
+
+    /* Open the shop's Google profile so the customer can be asked there and
+       then, or the link sent to them on WhatsApp. */
+    const SJI_GOOGLE_REVIEW_LINK = 'https://share.google/BsaI4zx7BUgpcbHou';
+
+    function askForReview(name, phone) {
+      const first = String(name || '').trim().split(' ')[0] || 'Sir';
+      const msg =
+        `Namaste ${first},\n\n` +
+        `Thank you for buying Nuova cold pressed oil. If you were happy with it, ` +
+        `a short review on Google helps our small unit more than you might think:\n\n` +
+        SJI_GOOGLE_REVIEW_LINK + `\n\n` +
+        `It takes under a minute. Thank you.\n— Shri Jagdamba Industry`;
+
+      const digits = String(phone || '').replace(/\D/g, '');
+      if (digits.length >= 10) {
+        const to = digits.length === 10 ? '91' + digits : digits;
+        window.open('https://wa.me/' + to + '?text=' + encodeURIComponent(msg), '_blank');
+      } else {
+        navigator.clipboard && navigator.clipboard.writeText
+          ? navigator.clipboard.writeText(msg).then(
+              () => alert('No mobile number saved for ' + name + '.\n\nThe review request has been copied — paste it wherever you like.'))
+          : alert(msg);
+      }
+    }
+
     async function handleManualCustomer(e) {
       e.preventDefault();
       const name = document.getElementById('new-cust-name').value.trim();
@@ -4128,18 +4394,39 @@ function getAllCustomerList() {
       if (!container) return;
       const isHidden = container.classList.contains('hidden');
       container.classList.toggle('hidden', !isHidden);
+
       if (isHidden) {
-        setTimeout(() => document.getElementById('ai-input-text')?.focus(), 150);
-        // Load saved gemini key into input
+        /* Lock the page behind. Without this the document — which is wider
+           than a phone because of the records table — drifts sideways under
+           the panel while you are reading it. */
+        document.body.classList.add('ai-open');
+
+        /* Deliberately NOT focusing the input on open. Auto-focus raises the
+           keyboard immediately, which on a phone leaves almost nothing of the
+           conversation visible and was part of why this felt broken. Tap the
+           box when you actually want to type. */
         const savedKey = localStorage.getItem('sji_gemini_api_key');
         const keyInput = document.getElementById('ai-gemini-key');
         if (keyInput && savedKey) keyInput.value = savedKey;
+      } else {
+        document.body.classList.remove('ai-open');
       }
     }
 
     function closeAiCopilot() {
       const container = document.getElementById('ai-modal-container');
       if (container) container.classList.add('hidden');
+      document.body.classList.remove('ai-open');
+    }
+
+    /* The Copilot belongs to the dashboard. On Records and Customers it only
+       covered up the table it was meant to help with, so the trigger is
+       hidden there and the panel closes itself on the way out. */
+    function syncAiVisibility(tab) {
+      const trigger = document.getElementById('ai-trigger-wrap');
+      const onDash  = (tab === 'dashboard');
+      if (trigger) trigger.classList.toggle('hidden', !onDash);
+      if (!onDash) closeAiCopilot();
     }
 
     function toggleAiSettings() {

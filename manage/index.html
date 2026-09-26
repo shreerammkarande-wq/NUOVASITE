@@ -317,6 +317,20 @@
 
   /* while the panel is open the page behind must not move */
   body.ai-open{ overflow:hidden !important; }
+
+  /* The review tick hides its real checkbox and draws its own box. That
+     hiding is declared here rather than relying on Tailwind's .sr-only from
+     the CDN — if the CDN is slow, a bare checkbox would appear beside the
+     drawn one and the card would look broken. */
+  #grid-customers input[type="checkbox"].sr-only{
+    position:absolute;
+    width:1px; height:1px;
+    padding:0; margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    border:0;
+  }
   </style>
 </head>
 <body class="text-[#1A1A1A] pb-24 md:pb-8" style="background-color:#F7F6F4">
@@ -1728,9 +1742,9 @@
 
             <!-- Google review: one tap to record it, one to ask for it -->
             <div class="flex items-center gap-2 mt-2.5 pt-2.5 border-t border-gray-100">
-              <label class="flex items-center gap-2 cursor-pointer select-none flex-1 min-w-0" title="${reviewed ? 'Reviewed on Google' + (c.googleReviewBy ? ' — ticked by ' + c.googleReviewBy : '') : 'Tick once this customer has left a Google review'}">
+              <label class="flex items-center gap-2 cursor-pointer select-none flex-1 min-w-0" title="${jsAttr(reviewed ? 'Reviewed on Google' + (c.googleReviewBy ? ' — ticked by ' + c.googleReviewBy : '') : 'Tick once this customer has left a Google review')}">
                 <input type="checkbox" class="sr-only" ${reviewed ? 'checked' : ''}
-                       onchange="toggleGoogleReview(${JSON.stringify(c.name)})">
+                       onchange="toggleGoogleReview('${jsAttr(c.name)}')">
                 <span class="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 border transition ${reviewed ? 'bg-emerald-500 border-emerald-500 text-white' : 'bg-white border-gray-300 text-transparent'}">
                   <i class="fa-solid fa-check text-[10px]"></i>
                 </span>
@@ -1739,14 +1753,14 @@
                 </span>
               </label>
               ${reviewed ? '' : `
-                <button onclick="askForReview(${JSON.stringify(c.name)}, ${JSON.stringify(c.phone || '')})"
+                <button onclick="askForReview('${jsAttr(c.name)}', '${jsAttr(c.phone || '')}')"
                         class="flex-none px-2 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-[10px] font-black uppercase tracking-wide transition"
                         title="Send this customer the review link on WhatsApp">Ask</button>`}
             </div>
 
             <div class="flex gap-2 mt-2.5">
-              <button onclick="openModal('order', '${c.name}')" class="flex-1 bg-[#C0392B] hover:bg-[#A93226] text-white py-1 rounded-lg text-xs font-bold shadow-sm">Order</button>
-              <button onclick="openModal('payment', '${c.name}')" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-900 py-1 rounded-lg text-xs font-bold">Payment</button>
+              <button onclick="openModal('order', '${jsAttr(c.name)}')" class="flex-1 bg-[#C0392B] hover:bg-[#A93226] text-white py-1 rounded-lg text-xs font-bold shadow-sm">Order</button>
+              <button onclick="openModal('payment', '${jsAttr(c.name)}')" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-900 py-1 rounded-lg text-xs font-bold">Payment</button>
             </div>
           </div>
         `;
@@ -3890,6 +3904,27 @@ function getAllCustomerList() {
        It has to work for customers who were never "registered" too — most
        names in this list come from orders, not from the form above — so
        ticking one of those creates the customer record on the spot. */
+
+    /* Build a JS string literal that survives being dropped inside a
+       double-quoted HTML attribute.
+
+       JSON.stringify is the trap: it returns its own double quotes, so
+       onclick="fn(${JSON.stringify(name)})" renders as onclick="fn("Ramesh
+       Patil")" and the attribute ends at that inner quote. The handler is
+       destroyed before the browser reads the function name, and the control
+       silently does nothing — no error, no clue.
+
+       Escape for JavaScript first (backslash, then apostrophe), then for
+       HTML. Wrap the result in single quotes at the call site. */
+    function jsAttr(value) {
+      return String(value === null || value === undefined ? '' : value)
+        .replace(/\\/g, '\\\\')
+        .replace(/'/g, "\\'")
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
 
     function findCustomerByName(name) {
       const key = String(name || '').trim().toLowerCase();
